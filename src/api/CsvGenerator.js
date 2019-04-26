@@ -1,5 +1,6 @@
 import { TYPES } from './SessionTypes';
 import { saveToFile_csv } from '../scheduling/utilities';
+import SmallTalk from 'smalltalk';
 
 export class CsvGenerator {
     constructor(event) {
@@ -13,12 +14,15 @@ export class CsvGenerator {
     makeCSV(fname) {
         let filename = fname;
         let download = true;
-        if (download && !fname) {
-            filename = prompt("File name", this.event.title.replace(/ /g, "-"));
-            if (filename === null) return;
-        }
         let csv = this.getCSV();
-        saveToFile_csv(filename+".csv", csv);
+        if (download && !fname) {
+          SmallTalk.prompt("File name", this.event.title.replace(/ /g,"-"))
+          .then((value) => {
+            saveToFile_csv(value+".csv", csv);
+          });
+        } if (filename != null) {
+          saveToFile_csv(filename+".csv", csv);
+        }
     }
 
     getCSV() {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { PdfGenerator } from '../api/PdfGenerator';
 import { CsvGenerator } from '../api/CsvGenerator';
+import SmallTalk from 'smalltalk';
 
 import { Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
 import NumberInput from "../inputs/NumberInput";
@@ -40,11 +41,14 @@ export default class OutputGenView extends Component {
     }
 
     downloadAll() {
-        let name = prompt("File name prefix", this.props.data.title.replace(/ /g,"-"));
-        if (name === null) return;
-        this.generatePDF(name);
-        this.generateCSV(name);
-        this.props.save(name);
+      SmallTalk.prompt("File name prefix", this.props.data.title.replace(/ /g,"-"))
+          .then((value) => {
+            if (value) {
+                this.generatePDF(value);
+                this.generateCSV(value);
+                this.props.save(value);
+            }
+          });
     }
 
 

@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+
+import SmallTalk from 'smalltalk';
+
 import InitForm from './ui/InitForm'
 import { EventParams } from "./api/EventParams";
 import DetailView from "./ui/DetailView";
@@ -85,10 +88,17 @@ class App extends Component {
 
     onSave(fname) {
       let filename=fname;
-      if (!filename) filename=prompt("Enter filename", this.state.eventParams.title.replace(/ /g, '_'));
-      // let json_str = JSON.stringify(this.state.eventParams,freeze);
       let json_str = JSON.stringify(this.state,freeze);
-      if (filename != null) saveToFile_json(filename+".schedule",json_str);
+
+      if (filename) {
+        saveToFile_json(filename+".schedule",json_str);
+      } else {
+        SmallTalk.prompt("Enter filename", this.state.eventParams.title.replace(/ /g, '_'))
+            .then((value) => {
+                saveToFile_json(value+".schedule",json_str);
+            });
+      }
+      // let json_str = JSON.stringify(this.state.eventParams,freeze);
       // Write to file
     }
 

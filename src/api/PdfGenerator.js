@@ -1,6 +1,7 @@
 import { TYPES } from '../api/SessionTypes';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import SmallTalk from 'smalltalk';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 
@@ -31,26 +32,28 @@ export class PdfGenerator {
   get event() { return this._event; }
 
   makePDFs(fname) {
-    let prefix=fname;
     let download = true;
     if (download && !fname) {
-      prefix=prompt("File name prefix", this.event.title.replace(/ /g,"-"));
-      if (prefix === null) return;
+      SmallTalk.prompt("File name prefix", this.event.title.replace(/ /g,"-"))
+      .then((value) => {
+        this.makeAllPDFs(value, download);
+      });
+    } else {
+      this.makeAllPDFs(fname, download);
     }
-    // for (let i = 0; i < this.event.teams.length; i++) {
-    //   if (this.event.teams[i].name.length > 12) this.styleDict.teamEntry.fontSize -= 1;
-    //   if (this.event.teams[i].name.length > 16) this.styleDict.teamEntry.fontSize -= 2;
-    //   if (this.event.teams[i].name.length > 20) this.styleDict.teamEntry.fontSize -= 3;
-    // }
-    this.sessionPdf(TYPES.JUDGING,download,prefix);
-    this.sessionPdf(TYPES.MATCH_ROUND,download,prefix);
-    this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,download,prefix);
-    this.sessionPdf(TYPES.TYPE_MATCH_FILLER,download,prefix);
-    this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,download,prefix);
-    this.teamListPage(this.event.teams, download, prefix);
-    this.daySchedulePage(download, prefix);
-    this.allTeamsPdf(download,prefix);
-    this.indivTeamsPdf(download,prefix);
+  }
+
+  makeAllPDFs(prefix, download) {
+      this.sessionPdf(TYPES.JUDGING,download,prefix);
+      this.sessionPdf(TYPES.MATCH_ROUND,download,prefix);
+      this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,download,prefix);
+      this.sessionPdf(TYPES.TYPE_MATCH_FILLER,download,prefix);
+      this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,download,prefix);
+      this.teamListPage(this.event.teams, download, prefix);
+      this.daySchedulePage(download, prefix);
+      this.allTeamsPdf(download,prefix);
+      this.indivTeamsPdf(download,prefix);
+
   }
 
   sessionPdf(type, download,prefix) {
