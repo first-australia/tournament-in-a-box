@@ -1,7 +1,12 @@
 {
   "name": "tournament-in-a-box",
   "main": "public/electron.js",
-  "author": "Fred Westling",
+  "author": {
+    "name": "Fred Westling",
+    "email": "fred@firstaustralia.org"
+  },
+  "license": "MIT",
+  "description": "Everything you need to run a FIRST LEGO League tournament, in one convenient location!",
   "version": "0.1.0",
   "private": true,
   "devDependencies": {
@@ -42,16 +47,25 @@
     "electron-dev": "concurrently \"BROWSER=none yarn start\" \"wait-on http://localhost:3000 && electron .\"",
     "postinstall": "electron-builder install-app-deps",
     "preelectron-pack": "yarn build",
-    "electron-pack": "build -mlw"
+    "electron-pack": "build -wl"
   },
   "build": {
     "appId": "com.fwestling.electron-first",
+    "asar": true,
     "files": [
       "build/**/*",
       "node_modules/**/*"
     ],
     "directories": {
       "buildResources": "assets"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "target": ["NSIS", "portable"],
+      "icon": "build/icon.ico"
     }
   },
   "homepage": "./"

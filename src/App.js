@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 
-import SmallTalk from 'smalltalk';
 
 import InitForm from './ui/InitForm'
 import { EventParams } from "./api/EventParams";
@@ -20,6 +19,7 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'react-datasheet/lib/react-datasheet.css';
 import './react-datagrid-custom.css';
+import Package from './package.alias.json';
 
 // Should set this up as github.io page under the firstaustralia repo
 // That way github manages load balancing and doesn't crash
@@ -29,7 +29,8 @@ class App extends Component {
         super(props);
         this.state = {
             display: 'Initialise',
-            eventParams: new EventParams( this.props.version,
+            version: Package.version,
+            eventParams: new EventParams( Package.version,
                 "2018 FLL Competition", 24, new DateTime(8.5*60), new DateTime(17*60)),
             processing: false
         };
@@ -44,7 +45,7 @@ class App extends Component {
     }
 
     initSchedule(initState) {
-        let E = new EventParams( this.props.version,
+        let E = new EventParams( this.state.version,
             initState.title, initState.nTeams, initState.startTime, initState.endTime);
 
         this.setState({
@@ -89,15 +90,8 @@ class App extends Component {
     onSave(fname) {
       let filename=fname;
       let json_str = JSON.stringify(this.state,freeze);
-
-      if (filename) {
-        saveToFile_json(filename+".schedule",json_str);
-      } else {
-        SmallTalk.prompt("Enter filename", this.state.eventParams.title.replace(/ /g, '_'))
-            .then((value) => {
-                saveToFile_json(value+".schedule",json_str);
-            });
-      }
+      if (!filename) filename = this.state.eventParams.title.replace(/ /g, '_');
+      saveToFile_json(filename+".schedule",json_str);
       // let json_str = JSON.stringify(this.state.eventParams,freeze);
       // Write to file
     }
@@ -190,7 +184,7 @@ class App extends Component {
 
         return (
             <Container fluid className="App">
-                <TopBar version={this.props.version} onSave={this.onSave} onLoad={this.onLoad}/>
+                <TopBar version={this.state.version} onSave={this.onSave} onLoad={this.onLoad}/>
                 {mainWindow}
             </Container>
         );

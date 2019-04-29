@@ -45,7 +45,7 @@ export default class TopBar extends React.Component {
         return (
             <Navbar color="light" light expand="md">
                 <NavbarBrand><img alt="" width="80px" src={firstlogo}/></NavbarBrand>
-                <NavbarBrand>FLL Scheduler <small>Version {this.props.version}</small></NavbarBrand>
+                <NavbarBrand>Tournament in a Box<small>Version {this.props.version}</small></NavbarBrand>
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="ml-auto" navbar>
@@ -58,7 +58,7 @@ export default class TopBar extends React.Component {
                                 <MdInfoOutline size={20}/>
                             </DropdownToggle>
                             <DropdownMenu right>
-                                <a target="_blank" rel="noopener noreferrer" href={"https://github.com/frewes/scheduler"}>
+                                <a target="_blank" rel="noopener noreferrer" href={"https://github.com/frewes/tournament-in-a-box"}>
                                     <DropdownItem>Manual</DropdownItem>
                                 </a>
                                 <a target="_blank" rel="noopener noreferrer" href={"https://goo.gl/forms/rJOM0xa24MVZqVhh2"}>

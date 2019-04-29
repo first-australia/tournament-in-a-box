@@ -1,7 +1,6 @@
 import { TYPES } from '../api/SessionTypes';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import SmallTalk from 'smalltalk';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 
@@ -33,14 +32,8 @@ export class PdfGenerator {
 
   makePDFs(fname) {
     let download = true;
-    if (download && !fname) {
-      SmallTalk.prompt("File name prefix", this.event.title.replace(/ /g,"-"))
-      .then((value) => {
-        this.makeAllPDFs(value, download);
-      });
-    } else {
-      this.makeAllPDFs(fname, download);
-    }
+    if (!fname) fname = this.event.title.replace(/ /g,"-");
+    this.makeAllPDFs(fname, download);
   }
 
   makeAllPDFs(prefix, download) {
