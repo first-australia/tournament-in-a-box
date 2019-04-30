@@ -3,7 +3,7 @@
   "name": "FLL Scheduling software by Westling",
   "icons": [
     {
-      "src": "icon.png",
+      "src": "icons/512.png",
       "sizes": "512x512",
       "type": "image/png"
     }

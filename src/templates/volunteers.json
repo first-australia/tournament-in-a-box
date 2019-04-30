@@ -1,0 +1,99 @@
+{
+	"roles": [
+		{
+			"name": "Tournament Director",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Firefighter",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Judge Advisor",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Robot Design Judge",
+			"count": 2,
+			"per": "RDJ"
+		},
+		{
+			"name": "Core Values Judge",
+			"count": 2,
+			"per": "CVJ"
+		},
+		{
+			"name": "Research Project Judge",
+			"count": 2,
+			"per": "RPJ"
+		},
+		{
+			"name": "Judge Check-in",
+			"count": 3,
+			"per": "1"
+		},
+		{
+			"name": "Head Referee",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Referee",
+			"count": 1,
+			"per": "T"
+		},
+		{
+			"name": "Scorekeeper",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Timekeeper",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Field Resetter",
+			"count": 2,
+			"per": "1"
+		},
+		{
+			"name": "Lead Queuer",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Queuer",
+			"count": 2,
+			"per": "1"
+		},
+		{
+			"name": "Emcee",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "DJ",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Pit Admin",
+			"count": 2,
+			"per": "1"
+		},
+		{
+			"name": "Volunteer Check-in",
+			"count": 1,
+			"per": "1"
+		},
+		{
+			"name": "Practice Table Attendant",
+			"count": 1,
+			"per": "1"
+		}
+	]
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import SingleScheduleView from "./SingleScheduleView";
 import IndivScheduleView from "./IndivScheduleView";
+import VolunteerView from "./VolunteerView";
 import OutputGenView from "./OutputGenView";
 
 import { TYPES } from "../api/SessionTypes";
@@ -110,6 +111,12 @@ export default class FullScheduleView extends React.Component {
                         </NavLink>
                     </NavItem>
                     <NavItem>
+                        <NavLink href="#" className={(this.state.activeTab === 'vols') ? "active" : ""}
+                                 onClick={() => { this.toggle('vols')}}>
+                            Volunteers
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'outputs') ? "active" : ""}
                                  onClick={() => { this.toggle('outputs')}}>
                             Generate Outputs
@@ -143,6 +150,9 @@ export default class FullScheduleView extends React.Component {
                     </TabPane>
                     <TabPane tabId='indiv'>
                         <IndivScheduleView data={this.props.event.getIndivDataGrid()}/>
+                    </TabPane>
+                    <TabPane tabId='vols'>
+                        <VolunteerView data={this.props.event}/>
                     </TabPane>
                     <TabPane tabId='outputs'>
                         <OutputGenView data={this.props.event} save={this.props.save} handleChange={this.updatePDFSettings}/>
