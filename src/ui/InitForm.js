@@ -3,7 +3,6 @@ import TextInput from '../inputs/TextInput';
 import NumberInput from '../inputs/NumberInput';
 import BooleanInput from '../inputs/BooleanInput';
 import DateTimeInput from '../inputs/DateTimeInput';
-import VolunteerInput from '../inputs/VolunteerInput';
 
 import { Container, Form, Table } from 'reactstrap';
 
@@ -131,9 +130,6 @@ export default class InitForm extends React.Component {
                     <DateTimeInput large label="Start time: " value={this.props.event.startTime} onChange={this.updateStartTime}/>
                     <DateTimeInput large label="End time: " value={this.props.event.endTime} onChange={this.updateEndTime}/>
                     <TextAreaInput large label="Team names:" rows={10} placeholder="List of teams: (Name) OR (Number,Name) OR (Number,Name,Affiliation) OR (Number,Name,Affiliation,Pit)" onChange={this.updateTeamNames}/>
-                    <VolunteerInput vol={{name: "Tournament Director", count:1}}/>
-                    <VolunteerInput vol={{name: "Firefighter", count:2}}/>
-                    <VolunteerInput vol={{name: "Robot Design Judge", count:1}}/>
                 </Form>
             </Container>
         );

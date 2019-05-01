@@ -1,31 +1,12 @@
 import { TYPES } from '../api/SessionTypes';
 import pdfMake from "pdfmake/build/pdfmake";
 import pdfFonts from "pdfmake/build/vfs_fonts";
+import {PdfDoc} from "../templates/PdfDoc";
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-
 
 export class PdfGenerator {
   constructor(event) {
     this._event = event;
-    this.imageDict = {
-        header: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAlQAAABDCAYAAABa1JsjAAAACXBIWXMAAAsSAAALEgHS3X78AAABpElEQVR42u3ZMWoCURSG0V+ZyipgYWuKQLIK95AmreAGZglmIS4gjWtwCdMlkMK0U9imfdZiITNOCOI5/XvI9XH5YEallAAA0N/YCAAABBUAgKACABBUAACCCgAAQQUAIKgAAAQVAICgAgBAUAEACCoAAEEFACCoAAAQVAAAggoAQFABAAgqAAAEFQCAoAIAEFQAAIIKAABBBQDwx6ohLpl9vC6TLI3z7jXt27bueujw+LIzOpLU0/1n0+XA7/rJ7iFJmsn6u/PumW2+7B6SpG5Xz821l1QD/Zh5koX/hJ68HZLkwe7B7uFGds8Zn/wAAAQVAICgAgAQVAAAggoAAEEFACCoAAAEFQCAoAIAQFABAAgqAABBBQAgqAAAEFQAAIIKAEBQAQAIKgAABBUAgKACALgJ1UD37IySJD89z70bHT3fj92D3cN/vZ8To1KKUQIAXMEnPwAAQQUAIKgAAAQVAICgAgBAUAEACCoAAEEFACCoAAAQVAAAggoAQFABAAgqAAAEFQCAoAIAEFQAAIIKAABBBQAgqAAABBUAgKACAOCiI+CgIeNabmdzAAAAAElFTkSuQmCC',
-        logo1: this._event.logoTopLeft,
-        logo2: this._event.logoTopRight,
-        logo3: this._event.logoBotLeft,
-        logo4: this._event.logoBotRight,
-    };
-    this.styleDict = {
-        header: {fontSize: this._event.titleFontSize,bold: true,alignment: 'center'},
-        footer: {fontSize: this._event.baseFontSize+2,bold: true,alignment: 'center',color: 'grey'},
-        header2: {fontSize: this._event.titleFontSize+2,bold: true,alignment: 'center'},
-        tablebody: {fontSize: this._event.baseFontSize-4,alignment:'center'},
-        extraTime: {alignment: 'center',color: 'red'},
-        tablehead: {fontSize: this._event.baseFontSize-2,bold: true,alignment:'center'},
-        breakrow: {bold: true,alignment:'center',fillColor: '#eeeeee'},
-        teamEntry:{fontSize:this._event.baseFontSize, alignment:'center'}
-    };
-    console.log("Style Dictionary");
-    console.log(this.styleDict);
   }
 
   get event() { return this._event; }
@@ -37,44 +18,86 @@ export class PdfGenerator {
   }
 
   makeAllPDFs(prefix, download) {
-      this.sessionPdf(TYPES.JUDGING,download,prefix);
-      this.sessionPdf(TYPES.MATCH_ROUND,download,prefix);
-      this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,download,prefix);
-      this.sessionPdf(TYPES.TYPE_MATCH_FILLER,download,prefix);
-      this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,download,prefix);
-      this.teamListPage(this.event.teams, download, prefix);
-      this.daySchedulePage(download, prefix);
-      this.allTeamsPdf(download,prefix);
-      this.indivTeamsPdf(download,prefix);
-
+    let PDFs = [];
+    PDFs.push(this.sessionPdf(TYPES.JUDGING,prefix));
+    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND,prefix));
+    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,prefix));
+    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER,prefix));
+    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,prefix));
+    PDFs.push(this.teamListPdf(this.event.teams, prefix));
+    PDFs.push(this.daySchedulePdf(prefix));
+    PDFs.push(this.allTeamsPdf(prefix));
+    PDFs.push(this.indivTeamsPdf(prefix));
+    PDFs.filter(D=>D!=null).forEach(D => {
+      try {
+          download ? D.download() : D.open();
+      } catch (err) {
+          alert("Error " + (download?"printing":"opening") + ": " + D.filename + "; " + err.message);
+      }
+    })
   }
 
-  sessionPdf(type, download,prefix) {
-    this.buildDoc();
+  sessionPdf(type, prefix) {
+    let maxLocs = 0;
+    this.event.sessions.filter(s=>s.type===type).forEach((session) => maxLocs=Math.max(maxLocs,session.nLocs));
+    let doc = new PdfDoc(this.event.pageFormat, this.event.title, maxLocs > 4);
+
     this.event.sessions.filter(s=>s.type===type).forEach((session) => {
       try {
-        if (session.nLocs > 4) {
-          this.doc.pageOrientation='landscape';
-          this.doc.background = this.landscapeBackground;
-        }
-        this.sessionPage(session);
+        doc.addContent({text: session.name + " Schedule", style:'header2',margin:[0,10]});
+        doc.addContent(this.sessionPage(session));
+        doc.addPageBreak();
       } catch (err) {
         alert("Error: " + err.message);
       }
     });
-    if (this.doc.content.length === 0) return;
+    if (doc.empty()) return null;
     // Delete the last page break
-    this.doc.content.splice(this.doc.content.length-1);
-    try {
-      if (download) pdfMake.createPdf(this.doc).download((prefix+"-"+type.name+"-schedule.pdf").replace(/ /g, "-"));
-      else pdfMake.createPdf(this.doc).open();
-    } catch (err) {
-      alert ("Error printing: " + err.message);
-    }
+    doc.chomp();
+    doc.filename = (prefix+"-"+type.name+"-schedule.pdf").replace(/ /g, "-");
+    return doc;
   }
 
-  teamListPage(teams, download, prefix) {
-      this.buildDoc();
+    sessionPage(session) {
+        let data = this.event.getSessionDataGrid(session.id, true);
+        // headers are automatically repeated if the table spans over multiple pages
+        // you can declare how many rows should be treated as headers
+        let t = {headerRows: 1,dontBreakRows: true};
+        t.widths = new Array(session.nLocs+2);
+        let w = 475/(session.nLocs+2);
+        for (let i = 0; i < session.nLocs+2; i++) t.widths[i] = (i<2) ? 'auto':'*';
+        t.widths[0] = w;
+        t.body = [];
+        //Header row
+        let header = [];
+        for (let i = 0; i < data[0].length; i++) header.push({text:data[0][i].value,alignment:'center'});
+        t.body.push(header);
+
+        // All individual rows
+        for (let i = 1; i < data.length; i++) {
+            let row = [];
+            row.push({text:data[i][0].value.toString(),alignment:'center'});
+            row.push({text:data[i][1].value.toString(),alignment:'center'});
+            if (data[i][2].colSpan) {
+                row.push({colSpan:data[i][2].colSpan,style:'breakrow',text:""+data[i][2].value.toString()});
+                t.body.push(row);
+                continue;
+            }
+            // let diff = session.nLocs;
+            for (let j = 2; j < data[i].length; j++) {
+                if (data[i][j] === null) row.push({});
+                else row.push({text:data[i][j].value.toString(),style: 'teamEntry'});
+            }
+            t.body.push(row);
+        }
+        // if (session.usesSurrogates && session.fillerPolicy === USE_SURROGATES)
+        //   this.doc.content.push({text:"\n* Surrogate team; results not counted",alignment:'center'});
+        return {table: t, layout: 'lightHorizontalLines'};
+    }
+
+  teamListPdf(teams, prefix) {
+      let doc = new PdfDoc(this.event.pageFormat, this.event.title, false);
+
       let t = {headerRows: 1, dontBreakRows: true};
       t.widths = new Array(4);
       t.widths[0] = 100;
@@ -98,19 +121,16 @@ export class PdfGenerator {
           t.body.push(row);
       });
 
-      this.doc.content.push({text: "Team List", style:'header2',margin:[0,10]});
-      this.doc.content.push({table: t,layout: 'lightHorizontalLines'});
+      doc.addContent({text: "Team List", style:'header2',margin:[0,10]});
+      doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-      try {
-          if (download) pdfMake.createPdf(this.doc).download((prefix+"-team-list.pdf").replace(/ /g, "-"));
-          else pdfMake.createPdf(this.doc).open();
-      } catch (err) {
-          alert("Error printing: " + err.message);
-      }
+      doc.filename = (prefix+"-team-list.pdf").replace(/ /g, "-");
+      return doc;
   }
 
-  daySchedulePage(download, prefix) {
-    this.buildDoc();
+  daySchedulePdf(prefix) {
+    let doc = new PdfDoc(this.event.pageFormat, this.event.title, false);
+
     let t = {headerRows: 1, dontBreakRows: true};
     t.widths = new Array(3);
     t.widths[0] = 100;
@@ -131,65 +151,22 @@ export class PdfGenerator {
       row.push(sorted[i].name);
       t.body.push(row);
     }
-    this.doc.content.push({text: "Day Schedule", style:'header2',margin:[0,10]});
-    this.doc.content.push({table: t,layout: 'lightHorizontalLines'});
+    doc.addContent({text: "Day Schedule", style:'header2',margin:[0,10]});
+    doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-    try {
-        if (download) pdfMake.createPdf(this.doc).download((prefix+"-day-schedule.pdf").replace(/ /g, "-"));
-        else pdfMake.createPdf(this.doc).open();
-    } catch (err) {
-        alert("Error printing: " + err.message);
-    }
+    doc.filename = (prefix+"-day-schedule.pdf").replace(/ /g, "-");
+    return doc;
   }
 
-  sessionPage(session) {
-    let data = this.event.getSessionDataGrid(session.id, true);
-    // headers are automatically repeated if the table spans over multiple pages
-    // you can declare how many rows should be treated as headers
-    let t = {headerRows: 1,dontBreakRows: true};
-    t.widths = new Array(session.nLocs+2);
-    let w = 475/(session.nLocs+2);
-    for (let i = 0; i < session.nLocs+2; i++) t.widths[i] = (i<2) ? 'auto':'*';
-    t.widths[0] = w;
-    t.body = [];
-    //Header row
-    let header = [];
-    for (let i = 0; i < data[0].length; i++) header.push({text:data[0][i].value,alignment:'center'});
-    t.body.push(header);
+  allTeamsPdf(prefix) {
+    let doc = new PdfDoc(this.event.pageFormat, this.event.title, true);
 
-    // All individual rows
-    for (let i = 1; i < data.length; i++) {
-      let row = [];
-      row.push({text:data[i][0].value.toString(),alignment:'center'});
-      row.push({text:data[i][1].value.toString(),alignment:'center'});
-      if (data[i][2].colSpan) {
-        row.push({colSpan:data[i][2].colSpan,style:'breakrow',text:""+data[i][2].value.toString()});
-        t.body.push(row);
-        continue;
-      }
-      // let diff = session.nLocs;
-      for (let j = 2; j < data[i].length; j++) {
-        if (data[i][j] === null) row.push({});
-        else row.push({text:data[i][j].value.toString(),style: 'teamEntry'});
-      }
-      t.body.push(row);
-    }
-    this.doc.content.push({text: session.name + " Schedule", style:'header2',margin:[0,10]});
-    this.doc.content.push({table: t,layout: 'lightHorizontalLines'});
-    // if (session.usesSurrogates && session.fillerPolicy === USE_SURROGATES)
-    //   this.doc.content.push({text:"\n* Surrogate team; results not counted",alignment:'center'});
-    this.doc.content.push({text: " ", pageBreak:'after'});
-  }
+    doc.addContent({text: "All Team Schedule", style:'header2',margin:[0,10]});
 
-  allTeamsPdf(download,prefix) {
-    this.buildDoc();
-    this.doc.pageOrientation='landscape';
-    this.doc.background = this.landscapeBackground;
-    this.doc.content.push({text: "All Team Schedule", style:'header2',margin:[0,10]});
     let data = this.event.getIndivDataGrid(true);
     console.log(data);
     let N = data[3].length;
-    let t = {headerRows: 2,dontBreakRows: true,keepWithHeaderRows: 1};
+    let t = {headerRows: 2, dontBreakRows: true, keepWithHeaderRows: 1};
     t.widths = [];
     let w = 500/N;
     for (let i = 0; i < N; i++) {
@@ -211,18 +188,24 @@ export class PdfGenerator {
         } else t.body[k].push({text:data[k][i].value.toString()+"",color:col,style:curStyle});
       }
     }
-    this.doc.content.push({table: t, layout: 'lightHorizontalLines',alignment:'center'});
-    if (download) pdfMake.createPdf(this.doc).download((prefix+"-individual-schedule.pdf").replace(/ /g, '-'));
-    else pdfMake.createPdf(this.doc).open();
+    doc.addContent({table: t, layout: 'lightHorizontalLines', alignment:'center'});
+
+    doc.filename = (prefix+"-individual-schedule.pdf").replace(/ /g, '-');
+    return doc;
   }
 
-  indivTeamsPdf(download,prefix) {
-    this.buildDoc();
-    this.event.teams.forEach(t => this.teamPage(t));
+  indivTeamsPdf(prefix) {
+    let doc = new PdfDoc(this.event.pageFormat, this.event.title, false);
+
+    this.event.teams.forEach(t => {
+        doc.addContent({text: t.number + ": " + t.name, style:'header2',margin:[0,10]});
+        doc.addContent(this.teamPage(t));
+        doc.addContent({text: " ", pageBreak:'after'});
+    });
     // Delete the last page break
-    this.doc.content.splice(this.doc.content.length-1);
-    if (download) pdfMake.createPdf(this.doc).download((prefix+"-team-schedule.pdf").replace(/ /g, '-'));
-    else pdfMake.createPdf(this.doc).open();
+    doc.chomp();
+    doc.filename = (prefix+"-team-schedule.pdf").replace(/ /g, '-');
+    return doc;
   }
 
   teamPage(team) {
@@ -233,8 +216,7 @@ export class PdfGenerator {
       return a.time.mins - b.time.mins;
     });
 
-    this.doc.content.push({text: team.number + ": " + team.name, style:'header2',margin:[0,10]});
-    let t = {headerRows:1,dontBreakRows:true};
+    let t = {headerRows:1, dontBreakRows:true};
     t.widths = new Array(3);
     for (let i = 0; i < 3; i++) {
       t.widths[i] = (i<-1) ? 'auto':'*';
@@ -262,88 +244,7 @@ export class PdfGenerator {
       row.push({text: ""+loc});
       t.body.push(row);
     }
-    this.doc.content.push({table: t, layout: 'lightHorizontalLines'});
-    this.doc.content.push({text: " ", pageBreak:'after'});
+
+    return {table: t, layout: 'lightHorizontalLines'};
   }
-
-
-  buildDoc() {
-    this.doc = {};
-    this.doc.content = [];
-    this.doc.header = {
-      text: this.event.title,
-      style: 'header',
-      //Left, top, right, bottom
-      margin: [0,50,0,20]
-    };
-    this.doc.background = function() {return [
-      // margin: [left, top, right, bottom]
-      {image: 'header', width: 530, height: 20, alignment: 'center', margin: [0,10,0,0]},
-      {
-        table: {
-          widths: ['*','auto','*'],
-          body: [
-            [ {image: 'logo1', fit: [100,65], margin: [50,0,0,0], alignment: 'left'}, // Top left?
-            {text: ""},
-            {image: 'logo2', fit: [100,65], margin: [50,0,0,0], alignment: 'right'} // Top right
-          ] ]
-        },
-        layout: 'noBorders',
-      },
-      {text: "", margin: 310, alignment: 'center'},
-      {
-        table: {
-          widths: ['*','auto','*'],
-          body: [
-            [ {image: 'logo3', fit: [100,65], margin: [50,0,0,0], alignment: 'left'}, // Top left?
-            {text: ""},
-            {image: 'logo4', fit: [100,65], margin: [50,0,0,0], alignment: 'right'} // Top right
-          ] ]
-        },
-        layout: 'noBorders',
-      },
-      {image: 'header', width: 530, height: 20, alignment: 'center'}
-    ];};
-    this.doc.footer={
-      text: this.event.footerText,
-      style: 'footer',
-      margin:[0,50,0,0]
-    };
-    this.doc.pageMargins = [40,120,40,130];
-    this.doc.pageSize = 'A4';
-    this.doc.images = this.imageDict;
-    this.doc.styles = this.styleDict;
-  }
-
-  landscapeBackground () {
-    return [
-      // margin: [left, top, right, bottom]
-      {image: 'header', width: 800, height: 20, alignment: 'center', margin: [0,10,0,0]},
-      {
-        table: {
-          widths: ['*','auto','*'],
-          body: [
-            [ {image: 'logo1', fit: [100,65], margin: [50,0,0,0], alignment: 'left'}, // Top left?
-            {text: ""},
-            {image: 'logo2', fit: [100,65], margin: [50,0,0,0], alignment: 'right'} // Top right
-          ] ]
-        },
-        layout: 'noBorders',
-      },
-      {text: "", margin: 190, alignment: 'center'},
-      {
-        table: {
-          widths: ['*','auto','*'],
-          body: [
-            [ {image: 'logo3', fit: [100,65], margin: [50,0,0,0], alignment: 'left'}, // Top left?
-            {text: ""},
-            {image: 'logo4', fit: [100,65], margin: [50,0,0,0], alignment: 'right'} // Top right
-          ] ]
-        },
-        layout: 'noBorders',
-      },
-      {image: 'header', width: 800, height: 20, alignment: 'center'}
-    ];
-  }
-
 }

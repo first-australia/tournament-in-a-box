@@ -4,12 +4,9 @@ import { DateTime } from "./DateTime";
 import SessionParams from "./SessionParams";
 
 import Instance from '../scheduling/Instance';
-import { overlaps, toDataUrl } from "../scheduling/utilities";
+import { overlaps} from "../scheduling/utilities";
 
-import firstlogo from '../resources/firstlogo.png';
-import flllogo from '../resources/flllogo.jpg';
-import mqlogo from '../resources/mqlogo.png';
-import gamelogo from '../resources/gamelogo.jpg';
+import {PageFormat} from "./PageFormat";
 
 export class EventParams {
     constructor(version, title="Tournament", nTeams=24, startTime=new DateTime(9*60), endTime=new DateTime(9*17)) {
@@ -40,14 +37,7 @@ export class EventParams {
 
         this.tempNames = null;
 
-        toDataUrl(flllogo, (base) => {if (!this.logoTopLeft) this.logoTopLeft = base;});
-        toDataUrl(gamelogo, (base) => {if (!this.logoTopRight) this.logoTopRight = base;});
-        toDataUrl(mqlogo, (base) => {if (!this.logoBotLeft) this.logoBotLeft = base;});
-        toDataUrl(firstlogo, (base) => {if (!this.logoBotRight) this.logoBotRight = base;});
-
-        this.titleFontSize = 22;
-        this.baseFontSize = 12;
-        this.footerText = 'www.firstaustralia.org';
+        this.pageFormat = new PageFormat();
 
         // console.log(this.logoBotRight);
         this.errors = Infinity;
@@ -365,20 +355,8 @@ export class EventParams {
     get display() {return this._display}
     set display(d) {this._display = d;}
 
-    get logoTopLeft() {return this._logoTopLeft}
-    set logoTopLeft(x) {this._logoTopLeft = x;}
-    get logoBotLeft() {return this._logoBotLeft}
-    set logoBotLeft(x) {this._logoBotLeft = x;}
-    get logoTopRight() {return this._logoTopRight}
-    set logoTopRight(x) {this._logoTopRight = x;}
-    get logoBotRight() {return this._logoBotRight}
-    set logoBotRight(x) {this._logoBotRight = x;}
-
     get pilot() { return this._pilot; }
     set pilot(p) { this._pilot = p; }
-
-    get footerText() {return this._footer;}
-    set footerText(x) {this._footer = x;}
 
     get nDays() { return this._days.length; }
     set nDays(value) {

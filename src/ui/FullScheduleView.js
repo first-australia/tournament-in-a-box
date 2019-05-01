@@ -72,20 +72,13 @@ export default class FullScheduleView extends React.Component {
 
     updatePDFSettings(S) {
         let E = this.props.event;
-        E.titleFontSize = S.titleFontSize;
-        E.baseFontSize = S.baseFontSize;
-        E.logoTopLeft = S.logoTopLeft;
-        E.logoTopRight = S.logoTopRight;
-        E.logoBotLeft = S.logoBotLeft;
-        E.logoBotRight = S.logoBotRight;
-        E.footerText = S.footerText;
+        E.pageFormat = S.pageFormat;
         this.props.onChange(E);
     }
 
     toggleEditable() {
         this.setState({editable: !this.state.editable});
     }
-
 
     render() {
         return (

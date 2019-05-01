@@ -13,13 +13,13 @@ export default class OutputGenView extends Component {
 
         this.state = {
             pdf_modal: false,
-            title_size: this.props.data.titleFontSize,
-            base_size: this.props.data.baseFontSize,
-            footer: this.props.data.footerText,
-            tl_logo: this.props.data.logoTopLeft,
-            tr_logo: this.props.data.logoTopRight,
-            bl_logo: this.props.data.logoBotLeft,
-            br_logo: this.props.data.logoBotRight
+            title_size: this.props.data.pageFormat.titleFontSize,
+            base_size: this.props.data.pageFormat.baseFontSize,
+            footer: this.props.data.pageFormat.footerText,
+            tl_logo: this.props.data.pageFormat.logoTopLeft,
+            tr_logo: this.props.data.pageFormat.logoTopRight,
+            bl_logo: this.props.data.pageFormat.logoBotLeft,
+            br_logo: this.props.data.pageFormat.logoBotRight
         };
         this.toggle=this.toggle.bind(this);
         this.generatePDF=this.generatePDF.bind(this);
@@ -60,7 +60,7 @@ export default class OutputGenView extends Component {
 
     updateTitleSize(value) {
         let E = this.props.data;
-        E.titleFontSize = value;
+        E.pageFormat.titleFontSize = value;
         this.props.handleChange(E);
         this.setState({
             title_size: value
@@ -69,7 +69,7 @@ export default class OutputGenView extends Component {
 
     updateFooter(value) {
         let E = this.props.data;
-        E.footerText = value;
+        E.pageFormat.footerText = value;
         this.props.handleChange(E);
         this.setState({
             footer: value
@@ -78,7 +78,7 @@ export default class OutputGenView extends Component {
 
     updateBaseSize(value) {
         let E = this.props.data;
-        E.baseFontSize = value;
+        E.pageFormat.baseFontSize = value;
         this.props.handleChange(E);
         this.setState({
             base_size: value
@@ -90,9 +90,9 @@ export default class OutputGenView extends Component {
         let reader = new FileReader();
         reader.onload = (e) => {
             let E = this.props.data;
-            E.logoTopLeft = reader.result;
+            E.pageFormat.logoTopLeft = reader.result;
             this.props.handleChange(E);
-            this.setState({tl_logo: E.logoTopLeft});
+            this.setState({tl_logo: E.pageFormat.logoTopLeft});
         };
         reader.readAsDataURL(file);
     }
@@ -101,9 +101,9 @@ export default class OutputGenView extends Component {
         let reader = new FileReader();
         reader.onload = (e) => {
             let E = this.props.data;
-            E.logoTopRight = reader.result;
+            E.pageFormat.logoTopRight = reader.result;
             this.props.handleChange(E);
-            this.setState({tr_logo: E.logoTopRight});
+            this.setState({tr_logo: E.pageFormat.logoTopRight});
         };
         reader.readAsDataURL(file);
     }
@@ -112,9 +112,9 @@ export default class OutputGenView extends Component {
         let reader = new FileReader();
         reader.onload = (e) => {
             let E = this.props.data;
-            E.logoBotLeft = reader.result;
+            E.pageFormat.logoBotLeft = reader.result;
             this.props.handleChange(E);
-            this.setState({bl_logo: E.logoBotLeft});
+            this.setState({bl_logo: E.pageFormat.logoBotLeft});
         };
         reader.readAsDataURL(file);
     }
@@ -123,9 +123,9 @@ export default class OutputGenView extends Component {
         let reader = new FileReader();
         reader.onload = (e) => {
             let E = this.props.data;
-            E.logoBotRight = reader.result;
+            E.pageFormat.logoBotRight = reader.result;
             this.props.handleChange(E);
-            this.setState({br_logo: E.logoBotRight});
+            this.setState({br_logo: E.pageFormat.logoBotRight});
         };
         reader.readAsDataURL(file);
     }

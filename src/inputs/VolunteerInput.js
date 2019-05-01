@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Input, Col, FormGroup, Label, Container } from 'reactstrap';
+import { Input, Col, FormGroup, Label } from 'reactstrap';
 import uniqueId from 'react-html-id'
 
 export default class VolunteerInput extends React.Component {
