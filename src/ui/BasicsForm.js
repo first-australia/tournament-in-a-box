@@ -1,6 +1,7 @@
 import React from 'react';
 import TextInput from '../inputs/TextInput'
 import NumberInput from '../inputs/NumberInput'
+import BooleanInput from '../inputs/BooleanInput'
 
 import { Container, Table } from 'reactstrap';
 
@@ -19,6 +20,8 @@ export default class BasicsForm extends React.Component {
         this.updateExtraTime = this.updateExtraTime.bind(this);
         this.updateNDays = this.updateNDays.bind(this);
         this.updateDays = this.updateDays.bind(this);
+        this.updateJudgesAwards = this.updateJudgesAwards.bind(this);
+        this.updateConsolidatedAwards = this.updateConsolidatedAwards.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.getDataGrid = this.getDataGrid.bind(this);
     }
@@ -41,6 +44,16 @@ export default class BasicsForm extends React.Component {
     updateMinTravel(value) {
         let data = this.props.event;
         data.minTravel = value;
+        this.handleChange(data);
+    }
+    updateJudgesAwards(value) {
+        let data = this.props.event;
+        data.judgesAwards = value;
+        this.handleChange(data);
+    }
+    updateConsolidatedAwards(value) {
+        let data = this.props.event;
+        data.consolidatedAwards = value;
         this.handleChange(data);
     }
     updateExtraTime(value) {
@@ -96,6 +109,8 @@ export default class BasicsForm extends React.Component {
         return (
             <Container>
                 <TextInput large label="Title: " value={this.props.event.title} onChange={this.updateTitle}/>
+                <BooleanInput large label="Consolidated awards?" value={this.props.event.consolidatedAwards} onChange={this.updateConsolidatedAwards}/>
+                <NumberInput large label="Number of judges awards" value={this.props.event.judgesAwards} onChange={this.updateJudgesAwards} min={0}/>
                 {this.props.cosmetic || <NumberInput label="Min. travel (mins)" large value={this.props.event.minTravel} onChange={this.updateMinTravel}/>}
                 {(this.props.advanced && !this.props.cosmetic) &&
                     <NumberInput label="Extra time (mins)" large value={this.props.event.extraTime} onChange={this.updateExtraTime}/>}

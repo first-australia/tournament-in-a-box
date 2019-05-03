@@ -33,7 +33,13 @@ export class EventParams {
         this.startTime.days=this.days;
         this.endTime.days=this.days;
         this.pilot = true;
+        this.consolidatedAwards = false;
+        this.judgesAwards = 0;
         this.nTables = 4;
+        this.sponsors={
+            national: [],
+            local: []
+        }
 
         this.tempNames = null;
 
@@ -80,6 +86,11 @@ export class EventParams {
         }
 
         this.teams = this.teams.sort((a,b) => {return parseInt(a.number,10) - parseInt(b.number,10);});
+        this.consolidatedAwards = (this.nTeams*0.4 < 8);
+        console.log(this.consolidatedAwards);
+        console.log(this.nTeams*0.4);
+        let nCoreAwards = (this.consolidatedAwards ? 4 : 10);
+        this.judgesAwards = Math.min(Math.max(Math.ceil(this.nTeams*0.4)-nCoreAwards,0),6);
 
         // First guesses at all schedule parameters.  User can then tweak to their hearts' content without auto updates
         let actualStart = this.startTime.clone(30);
@@ -343,6 +354,12 @@ export class EventParams {
     get teams() {return this._teams;}
     set teams(value) {this._teams = value};
 
+    get judgesAwards() {return this._judgesAwards;}
+    set judgesAwards(value) {this._judgesAwards = value};
+
+    get consolidatedAwards() {return this._consolidatedAwards;}
+    set consolidatedAwards(value) {this._consolidatedAwards = value};
+
     get minTravel() {return this._minTravel;}
     set minTravel(value) {this._minTravel = value};
 
@@ -386,6 +403,10 @@ export class EventParams {
         });
     };
 
+    addLocalSponsor(value) {this.sponsors.local.push(value);}
+    addNationalSponsor(value) {this.sponsors.national.push(value);}
+    deleteLocalSponsor(idx) { this.sponsors.local.splice(idx,1);}
+
     static freeze(o) {
       return {
         _class : 'EventParams',
@@ -402,11 +423,9 @@ export class EventParams {
         errors : o.errors,
         _extraTime: o._extraTime,
         _minTravel: o._minTravel,
-        _logoTopLeft: o._logoTopLeft,
-        _logoBotLeft: o._logoBotLeft,
-        _logoTopRight: o._logoTopRight,
-        _logoBotRight: o._logoBotRight,
-        _footer: o._footer
+        _judgesAwards: o._judgesAwards,
+        _consolidatedAwards: o._consolidatedAwards,
+        sponsors: o.sponsors
       };
     }
 
@@ -423,11 +442,9 @@ export class EventParams {
       E._pilot = o._pilot;
       E._nTables = o._nTables || 4;
       E.errors = o.errors;
-      E._logoTopLeft = o._logoTopLeft;
-      E._logoBotLeft = o._logoBotLeft;
-      E._logoTopRight = o._logoTopRight;
-      E._logoBotRight = o._logoBotRight;
-      E._footer = o._footer;
+      E._judgesAwards = o._judgesAwards;
+      E._consolidatedAwards = o._consolidatedAwards;
+      E.sponsors = o.sponsors;
       if (!E.errors) E.errors = Infinity;
       console.log(E);
       return E;

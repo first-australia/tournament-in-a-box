@@ -2,6 +2,7 @@ import React from 'react';
 import SingleScheduleView from "./SingleScheduleView";
 import IndivScheduleView from "./IndivScheduleView";
 import VolunteerView from "./VolunteerView";
+import SponsorView from "./SponsorView";
 import OutputGenView from "./OutputGenView";
 
 import { TYPES } from "../api/SessionTypes";
@@ -24,6 +25,7 @@ export default class FullScheduleView extends React.Component {
         this.getItems = this.getItems.bind(this);
         this.onSwap = this.onSwap.bind(this);
         this.updatePDFSettings = this.updatePDFSettings.bind(this);
+        this.updateSponsors = this.updateSponsors.bind(this);
         this.toggleEditable = this.toggleEditable.bind(this);
     }
 
@@ -44,6 +46,12 @@ export default class FullScheduleView extends React.Component {
                 activeTab: tab
             });
         }
+    }
+
+    updateSponsors(T) {
+        let E = this.props.event;
+        E.sponsors = T;
+        this.props.onChange(E);
     }
 
     //TODO make cosmetic
@@ -110,6 +118,12 @@ export default class FullScheduleView extends React.Component {
                         </NavLink>
                     </NavItem>
                     <NavItem>
+                        <NavLink href="#" className={(this.state.activeTab === 'vols') ? "active" : ""}
+                                 onClick={() => { this.toggle('sponsors')}}>
+                            Sponsors
+                        </NavLink>
+                    </NavItem>
+                    <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'outputs') ? "active" : ""}
                                  onClick={() => { this.toggle('outputs')}}>
                             Generate Outputs
@@ -146,6 +160,9 @@ export default class FullScheduleView extends React.Component {
                     </TabPane>
                     <TabPane tabId='vols'>
                         <VolunteerView data={this.props.event}/>
+                    </TabPane>
+                    <TabPane tabId='sponsors'>
+                        <SponsorView data={this.props.event} handleChange={this.updateSponsors}/>
                     </TabPane>
                     <TabPane tabId='outputs'>
                         <OutputGenView data={this.props.event} save={this.props.save} handleChange={this.updatePDFSettings}/>
