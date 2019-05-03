@@ -25,6 +25,7 @@ export default class FullScheduleView extends React.Component {
         this.getItems = this.getItems.bind(this);
         this.onSwap = this.onSwap.bind(this);
         this.updatePDFSettings = this.updatePDFSettings.bind(this);
+        this.updateVolunteers = this.updateVolunteers.bind(this);
         this.updateSponsors = this.updateSponsors.bind(this);
         this.toggleEditable = this.toggleEditable.bind(this);
     }
@@ -51,6 +52,12 @@ export default class FullScheduleView extends React.Component {
     updateSponsors(T) {
         let E = this.props.event;
         E.sponsors = T;
+        this.props.onChange(E);
+    }
+
+    updateVolunteers(V) {
+        let E = this.props.event;
+        E.volunteers = V;
         this.props.onChange(E);
     }
 
@@ -159,7 +166,7 @@ export default class FullScheduleView extends React.Component {
                         <IndivScheduleView data={this.props.event.getIndivDataGrid()}/>
                     </TabPane>
                     <TabPane tabId='vols'>
-                        <VolunteerView data={this.props.event}/>
+                        <VolunteerView data={this.props.event.volunteers} onChange={this.updateVolunteers}/>
                     </TabPane>
                     <TabPane tabId='sponsors'>
                         <SponsorView data={this.props.event} handleChange={this.updateSponsors}/>

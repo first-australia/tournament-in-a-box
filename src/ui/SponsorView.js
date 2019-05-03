@@ -5,10 +5,6 @@ import { Container, Row, Alert, Card} from 'reactstrap';
 export default class SponsorView extends Component {
     constructor(props) {
         super(props);
-        this.state = {
-            nationals: this.props.data.sponsors.national,
-            locals: this.props.data.sponsors.local
-        };
         this.addSponsor = this.addSponsor.bind(this);
         this.deleteSponsor = this.deleteSponsor.bind(this);
     }
@@ -21,7 +17,6 @@ export default class SponsorView extends Component {
             E.addLocalSponsor(reader.result);
             console.log(E.sponsors);
             this.props.handleChange(E.sponsors);
-            this.setState({locals: E.sponsors.local});
         };
         reader.readAsDataURL(file);
     }
@@ -33,7 +28,6 @@ export default class SponsorView extends Component {
         let E = this.props.data;
         E.deleteLocalSponsor(i);
         this.props.handleChange(E.sponsors);
-        this.setState({locals: E.sponsors.local});
     }
 
     render () {
@@ -41,7 +35,7 @@ export default class SponsorView extends Component {
             <Container>
                 <Row><h1>National sponsors</h1></Row>
                 <Row>
-                {this.state.nationals.map((img,i) => {
+                {this.props.data.sponsors.national.map((img,i) => {
                       return (
                         <Card key={i} sm={3}>
                             <img idx={i} alt={"Logo " + {i}} src={img} height={100}/>
@@ -52,7 +46,7 @@ export default class SponsorView extends Component {
                 <Row><h1>Local sponsors</h1></Row>
                 <Row><small>Click logo to delete (local only)</small></Row>
                 <Row>
-                {this.state.locals.map((img,i) => {
+                {this.props.data.sponsors.local.map((img,i) => {
                           return (
                             <Card onClick={() => this.deleteSponsor(i)} key={i} sm={12}>
                                 <img idx={i} alt={"Logo " + {i}} src={img} height={100}/>

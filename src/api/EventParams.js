@@ -16,6 +16,7 @@ import {PageFormat} from "./PageFormat";
 // import googlelogo from "../resources/national-sponsors/google.jpg";
 // import legoedlogo from "../resources/national-sponsors/legoEd.png";
 import PreComputedImages from "../resources/images.json";
+import Volunteers from "../templates/volunteers.json";
 
 export class EventParams {
     constructor(version, title="Tournament", nTeams=24, startTime=new DateTime(9*60), endTime=new DateTime(9*17)) {
@@ -50,9 +51,10 @@ export class EventParams {
             national: [],
             local: []
         }
+        PreComputedImages.nationalSponsors.forEach((x) => this.addNationalSponsor(x));
 
+        this._volunteers = null;
         this.tempNames = null;
-
         this.pageFormat = null;
 
         // console.log(this.logoBotRight);
@@ -100,8 +102,11 @@ export class EventParams {
         // toDataUrl(googlelogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(fordlogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(legoedlogo, (base) => {this.addNationalSponsor(base);});
-        PreComputedImages.nationalSponsors.forEach((x) => this.addNationalSponsor(x));
-
+        this.volunteers = Volunteers.roles;
+        this.volunteers.forEach(v => {
+          if (!v.staff) v.staff = [];
+        });
+        console.log(this.volunteers)
         this.pageFormat = new PageFormat();
         console.log("B");
 
@@ -395,6 +400,9 @@ export class EventParams {
     get pilot() { return this._pilot; }
     set pilot(p) { this._pilot = p; }
 
+    get volunteers() { return this._volunteers; }
+    set volunteers(p) { this._volunteers = p; }
+
     get nDays() { return this._days.length; }
     set nDays(value) {
         let A = this.days;
@@ -445,6 +453,7 @@ export class EventParams {
         _minTravel: o._minTravel,
         _judgesAwards: o._judgesAwards,
         _consolidatedAwards: o._consolidatedAwards,
+        _volunteers: o._volunteers,
         pageFormat: o.pageFormat,
         sponsors: o.sponsors.local
       };
@@ -465,6 +474,7 @@ export class EventParams {
       E.errors = o.errors;
       E._judgesAwards = o._judgesAwards;
       E._consolidatedAwards = o._consolidatedAwards;
+      E._volunteers = o._volunteers;
       E.sponsors.local = o.sponsors;
       E.pageFormat = o.pageFormat;
       if (!E.errors) E.errors = Infinity;

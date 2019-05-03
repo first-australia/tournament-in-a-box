@@ -15,13 +15,6 @@ export default class OutputGenView extends Component {
 
         this.state = {
             pdf_modal: false,
-            title_size: this.props.data.pageFormat.titleFontSize,
-            base_size: this.props.data.pageFormat.baseFontSize,
-            footer: this.props.data.pageFormat.footerText,
-            tl_logo: this.props.data.pageFormat.logoTopLeft,
-            tr_logo: this.props.data.pageFormat.logoTopRight,
-            bl_logo: this.props.data.pageFormat.logoBotLeft,
-            br_logo: this.props.data.pageFormat.logoBotRight,
             progress: 0,
             running: false
         };
@@ -76,27 +69,18 @@ export default class OutputGenView extends Component {
         let E = this.props.data;
         E.pageFormat.titleFontSize = value;
         this.props.handleChange(E);
-        this.setState({
-            title_size: value
-        });
     }
 
     updateFooter(value) {
         let E = this.props.data;
         E.pageFormat.footerText = value;
         this.props.handleChange(E);
-        this.setState({
-            footer: value
-        });
     }
 
     updateBaseSize(value) {
         let E = this.props.data;
         E.pageFormat.baseFontSize = value;
         this.props.handleChange(E);
-        this.setState({
-            base_size: value
-        });
     }
 
     onTLChange(e, f) {
@@ -106,7 +90,6 @@ export default class OutputGenView extends Component {
             let E = this.props.data;
             E.pageFormat.logoTopLeft = reader.result;
             this.props.handleChange(E);
-            this.setState({tl_logo: E.pageFormat.logoTopLeft});
         };
         reader.readAsDataURL(file);
     }
@@ -117,7 +100,6 @@ export default class OutputGenView extends Component {
             let E = this.props.data;
             E.pageFormat.logoTopRight = reader.result;
             this.props.handleChange(E);
-            this.setState({tr_logo: E.pageFormat.logoTopRight});
         };
         reader.readAsDataURL(file);
     }
@@ -128,7 +110,6 @@ export default class OutputGenView extends Component {
             let E = this.props.data;
             E.pageFormat.logoBotLeft = reader.result;
             this.props.handleChange(E);
-            this.setState({bl_logo: E.pageFormat.logoBotLeft});
         };
         reader.readAsDataURL(file);
     }
@@ -139,7 +120,6 @@ export default class OutputGenView extends Component {
             let E = this.props.data;
             E.pageFormat.logoBotRight = reader.result;
             this.props.handleChange(E);
-            this.setState({br_logo: E.pageFormat.logoBotRight});
         };
         reader.readAsDataURL(file);
     }
@@ -157,31 +137,31 @@ export default class OutputGenView extends Component {
                         <Container>
                             <Row>
                                 <Col><label>
-                                    <img alt={"Top Left Logo"} src={this.state.tl_logo} height={100}/>
+                                    <img alt={"Top Left Logo"} src={this.props.data.pageFormat.logoTopLeft} height={100}/>
                                     <input type="file" accept="image/*" hidden ref="input" onChange={this.onTLChange}/>
                                 </label></Col>
                                 <Col><label>
-                                    <img alt={"Top Right Logo"} src={this.state.tr_logo} height={100}/>
+                                    <img alt={"Top Right Logo"} src={this.props.data.pageFormat.logoTopRight} height={100}/>
                                     <input type="file" accept="image/*" hidden ref="input" onChange={this.onTRChange}/>
                                 </label></Col>
                             </Row>
                             <br/>
-                            <NumberInput min={4} value={this.state.title_size} label={"Title font size"} onChange={this.updateTitleSize}/>
+                            <NumberInput min={4} value={this.props.data.pageFormat.titleFontSize} label={"Title font size"} onChange={this.updateTitleSize}/>
                             <br/>
-                            <NumberInput min={2} value={this.state.base_size} label={"Base font size"} onChange={this.updateBaseSize}/>
+                            <NumberInput min={2} value={this.props.data.pageFormat.baseFontSize} label={"Base font size"} onChange={this.updateBaseSize}/>
                             <br/>
                             <Row>
                                 <Col><label>
-                                    <img alt={"Bottom Left Logo"} src={this.state.bl_logo} height={100}/>
+                                    <img alt={"Bottom Left Logo"} src={this.props.data.pageFormat.logoBotLeft} height={100}/>
                                     <input type="file" accept="image/*" hidden ref="input" onChange={this.onBLChange}/>
                                 </label></Col>
                                 <Col><label>
-                                    <img alt={"Bottom Right Logo"} src={this.state.br_logo} height={100}/>
+                                    <img alt={"Bottom Right Logo"} src={this.props.data.pageFormat.logoBotRight} height={100}/>
                                     <input type="file" accept="image/*" hidden ref="input" onChange={this.onBRChange}/>
                                 </label></Col>
                             </Row>
                             <br/>
-                            <TextInput value={this.state.footer} label={"Footer Text"} onChange={this.updateFooter}/>
+                            <TextInput value={this.props.data.pageFormat.footerText} label={"Footer Text"} onChange={this.updateFooter}/>
                         </Container>
                         <br/>
                     </ModalBody>

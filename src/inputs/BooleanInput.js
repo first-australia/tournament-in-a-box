@@ -18,10 +18,10 @@ export default class BooleanInput extends React.Component {
 
     render() {
         return (
-            <FormGroup row>
+            <FormGroup row onClick={this.toggleChecked}>
                 <Label sm={this.props.large? 2 : 6} for={this.nextUniqueId()}>{this.props.label}</Label>
                 <Col sm={this.props.large? 10 : 6}>
-                    <Button onClick={this.toggleChecked} disabled={this.props.disabled} color={(this.props.value)? 'success' : 'danger'}>{this.props.value?'Yes':'No'}</Button>
+                    <Button disabled={this.props.disabled} color={(this.props.value)? 'success' : 'danger'}>{this.props.value?'Yes':'No'}</Button>
                 </Col>
             </FormGroup>
         );

@@ -68,6 +68,7 @@ class App extends Component {
         let S = new Scheduler(this.state.eventParams);
         S.buildAllTables();
         this.setState({display: 'Customise'});
+        window.scrollTo(0, 0);
     }
 
     generate() {
@@ -84,6 +85,7 @@ class App extends Component {
             if (this.state.eventParams.errors > 0) alert("Schedule generated with errors! Please adjust parameters");
             this.setState ({display: 'Review'});
             this.setState({processing: false});
+            window.scrollTo(0, 0);
         }), 50);
     }
 
