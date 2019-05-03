@@ -46,7 +46,7 @@ export class PdfDoc {
             this.doc.background = this.landscapeBackground();
         }
         this.filename = "file";
-
+        this.blob = null;
     }
 
     get format() { return this._format; }
@@ -75,7 +75,7 @@ export class PdfDoc {
         }
     }
 
-    open(doc) {
+    open() {
         try {
             pdfMake.createPdf(this.doc).open();
         } catch (err) {
@@ -83,7 +83,15 @@ export class PdfDoc {
         }
     }
 
-    chomp(doc) {
+    getBlobPromise() {
+        return new Promise((resolve, reject) => {
+            pdfMake.createPdf(this.doc).getBlob((blob) => {
+                resolve(blob);
+            });
+        });
+    }
+
+    chomp() {
         this.doc.content.splice(this.doc.content.length-1);
     }
 

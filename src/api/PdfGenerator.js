@@ -36,6 +36,26 @@ export class PdfGenerator {
       }
     })
   }
+  getAllPDFs(prefix, zip) {
+    let PDFs = [];
+    PDFs.push(this.sessionPdf(TYPES.JUDGING,prefix));
+    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND,prefix));
+    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,prefix));
+    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER,prefix));
+    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,prefix));
+    PDFs.push(this.teamListPdf(this.event.teams, prefix));
+    PDFs.push(this.daySchedulePdf(prefix));
+    PDFs.push(this.allTeamsPdf(prefix));
+    PDFs.push(this.indivTeamsPdf(prefix));
+
+    PDFs.filter(D=>D!=null).forEach(D => {
+      try {
+        zip.file(D.filename, D.getBlobPromise());
+      } catch (err) {
+          alert("Error saving: " + D.filename + "; " + err.message);
+      }
+    });
+  }
 
   sessionPdf(type, prefix) {
     let maxLocs = 0;

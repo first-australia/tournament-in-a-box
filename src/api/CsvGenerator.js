@@ -19,6 +19,17 @@ export class CsvGenerator {
           saveToFile_csv(filename+".csv", csv);
         }
     }
+    
+    zipCSV(fname,zip) {
+        let filename = fname;
+        if (!filename) filename = this.event.title.replace(/ /g,"-")
+        let csv = this.getCSV();
+        try {
+          zip.file(filename+".csv", new Blob([csv], {type : 'application/csv'}));
+        } catch (err) {
+            alert("Error saving: " + filename + ".csv ; " + err.message);
+        }
+    }
 
     getCSV() {
         let csv = "Version Number,1\n";

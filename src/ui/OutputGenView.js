@@ -6,6 +6,8 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Button
 import NumberInput from "../inputs/NumberInput";
 import TextInput from "../inputs/TextInput";
 
+import JSZip from 'jszip';
+import { saveAs } from 'file-saver';
 
 export default class OutputGenView extends Component {
     constructor(props) {
@@ -42,20 +44,26 @@ export default class OutputGenView extends Component {
     downloadAll() {
       // TODO: Replace this with individual ZIP files.
       let value = this.props.data.title.replace(/ /g,"-");
-      this.generatePDF(value);
-      this.generateCSV(value);
-      this.props.save(value);
+
+      let zip = new JSZip();
+      this.generatePDF(value,zip);
+      this.generateCSV(value,zip);
+      this.props.save(value,zip);
+      zip.generateAsync({type:"blob"})
+        .then((content) => {
+            saveAs(content, value+".zip");
+      });
     }
 
 
-    generatePDF(fname) {
+    generatePDF(fname,zip) {
         let p = new PdfGenerator(this.props.data);
-        p.makePDFs(fname);
+        p.getAllPDFs(fname, zip);
     }
 
-    generateCSV(fname) {
+    generateCSV(fname,zip) {
         let c = new CsvGenerator(this.props.data);
-        c.makeCSV(fname);
+        c.zipCSV(fname,zip);
     }
 
     updateTitleSize(value) {

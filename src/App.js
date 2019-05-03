@@ -87,11 +87,19 @@ class App extends Component {
         }), 50);
     }
 
-    onSave(fname) {
+    onSave(fname,zip) {
       let filename=fname;
       let json_str = JSON.stringify(this.state,freeze);
       if (!filename) filename = this.state.eventParams.title.replace(/ /g, '_');
-      saveToFile_json(filename+".schedule",json_str);
+      if (zip) {
+        try {
+          zip.file(filename+".schedule", new Blob([json_str], {type : 'application/json'}));
+        } catch (err) {
+            alert("Error saving: " + filename + ".csv ; " + err.message);
+        }
+      } else {
+          saveToFile_json(filename+".schedule",json_str);
+      }
       // let json_str = JSON.stringify(this.state.eventParams,freeze);
       // Write to file
     }
