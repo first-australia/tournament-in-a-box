@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Input, Col, FormGroup, Label, Button } from 'reactstrap';
+import { Input, Col, FormGroup, Label } from 'reactstrap';
 import uniqueId from 'react-html-id'
 import FaTimesCircleO from "react-icons/lib/fa/times-circle-o";
 
