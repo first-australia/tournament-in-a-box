@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import { Container, FormGroup, Alert, Col, Row } from 'reactstrap';
-import BooleanInput from "../inputs/BooleanInput";
 import VolunteerInput from "../inputs/VolunteerInput";
 
 export default class VolunteerView extends Component {

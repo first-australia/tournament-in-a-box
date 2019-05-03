@@ -96,15 +96,18 @@ export class EventParams {
                 if (t.pitNum === "") t.pitNum = savedPit;
             });
         }
-
-        console.log("A");
         // toDataUrl(mqlogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(googlelogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(fordlogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(legoedlogo, (base) => {this.addNationalSponsor(base);});
-        this.volunteers = Volunteers.roles;
-        this.volunteers.forEach(v => {
-          if (!v.staff) v.staff = [];
+        this.volunteers = [];
+        Volunteers.roles.forEach(v => {
+          let vol = {name: v.name};
+          vol.staff = [];
+          let numberOfVols = v.count;
+          for (let i = 0; i < numberOfVols; i++)
+            vol.staff.push("");
+          this.volunteers.push(vol);
         });
         console.log(this.volunteers)
         this.pageFormat = new PageFormat();
