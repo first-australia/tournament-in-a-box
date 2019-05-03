@@ -36,21 +36,26 @@ export class PdfGenerator {
       }
     })
   }
-  getAllPDFs(prefix, zip) {
+  zipAllPDFs(prefix, zip, update) {
     let PDFs = [];
-    PDFs.push(this.sessionPdf(TYPES.JUDGING,prefix));
-    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND,prefix));
-    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,prefix));
-    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER,prefix));
-    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,prefix));
-    PDFs.push(this.teamListPdf(this.event.teams, prefix));
-    PDFs.push(this.daySchedulePdf(prefix));
-    PDFs.push(this.allTeamsPdf(prefix));
-    PDFs.push(this.indivTeamsPdf(prefix));
+    let nPDFs = 10;
+    let i = 0;
+    PDFs.push(this.sessionPdf(TYPES.JUDGING,prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND,prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.sessionPdf(TYPES.MATCH_ROUND_PRACTICE,prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER,prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.sessionPdf(TYPES.TYPE_MATCH_FILLER_PRACTICE,prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.teamListPdf(this.event.teams, prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.pitSignsPdf(this.event.teams, prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.daySchedulePdf(prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.allTeamsPdf(prefix)) && update(50 * ++i/nPDFs);
+    PDFs.push(this.indivTeamsPdf(prefix)) && update(50 * ++i/nPDFs);
 
+    i = 0;
     PDFs.filter(D=>D!=null).forEach(D => {
       try {
         zip.file(D.filename, D.getBlobPromise());
+        update(50 + 50 * ++i/nPDFs);
       } catch (err) {
           alert("Error saving: " + D.filename + "; " + err.message);
       }
@@ -267,4 +272,19 @@ export class PdfGenerator {
 
     return {table: t, layout: 'lightHorizontalLines'};
   }
+
+  pitSignsPdf(teams, prefix) {
+    let doc = new PdfDoc(this.event.pageFormat, this.event.title, true);
+
+    teams.forEach(t => {
+        // margin: [left, top, right, bottom]
+        doc.addContent({text: t.name, style:'headerHuge',margin:[0,40,0,10]});
+        doc.addContent({text: "Team " + t.number, style:'subHeaderHuge',margin:[0,10]});
+        doc.addPageBreak();
+    });
+    doc.chomp();
+    doc.filename = (prefix+"-pit-signs.pdf").replace(/ /g, '-');
+    return doc;
+  }
+
 }

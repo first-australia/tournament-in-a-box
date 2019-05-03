@@ -1,9 +1,11 @@
-import {toDataUrl} from "../scheduling/utilities";
-import header from "../resources/FIRST_header.png";
-import flllogo from "../resources/flllogo.jpg";
-import gamelogo from "../resources/gamelogo.jpg";
-import mqlogo from "../resources/mqlogo.png";
-import firstlogo from "../resources/firstlogo.png";
+//import {toDataUrl} from "../scheduling/utilities";
+// import header from "../resources/FIRST_header.png";
+// import flllogo from "../resources/flllogo.jpg";
+// import gamelogo from "../resources/gamelogo.jpg";
+// import mqlogo from "../resources/mqlogo.png";
+// import firstlogo from "../resources/firstlogo.png";
+
+import PreComputedImages from "../resources/images.json";
 
 export class PageFormat {
     constructor() {
@@ -16,11 +18,30 @@ export class PageFormat {
         this.baseFontSize = 12;
         this.footerText = 'www.firstaustralia.org';
 
-        toDataUrl(header, (base) => {if (!this.header) this.header= base;});
-        toDataUrl(flllogo, (base) => {if (!this.logoTopLeft) this.logoTopLeft = base;});
-        toDataUrl(gamelogo, (base) => {if (!this.logoTopRight) this.logoTopRight = base;});
-        toDataUrl(mqlogo, (base) => {if (!this.logoBotLeft) this.logoBotLeft = base;});
-        toDataUrl(firstlogo, (base) => {if (!this.logoBotRight) this.logoBotRight = base;});
+        if (PreComputedImages.header)
+            this._header = PreComputedImages.header;
+         // else
+         //    toDataUrl(header, (base) => {this.header= base;});
+        if (PreComputedImages.flllogo)
+            this._logoTopLeft = PreComputedImages.flllogo;
+        // else
+        //     toDataUrl(flllogo, (base) => {this.logoTopLeft = base;});
+        if (PreComputedImages.gamelogo)
+            this._logoTopRight = PreComputedImages.gamelogo;
+        // else
+        //     toDataUrl(gamelogo, (base) => {this.logoTopRight = base;});
+        if (PreComputedImages.mqlogo)
+            this._logoBotLeft = PreComputedImages.mqlogo;
+         // else
+         //    toDataUrl(mqlogo, (base) => {this.logoBotLeft = base;});
+        if (PreComputedImages.firstlogo)
+            this._logoBotRight = PreComputedImages.firstlogo;
+        // else
+        //     toDataUrl(firstlogo, (base) => {this.logoBotRight = base;});
+
+        this.customLogos = false;
+
+        console.log(this.customLogos);
     }
 
     get footerText() {return this._footer;}
@@ -31,24 +52,30 @@ export class PageFormat {
     set titleFontSize(x) {this._titleFontSize = x;}
 
     get logoTopLeft() {return this._logoTopLeft}
-    set logoTopLeft(x) {this._logoTopLeft = x;}
+    set logoTopLeft(x) {this.customLogos = (this._logoTopLeft !== x || this.customLogos); this._logoTopLeft = x;}
     get logoBotLeft() {return this._logoBotLeft}
-    set logoBotLeft(x) {this._logoBotLeft = x;}
+    set logoBotLeft(x) {this.customLogos = (this._logoBotLeft !== x || this.customLogos); this._logoBotLeft = x;}
     get logoTopRight() {return this._logoTopRight}
-    set logoTopRight(x) {this._logoTopRight = x;}
+    set logoTopRight(x) {this.customLogos = (this._logoTopRight !== x || this.customLogos); this._logoTopRight = x;}
     get logoBotRight() {return this._logoBotRight}
-    set logoBotRight(x) {this._logoBotRight = x;}
+    set logoBotRight(x) {this.customLogos = (this._logoBotRight !== x || this.customLogos); this._logoBotRight = x;}
     get header() {return this._header}
-    set header(x) {this._header= x;}
+    set header(x) {this.customLogos = (this._header !== x || this.customLogos); this._header= x;}
 
     static freeze(o) {
-        return {
+        console.log("Custom logos" + o.customLogos);
+        return o.customLogos ? {
             _titleFontSize: o._titleFontSize,
             _baseFontSize: o._baseFontSize,
+            _header: o._header,
             _logoTopLeft: o._logoTopLeft,
             _logoBotLeft: o._logoBotLeft,
             _logoTopRight: o._logoTopRight,
             _logoBotRight: o._logoBotRight,
+            _footer: o._footer
+        } : {
+            _titleFontSize: o._titleFontSize,
+            _baseFontSize: o._baseFontSize,
             _footer: o._footer
         };
     }
@@ -57,10 +84,11 @@ export class PageFormat {
         let E = new PageFormat();
         E._baseFontSize = o._baseFontSize;
         E._titleFontSize = o._titleFontSize;
-        E._logoTopLeft = o._logoTopLeft;
-        E._logoBotLeft = o._logoBotLeft;
-        E._logoTopRight = o._logoTopRight;
-        E._logoBotRight = o._logoBotRight;
+        if (o._header) E._header = o._header;
+        if (o._logoTopLeft) E._logoTopLeft = o._logoTopLeft;
+        if (o._logoBotLeft) E._logoBotLeft = o._logoBotLeft;
+        if (o._logoTopRight) E._logoTopRight = o._logoTopRight;
+        if (o._logoBotRight) E._logoBotRight = o._logoBotRight;
         E._footer = o._footer;
         return E;
     }

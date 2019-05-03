@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { PdfGenerator } from '../api/PdfGenerator';
 import { CsvGenerator } from '../api/CsvGenerator';
 
-import { Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Progress, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
 import NumberInput from "../inputs/NumberInput";
 import TextInput from "../inputs/TextInput";
 
@@ -21,7 +21,9 @@ export default class OutputGenView extends Component {
             tl_logo: this.props.data.pageFormat.logoTopLeft,
             tr_logo: this.props.data.pageFormat.logoTopRight,
             bl_logo: this.props.data.pageFormat.logoBotLeft,
-            br_logo: this.props.data.pageFormat.logoBotRight
+            br_logo: this.props.data.pageFormat.logoBotRight,
+            progress: 0,
+            running: false
         };
         this.toggle=this.toggle.bind(this);
         this.generatePDF=this.generatePDF.bind(this);
@@ -43,27 +45,31 @@ export default class OutputGenView extends Component {
 
     downloadAll() {
       // TODO: Replace this with individual ZIP files.
+      if (this.state.running) return;
+      this.setState({running: true});
+
       let value = this.props.data.title.replace(/ /g,"-");
 
       let zip = new JSZip();
-      this.generatePDF(value,zip);
-      this.generateCSV(value,zip);
+      this.generatePDF(value,zip,(x) => {this.setState({progress: x})});
+      this.generateCSV(value,zip, (x) => {this.setState({progress: x})});
+      this.setState({progress: 100});
       this.props.save(value,zip);
       zip.generateAsync({type:"blob"})
         .then((content) => {
             saveAs(content, value+".zip");
       });
+      this.setState({running: false});
     }
 
-
-    generatePDF(fname,zip) {
+    generatePDF(fname,zip,update) {
         let p = new PdfGenerator(this.props.data);
-        p.getAllPDFs(fname, zip);
+        p.zipAllPDFs(fname, zip, update);
     }
 
-    generateCSV(fname,zip) {
+    generateCSV(fname,zip,update) {
         let c = new CsvGenerator(this.props.data);
-        c.zipCSV(fname,zip);
+        c.zipCSV(fname,zip,update);
     }
 
     updateTitleSize(value) {
@@ -193,7 +199,9 @@ export default class OutputGenView extends Component {
                             <CardText>Download PDFs, a CSV and a saved schedule file</CardText>
                             <Button color="primary" block onClick={this.toggle}>Edit PDF format...</Button>
                             <br/>
-                            <Button color="success" onClick={this.downloadAll}>Go!</Button>
+                            <Button color={this.state.running?"secondary":"success"} onClick={this.downloadAll}>Go!</Button>
+                            <br/>
+                            <Progress value={this.state.progress}/>
                         </Card>
                     </Col>
                 </Row>

@@ -8,7 +8,8 @@ import MdInfoOutline from 'react-icons/lib/md/info-outline'
 import MdFileDownload from 'react-icons/lib/md/file-download'
 import MdFileUpload from 'react-icons/lib/md/file-upload'
 
-import firstlogo from "../resources/firstlogo.png"
+// import firstlogo from "../resources/firstlogo.png"
+import PreComputedImages from "../resources/images.json";
 
 export default class TopBar extends React.Component {
     constructor(props) {
@@ -44,7 +45,7 @@ export default class TopBar extends React.Component {
     render() {
         return (
             <Navbar color="light" light expand="md">
-                <NavbarBrand><img alt="" width="80px" src={firstlogo}/></NavbarBrand>
+                <NavbarBrand><img alt="" width="80px" src={PreComputedImages.firstlogo}/></NavbarBrand>
                 <NavbarBrand>Tournament in a Box<small>Version {this.props.version}</small></NavbarBrand>
                 <NavbarToggler onClick={this.toggle} />
                 <Collapse isOpen={this.state.isOpen} navbar>

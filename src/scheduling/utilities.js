@@ -4,6 +4,7 @@ import SessionParams from '../api/SessionParams';
 import { TeamParams } from '../api/TeamParams';
 import Instance from '../scheduling/Instance';
 import { SessionType } from '../api/SessionTypes';
+import { PageFormat } from '../api/PageFormat';
 
 //https://stackoverflow.com/questions/6832596/how-to-compare-software-version-number-using-js-only-number, LeJared
 export function cmpVersions (a, b) {
@@ -102,6 +103,8 @@ export function freeze(key, object) {
     return Instance.freeze(object);
   } else if (object instanceof SessionType) {
     return SessionType.freeze(object);
+  } else if (object instanceof PageFormat) {
+    return PageFormat.freeze(object);
   } else return object;
 }
 
@@ -122,6 +125,8 @@ export function thaw(key, value) {
         return Instance.thaw(value);
       case 'SessionType':
         return SessionType.thaw(value);
+      case 'PageFormat':
+        return PageFormat.thaw(value);
       default:
         return value;
     }
