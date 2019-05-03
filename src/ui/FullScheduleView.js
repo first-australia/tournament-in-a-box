@@ -118,7 +118,7 @@ export default class FullScheduleView extends React.Component {
                         </NavLink>
                     </NavItem>
                     <NavItem>
-                        <NavLink href="#" className={(this.state.activeTab === 'vols') ? "active" : ""}
+                        <NavLink href="#" className={(this.state.activeTab === 'sponsors') ? "active" : ""}
                                  onClick={() => { this.toggle('sponsors')}}>
                             Sponsors
                         </NavLink>

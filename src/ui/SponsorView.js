@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { Container, FormGroup } from 'reactstrap';
+import { Container, Row, Alert, Card} from 'reactstrap';
 
 export default class SponsorView extends Component {
     constructor(props) {
@@ -39,16 +39,32 @@ export default class SponsorView extends Component {
     render () {
         return (
             <Container>
+                <Row><h1>National sponsors</h1></Row>
+                <Row>
+                {this.state.nationals.map((img,i) => {
+                      return (
+                        <Card key={i} sm={3}>
+                            <img idx={i} alt={"Logo " + {i}} src={img} height={100}/>
+                        </Card>
+                    );})}
+                    <br/>
+                    </Row>
+                <Row><h1>Local sponsors</h1></Row>
+                <Row><small>Click logo to delete (local only)</small></Row>
+                <Row>
                 {this.state.locals.map((img,i) => {
                           return (
-                            <FormGroup onClick={() => this.deleteSponsor(i)} key={i} sm={12} row><img idx={i} alt={"Logo " + {i}} src={img} height={100}/></FormGroup>
+                            <Card onClick={() => this.deleteSponsor(i)} key={i} sm={12}>
+                                <img idx={i} alt={"Logo " + {i}} src={img} height={100}/>
+                            </Card>
                         );})}
-                <FormGroup sm={12} row>
+                    </Row>
+                <Row sm={12}>
                     <label>
-                        Add!
+                        <Alert color="success">Add!</Alert>
                         <input type="file" accept="image/*" hidden ref="input" onChange={this.addSponsor}/>
                     </label>
-                </FormGroup>
+                </Row>
             </Container>
         );
     }

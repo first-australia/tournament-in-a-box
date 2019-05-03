@@ -3,10 +3,18 @@ import { TYPES } from './SessionTypes';
 import { DateTime } from "./DateTime";
 import SessionParams from "./SessionParams";
 
+import {toDataUrl} from "../scheduling/utilities";
+
 import Instance from '../scheduling/Instance';
 import { overlaps} from "../scheduling/utilities";
 
 import {PageFormat} from "./PageFormat";
+
+// National sponsors
+import mqlogo from "../resources/national-sponsors/mq.png";
+import fordlogo from "../resources/national-sponsors/ford.png";
+import googlelogo from "../resources/national-sponsors/google.jpg";
+import legoedlogo from "../resources/national-sponsors/legoEd.png";
 
 export class EventParams {
     constructor(version, title="Tournament", nTeams=24, startTime=new DateTime(9*60), endTime=new DateTime(9*17)) {
@@ -43,7 +51,7 @@ export class EventParams {
 
         this.tempNames = null;
 
-        this.pageFormat = new PageFormat();
+        this.pageFormat = null;
 
         // console.log(this.logoBotRight);
         this.errors = Infinity;
@@ -84,6 +92,14 @@ export class EventParams {
                 if (t.pitNum === "") t.pitNum = savedPit;
             });
         }
+
+        console.log("A");
+        toDataUrl(mqlogo, (base) => {this.addNationalSponsor(base);});
+        toDataUrl(googlelogo, (base) => {this.addNationalSponsor(base);});
+        toDataUrl(fordlogo, (base) => {this.addNationalSponsor(base);});
+        toDataUrl(legoedlogo, (base) => {this.addNationalSponsor(base);});
+        this.pageFormat = new PageFormat();
+        console.log("B");
 
         this.teams = this.teams.sort((a,b) => {return parseInt(a.number,10) - parseInt(b.number,10);});
         this.consolidatedAwards = (this.nTeams*0.4 < 8);
