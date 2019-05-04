@@ -11,10 +11,17 @@ export default class SponsorView extends Component {
 
     addSponsor(e, f) {
         let file = f || e.target.files[0];
+        console.log(file);
         let reader = new FileReader();
         reader.onload = (e) => {
             let E = this.props.data;
-            E.addLocalSponsor(reader.result);
+            let arr = file.name.split('.');
+            let extension = arr.pop();
+            E.addLocalSponsor({
+              name: arr.join('.'),
+              data: reader.result,
+              extension: extension
+            });
             console.log(E.sponsors);
             this.props.handleChange(E.sponsors);
         };
@@ -38,7 +45,7 @@ export default class SponsorView extends Component {
                 {this.props.data.sponsors.national.map((img,i) => {
                       return (
                         <Card key={i} sm={3}>
-                            <img idx={i} alt={"Logo " + {i}} src={img} height={100}/>
+                            <img idx={i} alt={img.name} src={img.data} height={100}/>
                         </Card>
                     );})}
                     <br/>
@@ -49,7 +56,7 @@ export default class SponsorView extends Component {
                 {this.props.data.sponsors.local.map((img,i) => {
                           return (
                             <Card onClick={() => this.deleteSponsor(i)} key={i} sm={12}>
-                                <img idx={i} alt={"Logo " + {i}} src={img} height={100}/>
+                                <img idx={i} alt={img.name} src={img.data} height={100}/>
                             </Card>
                         );})}
                     </Row>

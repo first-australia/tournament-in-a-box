@@ -46,6 +46,20 @@ export default class OutputGenView extends Component {
       let zip = new JSZip();
       this.generatePDF(value,zip,(x) => {this.setState({progress: x})});
       this.generateCSV(value,zip, (x) => {this.setState({progress: x})});
+      let sponsors = zip.folder("sponsors");
+      this.props.data.sponsors.national.forEach(im => {
+        var uri = im.data;
+        var idx = uri.indexOf('base64,') + 'base64,'.length; // or = 28 if you're sure about the prefix
+        var content = uri.substring(idx);
+        sponsors.file(im.name+"."+im.extension, content, {base64: true});
+      });
+      this.props.data.sponsors.local.forEach(im => {
+        var uri = im.data;
+        var idx = uri.indexOf('base64,') + 'base64,'.length; // or = 28 if you're sure about the prefix
+        var content = uri.substring(idx);
+        sponsors.file(im.name+"."+im.extension, content, {base64: true});
+      });
+
       this.setState({progress: 100});
       this.props.save(value,zip);
       zip.generateAsync({type:"blob"})

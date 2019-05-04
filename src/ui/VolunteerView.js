@@ -15,6 +15,7 @@ export default class VolunteerView extends Component {
         this.onChange = this.onChange.bind(this);
         this.downloadTemplate = this.downloadTemplate.bind(this);
         this.deleteVol = this.deleteVol.bind(this);
+        this.importVols = this.importVols.bind(this);
     }
 
     toggleEditable() {
@@ -49,8 +50,27 @@ export default class VolunteerView extends Component {
       this.props.onChange(V);
     }
 
-    importVols(event) {
-      alert("Not yet implemented!")
+    importVols(e, f) {
+      let file = f || e.target.files[0];
+      let reader = new FileReader();
+      reader.onload = (e) => {
+          let V = [];
+          let lines = reader.result.split("\n");
+          if (lines[0].startsWith("role,names"))
+            lines.shift();
+          lines.forEach(l => {
+            let fields=l.split(',');
+            if (!fields) return;
+            console.log(fields);
+            let name = fields.shift();
+            console.log(fields);
+            if (!name) return;
+            V.push({name: name, staff: fields.filter(f=>f !== "")});
+          });
+          console.log(lines);
+          this.props.onChange(V);
+      };
+      reader.readAsText(file);
     }
 
     render () {

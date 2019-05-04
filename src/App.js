@@ -84,6 +84,7 @@ class App extends Component {
             } while (this.state.eventParams.errors > 0 && count-- > 0);
             if (this.state.eventParams.errors > 0) alert("Schedule generated with errors! Please adjust parameters");
             this.setState ({display: 'Review'});
+            this.state.eventParams.buildVolunteerSheet();
             this.setState({processing: false});
             window.scrollTo(0, 0);
         }), 50);

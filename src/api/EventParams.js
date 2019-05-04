@@ -100,16 +100,6 @@ export class EventParams {
         // toDataUrl(googlelogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(fordlogo, (base) => {this.addNationalSponsor(base);});
         // toDataUrl(legoedlogo, (base) => {this.addNationalSponsor(base);});
-        this.volunteers = [];
-        Volunteers.roles.forEach(v => {
-          let vol = {name: v.name};
-          vol.staff = [];
-          let numberOfVols = v.count;
-          for (let i = 0; i < numberOfVols; i++)
-            vol.staff.push("");
-          this.volunteers.push(vol);
-        });
-        console.log(this.volunteers)
         this.pageFormat = new PageFormat();
         console.log("B");
 
@@ -199,6 +189,60 @@ export class EventParams {
             actualStart.clone(), actualEnd.clone()));
 
         this.sessions.sort((a,b) => {return (a.startTime === b.startTime)?a.id-b.id : a.startTime.mins - b.startTime.mins;});
+
+        this.volunteers = [];
+        this.buildVolunteerSheet();
+    }
+
+    buildVolunteerSheet(nJudges) {
+      if (!nJudges) {
+        nJudges = this.sessions.find(s => {return s.type === TYPES.JUDGING}).nLocs;
+      }
+      // NOTE: Have to make sure that if volunters have already been designed, we just update the numbers.
+      if (this.volunteers.length > 0) {
+        // Just recalculate the number of volunteers
+        this.volunteers.forEach(v => {
+          let numberOfVols = v.count;
+          if (v.per === "1")
+            numberOfVols *= 1;
+          else if (v.per === "RDJ") // Volunteers per robot design judging session
+            numberOfVols *= nJudges;
+          else if (v.per === "CVJ") // Volunteers per core values judging session
+            numberOfVols *= nJudges;
+          else if (v.per === "RPJ") // Volunteers per project judging session
+            numberOfVols *= nJudges;
+          else if (v.per === "T") // Volunteers per robot table
+            numberOfVols *= this.nTables;
+          while (v.staff.length < numberOfVols)
+            v.staff.push("");
+          while (v.staff.length > numberOfVols) {
+            let S = v.staff.pop();
+            if (S !== "") {
+              v.staff.push(S);
+              break;
+            }
+          }
+        });
+      } else {
+        Volunteers.roles.forEach(v => {
+          let vol = {name: v.name, count: v.count, per: v.per};
+          vol.staff = [];
+          let numberOfVols = v.count;
+          if (v.per === "1")
+            numberOfVols *= 1;
+          else if (v.per === "RDJ") // Volunteers per robot design judging session
+            numberOfVols *= nJudges;
+          else if (v.per === "CVJ") // Volunteers per core values judging session
+            numberOfVols *= nJudges;
+          else if (v.per === "RPJ") // Volunteers per project judging session
+            numberOfVols *= nJudges;
+          else if (v.per === "T") // Volunteers per robot table
+            numberOfVols *= this.nTables;
+          for (let i = 0; i < numberOfVols; i++)
+            vol.staff.push("");
+          this.volunteers.push(vol);
+        });
+      }
     }
 
     get nTeams() { return this._teams.length; }
