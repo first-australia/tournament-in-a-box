@@ -54,7 +54,7 @@ export default class VolunteerView extends Component {
       let file = f || e.target.files[0];
       let reader = new FileReader();
       reader.onload = (e) => {
-          let V = [];
+          let V =  [];
           let lines = reader.result.split("\n");
           if (lines[0].startsWith("role,names"))
             lines.shift();

@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import { PdfGenerator } from '../api/PdfGenerator';
-import { CsvGenerator } from '../api/CsvGenerator';
+import { ZipAll } from "../outputs/ZipOutputs.js";
 
 import { Modal, ModalHeader, ModalBody, ModalFooter, Progress, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
 import NumberInput from "../inputs/NumberInput";
 import TextInput from "../inputs/TextInput";
-
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver';
 
 export default class OutputGenView extends Component {
     constructor(props) {
@@ -19,8 +15,6 @@ export default class OutputGenView extends Component {
             running: false
         };
         this.toggle=this.toggle.bind(this);
-        this.generatePDF=this.generatePDF.bind(this);
-        this.generateCSV=this.generateCSV.bind(this);
         this.updateBaseSize = this.updateBaseSize.bind(this);
         this.updateTitleSize = this.updateTitleSize.bind(this);
         this.updateFooter = this.updateFooter.bind(this);
@@ -41,42 +35,9 @@ export default class OutputGenView extends Component {
       if (this.state.running) return;
       this.setState({running: true});
 
-      let value = this.props.data.title.replace(/ /g,"-");
+      ZipAll(this.props.data, this.props.save);
 
-      let zip = new JSZip();
-      this.generatePDF(value,zip,(x) => {this.setState({progress: x})});
-      this.generateCSV(value,zip, (x) => {this.setState({progress: x})});
-      let sponsors = zip.folder("sponsors");
-      this.props.data.sponsors.national.forEach(im => {
-        var uri = im.data;
-        var idx = uri.indexOf('base64,') + 'base64,'.length; // or = 28 if you're sure about the prefix
-        var content = uri.substring(idx);
-        sponsors.file(im.name+"."+im.extension, content, {base64: true});
-      });
-      this.props.data.sponsors.local.forEach(im => {
-        var uri = im.data;
-        var idx = uri.indexOf('base64,') + 'base64,'.length; // or = 28 if you're sure about the prefix
-        var content = uri.substring(idx);
-        sponsors.file(im.name+"."+im.extension, content, {base64: true});
-      });
-
-      this.setState({progress: 100});
-      this.props.save(value,zip);
-      zip.generateAsync({type:"blob"})
-        .then((content) => {
-            saveAs(content, value+".zip");
-      });
       this.setState({running: false});
-    }
-
-    generatePDF(fname,zip,update) {
-        let p = new PdfGenerator(this.props.data);
-        p.zipAllPDFs(fname, zip, update);
-    }
-
-    generateCSV(fname,zip,update) {
-        let c = new CsvGenerator(this.props.data);
-        c.zipCSV(fname,zip,update);
     }
 
     updateTitleSize(value) {
