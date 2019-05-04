@@ -192,7 +192,6 @@ class App extends Component {
                 </Row>
             )
         }
-
         return (
             <Container fluid className="App">
                 <TopBar version={this.state.version} onSave={this.onSave} onLoad={this.onLoad}/>

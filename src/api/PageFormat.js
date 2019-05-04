@@ -65,6 +65,7 @@ export class PageFormat {
     static freeze(o) {
         console.log("Custom logos" + o.customLogos);
         return o.customLogos ? {
+            _class : 'PageFormat',
             _titleFontSize: o._titleFontSize,
             _baseFontSize: o._baseFontSize,
             _header: o._header,
@@ -74,6 +75,7 @@ export class PageFormat {
             _logoBotRight: o._logoBotRight,
             _footer: o._footer
         } : {
+            _class : 'PageFormat',
             _titleFontSize: o._titleFontSize,
             _baseFontSize: o._baseFontSize,
             _footer: o._footer
@@ -81,6 +83,9 @@ export class PageFormat {
     }
 
     static thaw(o) {
+      console.log("THAW");
+        console.log(o);
+        console.log(o._header);
         let E = new PageFormat();
         E._baseFontSize = o._baseFontSize;
         E._titleFontSize = o._titleFontSize;
