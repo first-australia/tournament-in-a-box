@@ -22,6 +22,7 @@
     "electron-is-dev": "^1.1.0",
     "file-saver": "^2.0.1",
     "gh-pages": "^2.0.1",
+    "jquery": "^3.4.1",
     "jszip": "^3.2.1",
     "pdfmake": "^0.1.36",
     "react": "^16.3.1",
