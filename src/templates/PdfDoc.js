@@ -16,8 +16,10 @@ export class PdfDoc {
             header: {fontSize: this._format.titleFontSize,bold: true,alignment: 'center'},
             footer: {fontSize: this._format.baseFontSize+2,bold: true,alignment: 'center',color: 'grey'},
             header2: {fontSize: this._format.titleFontSize+2,bold: true,alignment: 'center'},
-            headerHuge: {fontSize: this._format.titleFontSize+22,bold: true,alignment: 'center'},
-            subHeaderHuge: {fontSize: this._format.titleFontSize+12,bold: true,alignment: 'center',color: 'grey'},
+            signTitle: {fontSize: 64,bold: true,alignment: 'center'},
+            signSubtitle: {fontSize: 44,bold: true,alignment: 'center',color: 'grey'},
+            certTitle: {fontSize: 52,bold: true,alignment: 'center'},
+            certSubtitle: {fontSize: 36,bold: true,alignment: 'center',color: 'grey'},
             tablebody: {fontSize: this._format.baseFontSize-4,alignment:'center'},
             extraTime: {alignment: 'center',color: 'red'},
             tablehead: {fontSize: this._format.baseFontSize-2,bold: true,alignment:'center'},
@@ -66,6 +68,11 @@ export class PdfDoc {
 
     addPageBreak() {
         this.doc.content.push({text: " ", pageBreak:'after'});
+    }
+
+    DrawLine() {
+      this.doc.content.push({canvas: [{ type: 'line', x1: 100, y1: 5, x2: 660, y2: 5, lineWidth: 3 }],
+        margin: [0, 60, 0, 10]});
     }
 
     download(filename) {

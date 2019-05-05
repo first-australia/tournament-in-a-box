@@ -1,7 +1,7 @@
 import { TYPES } from '../api/SessionTypes';
 import { MakeSessionPDF, MakeDaySchedulePdf, MakePracticeTableSignupPdf } from "./SessionOutputs";
 import { MakeTeamListPDF, MakeAllTeamsPDF, MakeIndivTeamsPDF } from "./TeamOutputs";
-import { MakePitSignsPdf } from "./SignOutputs";
+import { MakePitSignsPdf, MakeLocationSignsPdf, MakeAwardCertPdf, MakeParticipationCertPdf } from "./SignOutputs";
 import { MakeScoringSystemCSV } from "./DataOutputs";
 import { MakeVolunteerListPdf, MakeSigninPdf } from "./VolunteerOutputs";
 
@@ -47,9 +47,12 @@ function zipAllPDFs(event, prefix, zip) {
   PDFs.push(MakeIndivTeamsPDF(event, prefix));
   PDFs.push(MakePitSignsPdf(event, prefix));
   PDFs.push(MakeVolunteerListPdf(event, prefix));
+  PDFs.push(MakeLocationSignsPdf(event, prefix));
   PDFs.push(MakeSigninPdf(event, prefix));
-
   PDFs.push(MakePracticeTableSignupPdf(event, prefix));
+  PDFs.push(MakeAwardCertPdf(event, prefix));
+  PDFs.push(MakeParticipationCertPdf(event, prefix));
+
   PDFs.filter(D=>D!=null).forEach(D => {
     try {
       zip.file(D.filename, D.getBlobPromise());
