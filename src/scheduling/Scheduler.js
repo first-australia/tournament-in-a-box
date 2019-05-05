@@ -53,7 +53,7 @@ export class Scheduler {
         });
         this.event.sessions.forEach((session) => {
             // Make sure the start time isn't in a break
-            if (session.type !== TYPES.BREAK) session.actualStartTime.mins = this.timeInc(session.startTime,0,session);
+            if (session.type !== TYPES.BREAK) session.actualStartTime.mins = this.event.timeInc(session.startTime,0,session.id);
             let end = -Infinity;
             if (!(session.type === TYPES.MATCH_ROUND || session.type === TYPES.MATCH_ROUND_PRACTICE)) {
                 end = this.tableSession(session);
@@ -114,7 +114,7 @@ export class Scheduler {
             everyN += Math.round(Math.random()*2);
             roundsSinceExtra += Math.floor(Math.random()*L);
             flag = true;
-}
+        }
         let extraRounds = 0;
         if (session.type === TYPES.BREAK) everyN = Infinity;
         for (let i = 0; i < L; i++) {
@@ -122,15 +122,15 @@ export class Scheduler {
             let locOffset = ((i+locD)%d)*session.nSims;
             if ((i%L) < L-1) {
                 // Check that the schedule will finish...
-                let whenDone = this.timeInc(now, session.len, session);
+                let whenDone = this.event.timeInc(now, session.len, session.id);
                 if (whenDone !== (now.mins + session.len)) now = new DateTime(whenDone);
                 session.schedule[i] = new Instance(session.id,i+1+numOffset,now,new Array(session.nSims),locOffset);
-                now = new DateTime(this.timeInc(now,session.len+session.buf-session.overlap,session));
+                now = new DateTime(this.event.timeInc(now,session.len+session.buf-session.overlap,session.id));
                 roundsSinceExtra++;
                 if ((i === 0 && session.extraTimeFirst) || (roundsSinceExtra >= everyN)) {
                     if (!(flag && extraRounds >= extraRoundsNeeded)) {
                         session.schedule[i].extra = true;
-                        now = new DateTime(this.timeInc(now,this.event.extraTime,session));
+                        now = new DateTime(this.event.timeInc(now,this.event.extraTime,session.id));
                         roundsSinceExtra = 0;
                         extraRounds++;
                     }
@@ -275,17 +275,5 @@ export class Scheduler {
             }
         });
         return fixed;
-    }
-
-    /**
-     Increments given time, skipping breaks.
-     @return Returns the incremented time.
-     */
-    timeInc(time, inc, session) {
-        let newMins = time.mins + inc;
-        this.event.sessions.filter(x=>x.type === TYPES.BREAK && x.applies(session.id)).forEach(x => {
-            if (time.mins+inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
-        });
-        return newMins;
     }
 }

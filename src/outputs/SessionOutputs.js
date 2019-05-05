@@ -1,4 +1,5 @@
 import { PdfDoc } from "../templates/PdfDoc";
+import { DateTime } from "../api/DateTime";
 
 export function MakeSessionPDF(event, type, prefix) {
   let maxLocs = 0;
@@ -85,5 +86,27 @@ export function MakeDaySchedulePdf(event, prefix) {
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
   doc.filename = (prefix+"-day-schedule.pdf").replace(/ /g, "-");
+  return doc;
+}
+
+export function MakePracticeTableSignupPdf(event, prefix) {
+  let doc = new PdfDoc(event.pageFormat, event.title, false);
+
+  let t = {headerRows: 1, dontBreakRows: true};
+  t.widths = ['auto','*'];
+  t.body = [];
+  t.body.push(["Time", "Team"]);
+
+  let now = event.startTime.clone();
+  while (now.mins < event.endTime.mins-1) {
+    now = new DateTime(event.timeIncPrac(now,10));
+    t.body.push([now.displayTime(), '']);
+  }
+
+  doc.addContent({text: "Practice table signup sheet", style:'header2', margin:[0,10]});
+  doc.addContent({table: t, layout: 'lightHorizontalLines'});
+  doc.addContent({text: "* Don't book too much fam", style:'footer'});
+
+  doc.filename = (prefix + "-practice-tables.pdf").replace(/ /g, "-");
   return doc;
 }

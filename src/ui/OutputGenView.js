@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { ZipAll } from "../outputs/ZipOutputs.js";
 
-import { Modal, ModalHeader, ModalBody, ModalFooter, Progress, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
+import { Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
 import NumberInput from "../inputs/NumberInput";
 import TextInput from "../inputs/TextInput";
 
@@ -11,7 +11,6 @@ export default class OutputGenView extends Component {
 
         this.state = {
             pdf_modal: false,
-            progress: 0,
             running: false
         };
         this.toggle=this.toggle.bind(this);
@@ -156,7 +155,6 @@ export default class OutputGenView extends Component {
                             <br/>
                             <Button color={this.state.running?"secondary":"success"} onClick={this.downloadAll}>Go!</Button>
                             <br/>
-                            <Progress value={this.state.progress}/>
                         </Card>
                     </Col>
                 </Row>

@@ -1,11 +1,12 @@
 import { TYPES } from './SessionTypes'
 
 export default class SessionParams {
-    constructor(uid, type, name, nLocs=4, startTime=null, endTime=null) {
+    constructor(uid, type, name, nLocs=4, startTime=null, endTime=null, noPractice=false) {
         this._id = uid;
         this._type = type;
 
         this.name = (name) ? name : this.type.defaultTitle + " " + this._id;
+        this._noprac = noPractice;
 
         let A = [];
         for (let i = 1; i <= nLocs; i++) A.push(this.type.defaultLocs + " " + i);
@@ -109,6 +110,9 @@ export default class SessionParams {
     get appliesTo() { return this._appliesTo; }
     set appliesTo(value) { this._appliesTo = value; }
 
+    get noPractice() { return this._noprac; }
+    set noPractice(value) { this._noprac = value; }
+
     // Does this session apply to id?
     applies(id) {
         if(this.universal) return true;
@@ -140,6 +144,7 @@ export default class SessionParams {
         _extraTimeFirst : o._extraTimeFirst,
         _extraTimeEvery : o._extraTimeEvery,
         _appliesTo : o._appliesTo,
+        _noprac : o._noprac,
         _usesSurrogates : o._usesSurrogates
       };
     }
@@ -169,6 +174,7 @@ export default class SessionParams {
       S._extraTimeFirst = o._extraTimeFirst;
       S._extraTimeEvery = o._extraTimeEvery;
       S._appliesTo = o._appliesTo;
+      S._noprac = o._noprac;
       S._usesSurrogates = o._usesSurrogates;
       return S;
     }

@@ -120,13 +120,13 @@ export class EventParams {
         let endLunch = startLunch.clone(30);
 
         this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Opening Ceremony", 1,
-            this.startTime.clone(), actualStart.clone()));
+            this.startTime.clone(), actualStart.clone(), true));
         this.getSession(this.uid_counter-1).universal = true;
         this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Lunch" + ((this.nDays>1)?" 1":""), 1,
             startLunch.clone(), endLunch.clone()));
         this.getSession(this.uid_counter-1).universal = true;
         this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Closing Ceremony", 1,
-            actualEnd.clone(), this.endTime.clone()));
+            actualEnd.clone(), this.endTime.clone(), true));
         this.getSession(this.uid_counter-1).universal = true;
 
         let nightStart = new DateTime(this.endTime.mins%(24*60),this.days);
@@ -135,7 +135,7 @@ export class EventParams {
         for (let i = 1; i < this.days.length; i++) {
             nightEnd = nightEnd.clone(24*60);
             this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Night" + ((this.nDays>2)?" "+i:""), 1,
-                nightStart.clone(), nightEnd.clone()));
+                nightStart.clone(), nightEnd.clone(), true));
             this.getSession(this.uid_counter-1).universal = true;
             nightStart = nightStart.clone(24*60);
 
@@ -398,6 +398,35 @@ export class EventParams {
         }
         return grid;
     }
+
+    /**
+     Increments given time, skipping breaks.
+     @return Returns the incremented time.
+     */
+    timeInc(time, inc, sessionID) {
+        let filt = (sessionID ?
+          x=>x.type === TYPES.BREAK && x.applies(sessionID) :
+          x=>x.type === TYPES.BREAK)
+        let newMins = time.mins + inc;
+        this.sessions.filter(filt).forEach(x => {
+            if (time.mins+inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
+        });
+        return newMins;
+    }
+
+  /**
+   Increments given time, ceremonies and nights.
+   @return Returns the incremented time.
+   */
+  timeIncPrac(time, inc) {
+    let filt = (x=>x.type === TYPES.BREAK && x.noPractice)
+      let newMins = time.mins + inc;
+      this.sessions.filter(filt).forEach(x => {
+          if (time.mins+inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
+      });
+      return newMins;
+  }
+
 
     /** Assuming the given session has the most up-to-date location names, synchronise other session to this **/
     syncLocs(S) {

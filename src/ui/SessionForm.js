@@ -28,6 +28,7 @@ export default class SessionForm extends React.Component {
         this.updateExtraEvery = this.updateExtraEvery.bind(this);
         this.getDataGrid = this.getDataGrid.bind(this);
         this.updateLocs = this.updateLocs.bind(this);
+        this.updateNoprac = this.updateNoprac.bind(this);
         this.handleDelete = this.handleDelete.bind(this);
     }
 
@@ -79,6 +80,12 @@ export default class SessionForm extends React.Component {
         let S = this.props.session;
         S.nSims = value;
         S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf)*S.nSims/S.nLocs));
+        this.props.onChange(S);
+    }
+
+    updateNoprac(value) {
+        let S = this.props.session;
+        S.noPractice = value;
         this.props.onChange(S);
     }
 
@@ -190,6 +197,9 @@ export default class SessionForm extends React.Component {
                         {this.props.advanced && this.props.session.type !== TYPES.BREAK &&
                         <BooleanInput label="Extra time first?" value={this.props.session.extraTimeFirst}
                                       onChange={this.updateExtraFirst}/>}
+                        {this.props.advanced && this.props.session.type === TYPES.BREAK &&
+                        <BooleanInput label="Apply to practice times?" value={this.props.session.noPractice}
+                                      onChange={this.updateNoprac}/>}
                         {this.props.advanced && this.props.session.type !== TYPES.BREAK  &&
                         <NumberInput label="Extra time every N" value={this.props.session.extraTimeEvery} min={0}
                                      onChange={this.updateExtraEvery}/>}
