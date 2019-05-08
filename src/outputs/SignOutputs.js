@@ -1,7 +1,7 @@
 import { PdfDoc } from "../templates/PdfDoc";
 import { TYPES } from "../api/SessionTypes";
 
-export function MakePitSignsPdf(event, prefix) {
+export function MakePitSignsPdf(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, true);
   event.teams.forEach(t => {
     // margin: [left, top, right, bottom]
@@ -10,11 +10,11 @@ export function MakePitSignsPdf(event, prefix) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = (prefix+"-pit-signs.pdf").replace(/ /g, '-');
+  doc.filename = ("pit-signs.pdf").replace(/ /g, '-');
   return doc;
 }
 
-export function MakeLocationSignsPdf(event, prefix) {
+export function MakeLocationSignsPdf(event) {
   let baseLocations = [
     "Pit admin", "Queueing", "Judge check-in", "Robot game",
     "Coaches meeting", "Volunteer Room", "Practice table"
@@ -40,11 +40,11 @@ export function MakeLocationSignsPdf(event, prefix) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = (prefix+"-location-signs.pdf").replace(/ /g, '-');
+  doc.filename = ("location-signs.pdf").replace(/ /g, '-');
   return doc;
 }
 
-export function MakeAwardCertPdf(event, prefix) {
+export function MakeAwardCertPdf(event) {
 
   let awardsCon = [ "Robot Design", "Robot Performance", "Core Values",
     "Project", "Champion's" ];
@@ -69,11 +69,11 @@ export function MakeAwardCertPdf(event, prefix) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = (prefix+"-award-certificates.pdf").replace(/ /g, '-');
+  doc.filename = ("award-certificates.pdf").replace(/ /g, '-');
   return doc;
 }
 
-export function MakeParticipationCertPdf(event, prefix) {
+export function MakeParticipationCertPdf(event) {
   let F = event.pageFormat.footerText;
   event.pageFormat.footerText = "";
   let doc = new PdfDoc(event.pageFormat, "", true);
@@ -87,6 +87,6 @@ export function MakeParticipationCertPdf(event, prefix) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = (prefix+"-participation-certificates.pdf").replace(/ /g, '-');
+  doc.filename = ("participation-certificates.pdf").replace(/ /g, '-');
   return doc;
 }

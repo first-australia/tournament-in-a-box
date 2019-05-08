@@ -1,7 +1,7 @@
 import { PdfDoc } from "../templates/PdfDoc";
 import { DateTime } from "../api/DateTime";
 
-export function MakeSessionPDF(event, type, prefix) {
+export function MakeSessionPDF(event, type) {
   let maxLocs = 0;
   event.sessions.filter(s=>s.type===type).forEach((session) => maxLocs=Math.max(maxLocs,session.nLocs));
   let doc = new PdfDoc(event.pageFormat, event.title, maxLocs > 4);
@@ -18,7 +18,7 @@ export function MakeSessionPDF(event, type, prefix) {
   if (doc.empty()) return null;
   // Delete the last page break
   doc.chomp();
-  doc.filename = (prefix+"-"+type.name+"-schedule.pdf").replace(/ /g, "-");
+  doc.filename = (type.name+"-schedule.pdf").replace(/ /g, "-");
   return doc;
 }
 
@@ -59,7 +59,7 @@ function sessionPage(session, data) {
 }
 
 
-export function MakeDaySchedulePdf(event, prefix) {
+export function MakeDaySchedulePdf(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, false);
 
   let t = {headerRows: 1, dontBreakRows: true};
@@ -85,11 +85,11 @@ export function MakeDaySchedulePdf(event, prefix) {
   doc.addContent({text: "Day Schedule", style:'header2',margin:[0,10]});
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-  doc.filename = (prefix+"-day-schedule.pdf").replace(/ /g, "-");
+  doc.filename = ("day-schedule.pdf").replace(/ /g, "-");
   return doc;
 }
 
-export function MakePracticeTableSignupPdf(event, prefix) {
+export function MakePracticeTableSignupPdf(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, false);
 
   let t = {headerRows: 1, dontBreakRows: true};
@@ -107,6 +107,6 @@ export function MakePracticeTableSignupPdf(event, prefix) {
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
   doc.addContent({text: "* Don't book too much fam", style:'footer'});
 
-  doc.filename = (prefix + "-practice-tables.pdf").replace(/ /g, "-");
+  doc.filename = ("practice-tables.pdf").replace(/ /g, "-");
   return doc;
 }

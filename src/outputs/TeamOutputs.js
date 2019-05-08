@@ -2,7 +2,7 @@ import { PdfDoc } from "../templates/PdfDoc";
 import { TYPES } from '../api/SessionTypes';
 
 
-export function MakeTeamListPDF(event, prefix) {
+export function MakeTeamListPDF(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, false);
 
   let t = {headerRows: 1, dontBreakRows: true};
@@ -31,11 +31,11 @@ export function MakeTeamListPDF(event, prefix) {
   doc.addContent({text: "Team List", style:'header2',margin:[0,10]});
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-  doc.filename = (prefix+"-team-list.pdf").replace(/ /g, "-");
+  doc.filename = ("team-list.pdf").replace(/ /g, "-");
   return doc;
 }
 
-export function MakeAllTeamsPDF(event, prefix) {
+export function MakeAllTeamsPDF(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, true);
 
   doc.addContent({text: "All Team Schedule", style:'header2',margin:[0,10]});
@@ -66,11 +66,11 @@ export function MakeAllTeamsPDF(event, prefix) {
   }
   doc.addContent({table: t, layout: 'lightHorizontalLines', alignment:'center'});
 
-  doc.filename = (prefix+"-individual-schedule.pdf").replace(/ /g, '-');
+  doc.filename = ("individual-schedule.pdf").replace(/ /g, '-');
   return doc;
 }
 
-export function MakeIndivTeamsPDF(event, prefix) {
+export function MakeIndivTeamsPDF(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, false);
 
   event.teams.forEach(t => {
@@ -80,7 +80,7 @@ export function MakeIndivTeamsPDF(event, prefix) {
   });
   // Delete the last page break
   doc.chomp();
-  doc.filename = (prefix+"-team-schedule.pdf").replace(/ /g, '-');
+  doc.filename = ("team-schedule.pdf").replace(/ /g, '-');
   return doc;
 }
 

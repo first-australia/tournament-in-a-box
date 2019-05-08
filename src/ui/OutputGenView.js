@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { ZipAll } from "../outputs/ZipOutputs.js";
+import { Zipper } from "../outputs/Zipper.js";
 
 import { Modal, ModalHeader, ModalBody, ModalFooter, Container, Row, Col, Button, Card, CardText, CardTitle } from 'reactstrap';
 import NumberInput from "../inputs/NumberInput";
@@ -11,7 +11,8 @@ export default class OutputGenView extends Component {
 
         this.state = {
             pdf_modal: false,
-            running: false
+            running: false,
+            progress: 0
         };
         this.toggle=this.toggle.bind(this);
         this.updateBaseSize = this.updateBaseSize.bind(this);
@@ -23,6 +24,7 @@ export default class OutputGenView extends Component {
         this.downloadAll = this.downloadAll.bind(this);
         this.onBRChange = this.onBRChange.bind(this);
     }
+
     toggle() {
         this.setState({
             pdf_modal: !this.state.pdf_modal
@@ -32,11 +34,14 @@ export default class OutputGenView extends Component {
     downloadAll() {
       // TODO: Replace this with individual ZIP files.
       if (this.state.running) return;
+      let z = new Zipper(this.props.data, this.props.save);
       this.setState({running: true});
-
-      ZipAll(this.props.data, this.props.save);
-
-      this.setState({running: false});
+      setTimeout(() => {
+        while (z.FilesLeft > 0)
+            z.ProcessNext();
+        z.DownloadZip();
+        this.setState({running: false});
+      }, 50);
     }
 
     updateTitleSize(value) {
@@ -153,7 +158,7 @@ export default class OutputGenView extends Component {
                             <CardText>Download PDFs, a CSV and a saved schedule file</CardText>
                             <Button color="primary" block onClick={this.toggle}>Edit PDF format...</Button>
                             <br/>
-                            <Button color={this.state.running?"secondary":"success"} onClick={this.downloadAll}>Go!</Button>
+                            <Button color={this.state.running?"secondary":"success"} onClick={this.downloadAll}>{this.state.running ? "Please wait..." : "Go"}</Button>
                             <br/>
                         </Card>
                     </Col>

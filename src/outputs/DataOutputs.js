@@ -61,7 +61,7 @@ export function MakeScoringSystemCSV(event) {
 
     let practiceMatches = 0;
     let allPRounds = event.getSessions(TYPES.MATCH_ROUND_PRACTICE);
-    if (allPRounds.length === 0) return csv;
+    if (allPRounds.length === 0) return { data: csv, filename: "scoring_import" };
     allPRounds.forEach(S => {practiceMatches += S.schedule.length;});
     csv += "Block Format,4\n";
     csv += "Number of Practice Matches," + practiceMatches + "\n";
@@ -86,7 +86,7 @@ export function MakeScoringSystemCSV(event) {
             csv += "\n";
         });
     });
-    return csv;
+    return { data: csv, filename: "scoring_import" };
 }
 
 // Excel represents time decimally as follows:

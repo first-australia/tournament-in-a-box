@@ -1,6 +1,6 @@
 import { PdfDoc } from "../templates/PdfDoc";
 
-export function MakeVolunteerListPdf(event, prefix) {
+export function MakeVolunteerListPdf(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, false);
 
   let t = {headerRows: 1, dontBreakRows: true};
@@ -24,11 +24,11 @@ export function MakeVolunteerListPdf(event, prefix) {
   doc.addContent({text: "Volunteer List", style:'header2',margin:[0,10]});
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-  doc.filename = (prefix+"-vol-list.pdf").replace(/ /g, "-");
+  doc.filename = ("vol-list.pdf").replace(/ /g, "-");
   return doc;
 }
 
-export function MakeSigninPdf(event, prefix) {
+export function MakeSigninPdf(event) {
   let doc = new PdfDoc(event.pageFormat, event.title, false);
 
   let t = {headerRows: 1, dontBreakRows: true};
@@ -99,6 +99,6 @@ export function MakeSigninPdf(event, prefix) {
   }
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
   */
-  doc.filename = (prefix+"-vol-sign-in.pdf").replace(/ /g, "-");
+  doc.filename = ("vol-sign-in.pdf").replace(/ /g, "-");
   return doc;
 }
