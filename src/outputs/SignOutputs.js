@@ -10,7 +10,7 @@ export function MakePitSignsPdf(event) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = ("pit-signs.pdf").replace(/ /g, '-');
+  doc.filename = ("pit-signs").replace(/ /g, '-');
   return doc;
 }
 
@@ -40,7 +40,7 @@ export function MakeLocationSignsPdf(event) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = ("location-signs.pdf").replace(/ /g, '-');
+  doc.filename = ("location-signs").replace(/ /g, '-');
   return doc;
 }
 
@@ -69,7 +69,7 @@ export function MakeAwardCertPdf(event) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = ("award-certificates.pdf").replace(/ /g, '-');
+  doc.filename = ("award-certificates").replace(/ /g, '-');
   return doc;
 }
 
@@ -87,6 +87,6 @@ export function MakeParticipationCertPdf(event) {
     doc.addPageBreak();
   });
   doc.chomp();
-  doc.filename = ("participation-certificates.pdf").replace(/ /g, '-');
+  doc.filename = ("participation-certificates").replace(/ /g, '-');
   return doc;
 }

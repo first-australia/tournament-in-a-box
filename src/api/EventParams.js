@@ -212,7 +212,7 @@ export class EventParams {
           else if (v.per === "RPJ") // Volunteers per project judging session
             numberOfVols *= nJudges;
           else if (v.per === "T") // Volunteers per robot table
-            numberOfVols *= this.nTables;
+            numberOfVols *= this.nTables;nJudges = this.sessions.find(s => {return s.type === TYPES.JUDGING}).nLocs
           while (v.staff.length < numberOfVols)
             v.staff.push("");
           while (v.staff.length > numberOfVols) {
@@ -244,6 +244,8 @@ export class EventParams {
         });
       }
     }
+
+    get nJudges() { return this.sessions.find(s => {return s.type === TYPES.JUDGING}).nLocs; }
 
     get nTeams() { return this._teams.length; }
     //Given a new number of teams, update things...

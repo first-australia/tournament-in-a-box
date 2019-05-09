@@ -24,7 +24,7 @@ export function MakeVolunteerListPdf(event) {
   doc.addContent({text: "Volunteer List", style:'header2',margin:[0,10]});
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-  doc.filename = ("vol-list.pdf").replace(/ /g, "-");
+  doc.filename = ("vol-list").replace(/ /g, "-");
   return doc;
 }
 
@@ -99,6 +99,6 @@ export function MakeSigninPdf(event) {
   }
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
   */
-  doc.filename = ("vol-sign-in.pdf").replace(/ /g, "-");
+  doc.filename = ("vol-sign-in").replace(/ /g, "-");
   return doc;
 }

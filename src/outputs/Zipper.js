@@ -15,22 +15,22 @@ export class Zipper {
     this._idx = 0;
     this.zipname = this.event.title.replace(' ','_');
     this.funcs = [
-      () => this.zipPDF(MakeSessionPDF(event, TYPES.JUDGING), "judging"),
-      () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_ROUND), "field"),
-      () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_ROUND_PRACTICE), "field"),
-      () => this.zipPDF(MakeSessionPDF(event, TYPES.TYPE_MATCH_FILLER), "field"),
-      () => this.zipPDF(MakeSessionPDF(event, TYPES.TYPE_MATCH_FILLER_PRACTICE), "field"),
-      () => this.zipPDF(MakeTeamListPDF(event)),
-      () => this.zipPDF(MakeDaySchedulePdf(event)),
-      () => this.zipPDF(MakeAllTeamsPDF(event)),
-      () => this.zipPDF(MakeIndivTeamsPDF(event), "teams"),
-      () => this.zipPDF(MakePitSignsPdf(event), "signage"),
-      () => this.zipPDF(MakeVolunteerListPdf(event), "volunteers"),
-      () => this.zipPDF(MakeLocationSignsPdf(event), "signage"),
-      () => this.zipPDF(MakeSigninPdf(event), "volunteers"),
-      () => this.zipPDF(MakePracticeTableSignupPdf(event), "signage"),
-      () => this.zipPDF(MakeAwardCertPdf(event), "certificates"),
-      () => this.zipPDF(MakeParticipationCertPdf(event), "certificates"),
+      () => this.zipPDF(MakeSessionPDF(event, TYPES.JUDGING), "", 2*this.event.nJudges + 5),
+      () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_ROUND), "", 20),
+      () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_ROUND_PRACTICE), "", 20),
+      () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_FILLER), "", 20),
+      () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_FILLER_PRACTICE), "", 20),
+      () => this.zipPDF(MakeTeamListPDF(event), "", 20),
+      () => this.zipPDF(MakeDaySchedulePdf(event), "", this.event.nTeams + 20 + 2*this.event.nJudges),
+      () => this.zipPDF(MakeAllTeamsPDF(event), "", 4),
+      () => this.zipPDF(MakeIndivTeamsPDF(event), "", 2),
+      () => this.zipPDF(MakePitSignsPdf(event), "signage", 2),
+      () => this.zipPDF(MakeVolunteerListPdf(event), "volunteers", 2),
+      () => this.zipPDF(MakeLocationSignsPdf(event), "signage", 2),
+      () => this.zipPDF(MakeSigninPdf(event), "volunteers", 2),
+      () => this.zipPDF(MakePracticeTableSignupPdf(event), "signage", 4),
+      () => this.zipPDF(MakeAwardCertPdf(event), "certificates", 2),
+      () => this.zipPDF(MakeParticipationCertPdf(event), "certificates", 10),
       () => this.zipCSV(MakeScoringSystemCSV(event), "scoring-system"),
       () => this.zipSponsors(this.event.sponsors.national, "scoring-system"),
       () => this.zipSponsors(this.event.sponsors.local, "scoring-system"),
@@ -49,11 +49,11 @@ export class Zipper {
     });
   }
 
-  zipPDF(pdf, folder) {
+  zipPDF(pdf, folder, count) {
     if (!pdf) return;
     let loc = (folder) ? this.zip.folder(folder) : this.zip;
     try {
-      loc.file(pdf.filename, pdf.getBlobPromise());
+      loc.file(pdf.filename+"_"+count+".pdf", pdf.getBlobPromise());
     } catch (err) {
         alert("Error saving: " + pdf.filename + "; " + err.message);
     }

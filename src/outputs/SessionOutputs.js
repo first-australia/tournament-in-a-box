@@ -18,7 +18,7 @@ export function MakeSessionPDF(event, type) {
   if (doc.empty()) return null;
   // Delete the last page break
   doc.chomp();
-  doc.filename = (type.name+"-schedule.pdf").replace(/ /g, "-");
+  doc.filename = (type.name+"-schedule").replace(/ /g, "-");
   return doc;
 }
 
@@ -85,7 +85,7 @@ export function MakeDaySchedulePdf(event) {
   doc.addContent({text: "Day Schedule", style:'header2',margin:[0,10]});
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-  doc.filename = ("day-schedule.pdf").replace(/ /g, "-");
+  doc.filename = ("day-schedule").replace(/ /g, "-");
   return doc;
 }
 
@@ -107,6 +107,6 @@ export function MakePracticeTableSignupPdf(event) {
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
   doc.addContent({text: "* Don't book too much fam", style:'footer'});
 
-  doc.filename = ("practice-tables.pdf").replace(/ /g, "-");
+  doc.filename = ("practice-tables").replace(/ /g, "-");
   return doc;
 }

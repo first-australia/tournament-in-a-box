@@ -31,7 +31,7 @@ export function MakeTeamListPDF(event) {
   doc.addContent({text: "Team List", style:'header2',margin:[0,10]});
   doc.addContent({table: t, layout: 'lightHorizontalLines'});
 
-  doc.filename = ("team-list.pdf").replace(/ /g, "-");
+  doc.filename = ("team-list").replace(/ /g, "-");
   return doc;
 }
 
@@ -66,7 +66,7 @@ export function MakeAllTeamsPDF(event) {
   }
   doc.addContent({table: t, layout: 'lightHorizontalLines', alignment:'center'});
 
-  doc.filename = ("individual-schedule.pdf").replace(/ /g, '-');
+  doc.filename = ("individual-schedule").replace(/ /g, '-');
   return doc;
 }
 
@@ -80,7 +80,7 @@ export function MakeIndivTeamsPDF(event) {
   });
   // Delete the last page break
   doc.chomp();
-  doc.filename = ("team-schedule.pdf").replace(/ /g, '-');
+  doc.filename = ("team-schedule").replace(/ /g, '-');
   return doc;
 }
 
