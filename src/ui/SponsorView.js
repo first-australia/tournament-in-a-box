@@ -1,6 +1,6 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
-import { Container, Row, Alert, Card} from 'reactstrap';
+import {Container, Row, Alert, Card} from 'reactstrap';
 
 export default class SponsorView extends Component {
     constructor(props) {
@@ -18,9 +18,9 @@ export default class SponsorView extends Component {
             let arr = file.name.split('.');
             let extension = arr.pop();
             E.addLocalSponsor({
-              name: arr.join('.'),
-              data: reader.result,
-              extension: extension
+                name: arr.join('.'),
+                data: reader.result,
+                extension: extension
             });
             console.log(E.sponsors);
             this.props.handleChange(E.sponsors);
@@ -37,29 +37,33 @@ export default class SponsorView extends Component {
         this.props.handleChange(E.sponsors);
     }
 
-    render () {
+    render() {
         return (
             <Container>
                 <Row><h1>National sponsors</h1></Row>
                 <Row>
-                {this.props.data.sponsors.national.map((img,i) => {
-                      return (
-                        <Card key={i} sm={3}>
-                            <img idx={i} alt={img.name} src={img.data} height={100}/>
-                        </Card>
-                    );})}
+                    {this.props.data.sponsors.national.map((img, i) => {
+                        return (
+                            <Card key={i} sm={3}>
+                                <img idx={i} alt={img.name} src={img.data} height={100}/>
+                            </Card>
+                        );
+                    })}
                     <br/>
-                    </Row>
+                </Row>
                 <Row><h1>Local sponsors</h1></Row>
-                <Row><small>Click logo to delete (local only)</small></Row>
                 <Row>
-                {this.props.data.sponsors.local.map((img,i) => {
-                          return (
+                    <small>Click logo to delete (local only)</small>
+                </Row>
+                <Row>
+                    {this.props.data.sponsors.local.map((img, i) => {
+                        return (
                             <Card onClick={() => this.deleteSponsor(i)} key={i} sm={12}>
                                 <img idx={i} alt={img.name} src={img.data} height={100}/>
                             </Card>
-                        );})}
-                    </Row>
+                        );
+                    })}
+                </Row>
                 <Row sm={12}>
                     <label>
                         <Alert color="success">Add!</Alert>

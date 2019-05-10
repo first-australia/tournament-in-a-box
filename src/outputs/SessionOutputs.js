@@ -107,7 +107,10 @@ export function MakePracticeTableSignupPdf(event) {
 
     doc.addContent({text: "Practice table signup sheet", style: 'header2', margin: [0, 10]});
     doc.addContent({table: t, layout: 'lightHorizontalLines'});
-    doc.addContent({text: "* Do not book more than 2 times at a time, and no back-to-backs.\n Remember Gracious Professionalism - everyone wants a chance to practice!", style: 'footer'});
+    doc.addContent({
+        text: "* Do not book more than 2 times at a time, and no back-to-backs.\n Remember Gracious Professionalism - everyone wants a chance to practice!",
+        style: 'footer'
+    });
 
     doc.filename = ("practice-tables").replace(/ /g, "-");
     return doc;
@@ -129,7 +132,7 @@ export function MakeCoreValuesAllocationsPDF(event) {
     t.body = [];
     //Header row
     let header = [];
-    for (let i = 0; i < data[0].length; i++) header.push({text: "Judge group " + (i+1), alignment: 'center'});
+    for (let i = 0; i < data[0].length; i++) header.push({text: "Judge group " + (i + 1), alignment: 'center'});
     t.body.push(header);
 
     // All individual rows

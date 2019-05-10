@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDataSheet from 'react-datasheet';
 
-import { Table } from 'reactstrap';
+import {Table} from 'reactstrap';
 
 
 export default class SingleScheduleView extends React.Component {
@@ -15,7 +15,7 @@ export default class SingleScheduleView extends React.Component {
         this.select = this.select.bind(this);
     }
 
-    select(i,j) {
+    select(i, j) {
         if (!this.props.editable) return; // Only swap if "editable"
         if (i === 0 || j < 2) return; // Don't swap headers or times
         let g = this.props.data;
@@ -50,15 +50,18 @@ export default class SingleScheduleView extends React.Component {
             </div>
         );
     }
+
     renderAsTable() {
         return (
             <div>
                 <strong>{this.props.session.name}</strong>
-                <Table className={this.props.editable?"datagrid-custom unselectable":"datagrid-custom"} >
+                <Table className={this.props.editable ? "datagrid-custom unselectable" : "datagrid-custom"}>
                     <tbody>
-                    {this.props.data.map((x,i) =>
-                        <tr key={i}>{x.map((y,j) =>
-                            <td onClick={() => this.select(i,j)} colSpan={y.colSpan} className={(this.state.swapee === y)?y.className+" selected":y.className} key={j}>{y.value}</td>)
+                    {this.props.data.map((x, i) =>
+                        <tr key={i}>{x.map((y, j) =>
+                            <td onClick={() => this.select(i, j)} colSpan={y.colSpan}
+                                className={(this.state.swapee === y) ? y.className + " selected" : y.className}
+                                key={j}>{y.value}</td>)
                         }</tr>)
                     }
                     </tbody>

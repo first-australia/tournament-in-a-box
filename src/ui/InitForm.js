@@ -4,7 +4,7 @@ import NumberInput from '../inputs/NumberInput';
 import BooleanInput from '../inputs/BooleanInput';
 import DateTimeInput from '../inputs/DateTimeInput';
 
-import { Container, Form, Table } from 'reactstrap';
+import {Container, Form, Table} from 'reactstrap';
 
 import ReactDataSheet from 'react-datasheet';
 import TextAreaInput from "../inputs/TextAreaInput";
@@ -31,11 +31,12 @@ export default class InitForm extends React.Component {
 
         this.handleChange = this.handleChange.bind(this);
     }
+
     getDataGrid() {
         let grid = [];
         for (let i = 0; i < this.props.event.days.length; i++) {
             grid.push([]);
-            grid[i].push({value: "Name of Day " + (i+1), readOnly: true});
+            grid[i].push({value: "Name of Day " + (i + 1), readOnly: true});
             grid[i].push({value: this.props.event.days[i]});
         }
         return grid;
@@ -46,21 +47,25 @@ export default class InitForm extends React.Component {
         data.title = newTitle;
         this.handleChange(data);
     }
+
     updateNTeams(newN) {
         let data = this.props.event;
         data.nTeams = newN;
         this.handleChange(data);
     }
+
     updateNPracs(newN) {
         let data = this.props.event;
         data.nPracs = newN;
         this.handleChange(data);
     }
+
     updateStartTime(newTime) {
         let data = this.props.event;
         data.startTime = newTime;
         this.handleChange(data);
     }
+
     updateEndTime(newTime) {
         let data = this.props.event;
         data.endTime = newTime;
@@ -85,7 +90,7 @@ export default class InitForm extends React.Component {
     updateNDays(value) {
         let E = this.props.event;
         E.nDays = value;
-        E.endTime.mins = (E.endTime.mins % (24*60)) + ((value-1)*24*60);
+        E.endTime.mins = (E.endTime.mins % (24 * 60)) + ((value - 1) * 24 * 60);
         this.setState({grid: this.getDataGrid()});
         this.handleChange(E);
     }
@@ -117,11 +122,16 @@ export default class InitForm extends React.Component {
             <Container>
                 <Form onSubmit={this.handleSubmit}>
                     <TextInput large label="Title: " value={this.props.event.title} onChange={this.updateTitle}/>
-                    <NumberInput large min="4" label="Number of teams: " value={this.props.event.nTeams} onChange={this.updateNTeams}/>
-                    <NumberInput large min="2" step="2" label="Number of competition tables: " value={this.props.event.nTables} onChange={this.updateNTables}/>
-                    <NumberInput large min="0" step="1" label="Number of practice rounds: " value={this.props.event.nPracs} onChange={this.updateNPracs}/>
-                    <BooleanInput label="Pilot judging program?" large value={this.props.event.pilot} onChange={this.updatePilot}/>
-                    <NumberInput label="Number of days" large min={1} value={this.props.event.days.length} onChange={this.updateNDays}/>
+                    <NumberInput large min="4" label="Number of teams: " value={this.props.event.nTeams}
+                                 onChange={this.updateNTeams}/>
+                    <NumberInput large min="2" step="2" label="Number of competition tables: "
+                                 value={this.props.event.nTables} onChange={this.updateNTables}/>
+                    <NumberInput large min="0" step="1" label="Number of practice rounds: "
+                                 value={this.props.event.nPracs} onChange={this.updateNPracs}/>
+                    <BooleanInput label="Pilot judging program?" large value={this.props.event.pilot}
+                                  onChange={this.updatePilot}/>
+                    <NumberInput label="Number of days" large min={1} value={this.props.event.days.length}
+                                 onChange={this.updateNDays}/>
                     <ReactDataSheet
                         data={this.state.grid}
                         valueRenderer={(cell) => cell.value}
@@ -134,9 +144,13 @@ export default class InitForm extends React.Component {
                         )}
                         onCellsChanged={(changes) => this.updateDays(changes)}
                     />
-                    <DateTimeInput large label="Start time: " value={this.props.event.startTime} onChange={this.updateStartTime}/>
-                    <DateTimeInput large label="End time: " value={this.props.event.endTime} onChange={this.updateEndTime}/>
-                    <TextAreaInput large label="Team names:" rows={10} placeholder="List of teams: (Name) OR (Number,Name) OR (Number,Name,Affiliation) OR (Number,Name,Affiliation,Pit)" onChange={this.updateTeamNames}/>
+                    <DateTimeInput large label="Start time: " value={this.props.event.startTime}
+                                   onChange={this.updateStartTime}/>
+                    <DateTimeInput large label="End time: " value={this.props.event.endTime}
+                                   onChange={this.updateEndTime}/>
+                    <TextAreaInput large label="Team names:" rows={10}
+                                   placeholder="List of teams: (Name) OR (Number,Name) OR (Number,Name,Affiliation) OR (Number,Name,Affiliation,Pit)"
+                                   onChange={this.updateTeamNames}/>
                 </Form>
             </Container>
         );

@@ -3,7 +3,7 @@ import TextInput from '../inputs/TextInput'
 import NumberInput from '../inputs/NumberInput'
 import BooleanInput from '../inputs/BooleanInput'
 
-import { Container, Table } from 'reactstrap';
+import {Container, Table} from 'reactstrap';
 
 import ReactDataSheet from 'react-datasheet';
 
@@ -30,7 +30,7 @@ export default class BasicsForm extends React.Component {
         let grid = [];
         for (let i = 0; i < this.props.event.days.length; i++) {
             grid.push([]);
-            grid[i].push({value: "Day " + (i+1), readOnly: true});
+            grid[i].push({value: "Day " + (i + 1), readOnly: true});
             grid[i].push({value: this.props.event.days[i]});
         }
         return grid;
@@ -41,21 +41,25 @@ export default class BasicsForm extends React.Component {
         data.title = newTitle;
         this.handleChange(data);
     }
+
     updateMinTravel(value) {
         let data = this.props.event;
         data.minTravel = value;
         this.handleChange(data);
     }
+
     updateJudgesAwards(value) {
         let data = this.props.event;
         data.judgesAwards = value;
         this.handleChange(data);
     }
+
     updateConsolidatedAwards(value) {
         let data = this.props.event;
         data.consolidatedAwards = value;
         this.handleChange(data);
     }
+
     updateExtraTime(value) {
         let data = this.props.event;
         data.extraTime = value;
@@ -109,11 +113,15 @@ export default class BasicsForm extends React.Component {
         return (
             <Container>
                 <TextInput large label="Title: " value={this.props.event.title} onChange={this.updateTitle}/>
-                <BooleanInput large label="Consolidated awards?" value={this.props.event.consolidatedAwards} onChange={this.updateConsolidatedAwards}/>
-                <NumberInput large label="Number of judges awards" value={this.props.event.judgesAwards} onChange={this.updateJudgesAwards} min={0}/>
-                {this.props.cosmetic || <NumberInput label="Min. travel (mins)" large value={this.props.event.minTravel} onChange={this.updateMinTravel}/>}
+                <BooleanInput large label="Consolidated awards?" value={this.props.event.consolidatedAwards}
+                              onChange={this.updateConsolidatedAwards}/>
+                <NumberInput large label="Number of judges awards" value={this.props.event.judgesAwards}
+                             onChange={this.updateJudgesAwards} min={0}/>
+                {this.props.cosmetic || <NumberInput label="Min. travel (mins)" large value={this.props.event.minTravel}
+                                                     onChange={this.updateMinTravel}/>}
                 {(this.props.advanced && !this.props.cosmetic) &&
-                    <NumberInput label="Extra time (mins)" large value={this.props.event.extraTime} onChange={this.updateExtraTime}/>}
+                <NumberInput label="Extra time (mins)" large value={this.props.event.extraTime}
+                             onChange={this.updateExtraTime}/>}
                 {dayInput}
             </Container>
         );

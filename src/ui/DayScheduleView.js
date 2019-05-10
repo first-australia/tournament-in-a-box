@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Table } from 'reactstrap';
+import {Table} from 'reactstrap';
 
 export default class DayScheduleView extends React.Component {
     constructor(props) {
@@ -11,11 +11,13 @@ export default class DayScheduleView extends React.Component {
 
     getItems() {
         let sessions = this.props.event.sessions;
-        let sorted = sessions.sort((a,b) => { return a.actualStartTime.mins - b.actualStartTime.mins});
+        let sorted = sessions.sort((a, b) => {
+            return a.actualStartTime.mins - b.actualStartTime.mins
+        });
         let items = [];
         for (let i = 0; i < sorted.length; i++) {
             items.push({
-                _id: i+1,
+                _id: i + 1,
                 sTime: sorted[i].actualStartTime.time,
                 eTime: sorted[i].actualEndTime.time,
                 contents: sorted[i].name
@@ -28,24 +30,24 @@ export default class DayScheduleView extends React.Component {
         let items = this.getItems();
         return (<div>
             <Table>
-            <thead>
+                <thead>
                 <tr>
                     <th>Start</th>
                     <th>End</th>
                     <th>Event</th>
                 </tr>
-            </thead>
-            <tbody>
-            {items.map(x => {
-                return (
-                    <tr key={x._id}>
-                        <td>{x.sTime}</td>
-                        <td>{x.eTime}</td>
-                        <td>{x.contents}</td>
-                    </tr>);
-            })}
-            </tbody>
-        </Table>
+                </thead>
+                <tbody>
+                {items.map(x => {
+                    return (
+                        <tr key={x._id}>
+                            <td>{x.sTime}</td>
+                            <td>{x.eTime}</td>
+                            <td>{x.contents}</td>
+                        </tr>);
+                })}
+                </tbody>
+            </Table>
         </div>)
     }
 }

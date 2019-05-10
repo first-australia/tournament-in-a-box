@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDataSheet from 'react-datasheet';
 
-import { Table } from 'reactstrap';
+import {Table} from 'reactstrap';
 
 
 export default class IndivScheduleView extends React.Component {
@@ -29,10 +29,10 @@ export default class IndivScheduleView extends React.Component {
         return (
             <div>
                 <strong>Individual Schedules</strong>
-                <Table className={"datagrid-custom"} >
+                <Table className={"datagrid-custom"}>
                     <tbody>
-                    {this.props.data.map((x,i) =>
-                        <tr key={i}>{x.map((y,j) =>
+                    {this.props.data.map((x, i) =>
+                        <tr key={i}>{x.map((y, j) =>
                             <td colSpan={y.colSpan} className={y.className} key={j}>{y.value}</td>)
                         }</tr>)
                     }

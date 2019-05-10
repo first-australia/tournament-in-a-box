@@ -1,8 +1,8 @@
-import { TYPES } from '../api/SessionTypes';
-import { DateTime } from '../api/DateTime';
+import {TYPES} from '../api/SessionTypes';
+import {DateTime} from '../api/DateTime';
 
 import Instance from './Instance';
-import { shuffle, hasDone } from './utilities';
+import {shuffle, hasDone} from './utilities';
 
 export class Scheduler {
     constructor(E) {
@@ -26,24 +26,24 @@ export class Scheduler {
         this.event.sessions.forEach(session => {
             session.errors = 0;
             session.schedule.forEach(instance => {
-                session.errors += (instance.teams.length-instance.teams.filter(t=>t).length);
+                session.errors += (instance.teams.length - instance.teams.filter(t => t).length);
             });
             this.event.errors += session.errors;
         });
         // Adelaide Ken bug: Teams getting assigned weirdly. Count the number of these errors.
         this.event.teams.forEach(team => {
-          for (let j = 0; j < team.schedule.length; j++) {
-              if (team.schedule[j].teams.indexOf(team.id) === -1) {
-                  this.event.errors++;
-              }
-          }
+            for (let j = 0; j < team.schedule.length; j++) {
+                if (team.schedule[j].teams.indexOf(team.id) === -1) {
+                    this.event.errors++;
+                }
+            }
         });
     }
 
     buildAllTables() {
         this.empty();
         let willWork = null;
-        this.event.sessions.sort((a,b) => {
+        this.event.sessions.sort((a, b) => {
             if (a.id === b.id) {
                 if (a.type.priority === b.type.priority) return a.startTime.mins - b.startTime.mins;
                 return a.type.priority - b.type.priority;
@@ -53,11 +53,11 @@ export class Scheduler {
         });
         this.event.sessions.forEach((session) => {
             // Make sure the start time isn't in a break
-            if (session.type !== TYPES.BREAK) session.actualStartTime.mins = this.event.timeInc(session.startTime,0,session.id);
+            if (session.type !== TYPES.BREAK) session.actualStartTime.mins = this.event.timeInc(session.startTime, 0, session.id);
             let end = -Infinity;
             if (!(session.type === TYPES.MATCH_ROUND || session.type === TYPES.MATCH_ROUND_PRACTICE)) {
                 end = this.tableSession(session);
-                session.actualEndTime.mins=end;
+                session.actualEndTime.mins = end;
                 if (session.type !== TYPES.BREAK && end > session.endTime.mins) {
                     if (willWork) willWork = willWork + ", " + session.name;
                     else willWork = session.name;
@@ -68,11 +68,11 @@ export class Scheduler {
         let end = -Infinity;
         let offset = 0;
         let locOffset = 0;
-        this.event.sessions.filter(s=>s.type===T).forEach((session) => {
+        this.event.sessions.filter(s => s.type === T).forEach((session) => {
             if (session.actualStartTime.mins < end) session.actualStartTime.mins = end;
             end = this.tableSession(session, offset, locOffset);
             session.actualEndTime.mins = end;
-            if (session.schedule[session.schedule.length-1].loc === 0) locOffset = 1;
+            if (session.schedule[session.schedule.length - 1].loc === 0) locOffset = 1;
             else locOffset = 0;
             offset += session.schedule.length;
             if (end > session.endTime.mins) {
@@ -81,11 +81,11 @@ export class Scheduler {
             }
         });
         T = TYPES.MATCH_ROUND;
-        this.event.sessions.filter(s=>s.type===T).forEach((session) => {
+        this.event.sessions.filter(s => s.type === T).forEach((session) => {
             if (session.actualStartTime.mins < end) session.actualStartTime.mins = end;
             end = this.tableSession(session, offset, locOffset);
             session.actualEndTime.mins = end;
-            if (session.schedule[session.schedule.length-1].loc === 0) locOffset = 1;
+            if (session.schedule[session.schedule.length - 1].loc === 0) locOffset = 1;
             else locOffset = 0;
             offset += session.schedule.length;
             if (end > session.endTime.mins) {
@@ -100,7 +100,7 @@ export class Scheduler {
      numOffset: offset at which to start counting (facilitates round numbering)
      @return Returns the time the schedule is finished (i.e. the end time of the last event)
      */
-    tableSession(session, numOffset=0, locD=0) {
+    tableSession(session, numOffset = 0, locD = 0) {
         let teams = [];
         this.event.teams.forEach(team => {
             if (session.type !== TYPES.JUDGING || !team.excludeJudging) teams.push(team);
@@ -109,46 +109,46 @@ export class Scheduler {
         let now = new DateTime(session.actualStartTime.mins);
         let L = Math.ceil(teams.length / session.nSims);
         let lastNTeams = (teams.length % session.nSims);
-        lastNTeams = (lastNTeams===0) ? session.nSims : lastNTeams;
+        lastNTeams = (lastNTeams === 0) ? session.nSims : lastNTeams;
         session.schedule = new Array(L);
 
         // Figure out how many rounds to make extra long
-        let everyN = (session.extraTimeEvery>0)?session.extraTimeEvery:Infinity;
-        let extraTimeTeams = teams.filter(x=>x.extraTime).length;
+        let everyN = (session.extraTimeEvery > 0) ? session.extraTimeEvery : Infinity;
+        let extraTimeTeams = teams.filter(x => x.extraTime).length;
 
         let roundsSinceExtra = 0;
         let flag = false;
 
-        let extraRoundsNeeded = Math.ceil(extraTimeTeams/session.nSims);
-        let extraRoundsMade = ((session.extraTimeFirst)?1:0) +((session.extraTimeEvery>0)?L/everyN:0);
+        let extraRoundsNeeded = Math.ceil(extraTimeTeams / session.nSims);
+        let extraRoundsMade = ((session.extraTimeFirst) ? 1 : 0) + ((session.extraTimeEvery > 0) ? L / everyN : 0);
         if (extraRoundsMade < extraRoundsNeeded) {
-            everyN = (L+1)/(extraRoundsNeeded+1);
-            everyN += Math.round(Math.random()*2);
-            roundsSinceExtra += Math.floor(Math.random()*L);
+            everyN = (L + 1) / (extraRoundsNeeded + 1);
+            everyN += Math.round(Math.random() * 2);
+            roundsSinceExtra += Math.floor(Math.random() * L);
             flag = true;
         }
         let extraRounds = 0;
         if (session.type === TYPES.BREAK) everyN = Infinity;
         for (let i = 0; i < L; i++) {
-            let d = Math.floor(session.nLocs/session.nSims);
-            let locOffset = ((i+locD)%d)*session.nSims;
-            if ((i%L) < L-1) {
+            let d = Math.floor(session.nLocs / session.nSims);
+            let locOffset = ((i + locD) % d) * session.nSims;
+            if ((i % L) < L - 1) {
                 // Check that the schedule will finish...
                 let whenDone = this.event.timeInc(now, session.len, session.id);
                 if (whenDone !== (now.mins + session.len)) now = new DateTime(whenDone);
-                session.schedule[i] = new Instance(session.id,i+1+numOffset,now,new Array(session.nSims),locOffset);
-                now = new DateTime(this.event.timeInc(now,session.len+session.buf-session.overlap,session.id));
+                session.schedule[i] = new Instance(session.id, i + 1 + numOffset, now, new Array(session.nSims), locOffset);
+                now = new DateTime(this.event.timeInc(now, session.len + session.buf - session.overlap, session.id));
                 roundsSinceExtra++;
                 if ((i === 0 && session.extraTimeFirst) || (roundsSinceExtra >= everyN)) {
                     if (!(flag && extraRounds >= extraRoundsNeeded)) {
                         session.schedule[i].extra = true;
-                        now = new DateTime(this.event.timeInc(now,this.event.extraTime,session.id));
+                        now = new DateTime(this.event.timeInc(now, this.event.extraTime, session.id));
                         roundsSinceExtra = 0;
                         extraRounds++;
                     }
                 }
             } else {
-                session.schedule[i] = new Instance(session.id,i+1+numOffset,now,new Array(lastNTeams),locOffset);
+                session.schedule[i] = new Instance(session.id, i + 1 + numOffset, now, new Array(lastNTeams), locOffset);
                 now = new DateTime(now.mins + session.len + session.buf - session.overlap);
                 roundsSinceExtra++;
                 if (roundsSinceExtra >= everyN) {
@@ -191,21 +191,21 @@ export class Scheduler {
             shuffle(oneSetOfTeams).forEach(team => {
                 if (session.type !== TYPES.JUDGING || !team.excludeJudging) teams.push(team);
             });
-            session.schedule.forEach(instance => this.fillInstance(instance,teams));
+            session.schedule.forEach(instance => this.fillInstance(instance, teams));
         });
     }
 
-    fillInstance(instance,teams) {
+    fillInstance(instance, teams) {
         for (let t = 0; t < instance.teams.length; t++) {
             let T = -1;
             for (let k = 0; k < teams.length; k++) {
-                if (this.event.canDo(teams[k],instance)) {
+                if (this.event.canDo(teams[k], instance)) {
                     T = k;
                     break;
                 }
             }
             if (T !== -1) {
-                let team = teams.splice(T,1)[0];
+                let team = teams.splice(T, 1)[0];
                 instance.teams[t] = team.id;
                 team.schedule.push(instance);
             }
@@ -236,8 +236,8 @@ export class Scheduler {
         let fixed = 0;
         // Make list of teams that aren't in this session enough (lost set)
         let lostTeams = [];
-        for (let i = 0; i < teams.length ; i++)
-            if (hasDone(teams[i],session.id) < session.instances) lostTeams.push(teams[i]);
+        for (let i = 0; i < teams.length; i++)
+            if (hasDone(teams[i], session.id) < session.instances) lostTeams.push(teams[i]);
         // Find every empty slot in the schedule
         session.schedule.forEach(instance_A => {
             for (let j = 0; j < instance_A.teams.length; j++) {

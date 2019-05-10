@@ -1,10 +1,10 @@
 import React from 'react';
 // import ReactDOM from 'react-dom';
-import { TYPES } from '../api/SessionTypes';
+import {TYPES} from '../api/SessionTypes';
 
 import MdRemoveCircleOutline from 'react-icons/lib/md/remove-circle-outline';
 
-import { Form, Table, Button } from 'reactstrap';
+import {Form, Table, Button} from 'reactstrap';
 import TextInput from '../inputs/TextInput';
 import DateTimeInput from "../inputs/DateTimeInput";
 import NumberInput from "../inputs/NumberInput";
@@ -53,7 +53,7 @@ export default class SessionForm extends React.Component {
     updateLen(value) {
         let S = this.props.session;
         S.len = value;
-        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf)*S.nSims/S.nLocs));
+        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf) * S.nSims / S.nLocs));
         this.props.onChange(S);
     }
 
@@ -61,7 +61,7 @@ export default class SessionForm extends React.Component {
         let S = this.props.session;
 
         // If overlap means matches will happen too quickly, don't update it.
-        if (value > (S.len + S.buf) - (S.len + S.buf)*S.nSims/S.nLocs) {
+        if (value > (S.len + S.buf) - (S.len + S.buf) * S.nSims / S.nLocs) {
             alert("Overlap is too large");
         } else {
             S.overlap = value;
@@ -72,14 +72,14 @@ export default class SessionForm extends React.Component {
     updateBuf(value) {
         let S = this.props.session;
         S.buf = value;
-        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf)*S.nSims/S.nLocs));
+        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf) * S.nSims / S.nLocs));
         this.props.onChange(S);
     }
 
     updateNSims(value) {
         let S = this.props.session;
         S.nSims = value;
-        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf)*S.nSims/S.nLocs));
+        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf) * S.nSims / S.nLocs));
         this.props.onChange(S);
     }
 
@@ -93,7 +93,7 @@ export default class SessionForm extends React.Component {
         let S = this.props.session;
         S.nLocs = value;
 
-        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf)*S.nSims/S.nLocs));
+        S.overlap = Math.floor(Math.min(S.overlap, (S.len + S.buf) - (S.len + S.buf) * S.nSims / S.nLocs));
         this.setState({grid: this.getDataGrid()});
         this.props.onChange(S);
     }
@@ -114,7 +114,7 @@ export default class SessionForm extends React.Component {
         let grid = [];
         for (let i = 0; i < this.props.session.nLocs; i++) {
             grid.push([]);
-            grid[i].push({value: "Name of " + this.props.session.type.defaultLocs + " " + (i+1), readOnly: true});
+            grid[i].push({value: "Name of " + this.props.session.type.defaultLocs + " " + (i + 1), readOnly: true});
             grid[i].push({value: this.props.session.locations[i]});
         }
         return grid;
@@ -136,7 +136,7 @@ export default class SessionForm extends React.Component {
     }
 
     handleDelete() {
-      this.props.onDelete(this.props.session);
+        this.props.onDelete(this.props.session);
     }
 
     render() {
@@ -174,7 +174,8 @@ export default class SessionForm extends React.Component {
                         <DateTimeInput label={"Start time" + ((truth) ? "*" : "")} value={this.props.session.startTime}
                                        onChange={this.updateStartTime}/>
                         <DateTimeInput label="Will be done by" immutable={this.props.session.type !== TYPES.BREAK}
-                                       value={(this.props.session.type !== TYPES.BREAK)?this.props.session.actualEndTime:this.props.session.endTime} onChange={this.updateEndTime}/>
+                                       value={(this.props.session.type !== TYPES.BREAK) ? this.props.session.actualEndTime : this.props.session.endTime}
+                                       onChange={this.updateEndTime}/>
                         {this.props.session.type !== TYPES.BREAK &&
                         <NumberInput label="Duration (mins)" min={1} value={this.props.session.len}
                                      onChange={this.updateLen}/>}
@@ -200,7 +201,7 @@ export default class SessionForm extends React.Component {
                         {this.props.advanced && this.props.session.type === TYPES.BREAK &&
                         <BooleanInput label="Apply to practice times?" value={this.props.session.noPractice}
                                       onChange={this.updateNoprac}/>}
-                        {this.props.advanced && this.props.session.type !== TYPES.BREAK  &&
+                        {this.props.advanced && this.props.session.type !== TYPES.BREAK &&
                         <NumberInput label="Extra time every N" value={this.props.session.extraTimeEvery} min={0}
                                      onChange={this.updateExtraEvery}/>}
                         {this.props.session.type !== TYPES.BREAK && <strong>Locations</strong>}
@@ -220,7 +221,8 @@ export default class SessionForm extends React.Component {
                         <Button color='primary' onClick={this.props.onToggle}>Break applies to...</Button>}
                         {truth && <span>* Will actually start at {this.props.session.actualStartTime.time}</span>}
                         <br/>
-                        {this.props.advanced && <Button onClick={this.handleDelete} color='danger'><MdRemoveCircleOutline/> Delete</Button>}
+                        {this.props.advanced &&
+                        <Button onClick={this.handleDelete} color='danger'><MdRemoveCircleOutline/> Delete</Button>}
 
                     </Form>
                     <br/>

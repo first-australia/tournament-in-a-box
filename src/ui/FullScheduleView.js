@@ -5,9 +5,9 @@ import VolunteerView from "./VolunteerView";
 import SponsorView from "./SponsorView";
 import OutputGenView from "./OutputGenView";
 
-import { TYPES } from "../api/SessionTypes";
+import {TYPES} from "../api/SessionTypes";
 
-import { Container, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane } from 'reactstrap';
+import {Container, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane} from 'reactstrap';
 import SessionForm from "./SessionForm";
 import BasicsForm from "./BasicsForm";
 import TeamList from '../inputs/TeamList';
@@ -65,6 +65,7 @@ export default class FullScheduleView extends React.Component {
     updateDays(T) {
 
     }
+
     //TODO make cosmetic
     updateTeams(T) {
         let E = this.props.event;
@@ -101,43 +102,55 @@ export default class FullScheduleView extends React.Component {
                 <Nav pills>
                     {/*<NavItem><NavLink>{this.props.event.errors} error{this.props.event.errors !== 1 && "s"}</NavLink></NavItem>*/}
                     {/*<NavItem>*/}
-                        {/*<NavLink href="#" className={(this.state.activeTab === 'display') ? "active" : ""}*/}
-                                 {/*onClick={() => { this.toggle('display')}}>*/}
-                            {/*Display Parameters*/}
-                        {/*</NavLink>*/}
+                    {/*<NavLink href="#" className={(this.state.activeTab === 'display') ? "active" : ""}*/}
+                    {/*onClick={() => { this.toggle('display')}}>*/}
+                    {/*Display Parameters*/}
+                    {/*</NavLink>*/}
                     {/*</NavItem>*/}
                     <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'sessions') ? "active" : ""}
-                                 onClick={() => { this.toggle('sessions')}}>
+                                 onClick={() => {
+                                     this.toggle('sessions')
+                                 }}>
                             Session schedules
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'indiv') ? "active" : ""}
-                                 onClick={() => { this.toggle('indiv')}}>
+                                 onClick={() => {
+                                     this.toggle('indiv')
+                                 }}>
                             Individual schedules
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'vols') ? "active" : ""}
-                                 onClick={() => { this.toggle('vols')}}>
+                                 onClick={() => {
+                                     this.toggle('vols')
+                                 }}>
                             Volunteers
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'sponsors') ? "active" : ""}
-                                 onClick={() => { this.toggle('sponsors')}}>
+                                 onClick={() => {
+                                     this.toggle('sponsors')
+                                 }}>
                             Sponsors
                         </NavLink>
                     </NavItem>
                     <NavItem>
                         <NavLink href="#" className={(this.state.activeTab === 'outputs') ? "active" : ""}
-                                 onClick={() => { this.toggle('outputs')}}>
+                                 onClick={() => {
+                                     this.toggle('outputs')
+                                 }}>
                             Generate Outputs
                         </NavLink>
                     </NavItem>
                     {(this.props.event.errors === 0 && this.state.activeTab === 'sessions') ? <NavItem>
-                        <div onClick={this.toggleEditable}><small className="not-text">Editable</small>&nbsp;
+                        <div onClick={this.toggleEditable}>
+                            <small className="not-text">Editable</small>
+                            &nbsp;
                             <ToggleButton value={this.state.editable} onToggle={this.toggleEditable}/></div>
                     </NavItem> : ""}
 
@@ -153,12 +166,18 @@ export default class FullScheduleView extends React.Component {
                     <TabPane tabId='sessions'>
                         &nbsp;
                         <Row>
-                            {this.getItems().filter(x=>x.type !== TYPES.BREAK)
-                                .sort((a,b)=>{return a.type.priority-b.type.priority})
-                                .map(x => { return (
-                                    <Col sm="12" md="6" key={x.id} >
-                                        <SingleScheduleView id={x.id} data={this.props.event.getSessionDataGrid(x.id)} editable={this.state.editable} onSwap={this.onSwap} session={x}/>
-                                    </Col>);
+                            {this.getItems().filter(x => x.type !== TYPES.BREAK)
+                                .sort((a, b) => {
+                                    return a.type.priority - b.type.priority
+                                })
+                                .map(x => {
+                                    return (
+                                        <Col sm="12" md="6" key={x.id}>
+                                            <SingleScheduleView id={x.id}
+                                                                data={this.props.event.getSessionDataGrid(x.id)}
+                                                                editable={this.state.editable} onSwap={this.onSwap}
+                                                                session={x}/>
+                                        </Col>);
                                 })}
                         </Row>
                     </TabPane>
@@ -172,7 +191,8 @@ export default class FullScheduleView extends React.Component {
                         <SponsorView data={this.props.event} handleChange={this.updateSponsors}/>
                     </TabPane>
                     <TabPane tabId='outputs'>
-                        <OutputGenView data={this.props.event} save={this.props.save} handleChange={this.updatePDFSettings}/>
+                        <OutputGenView data={this.props.event} save={this.props.save}
+                                       handleChange={this.updatePDFSettings}/>
                     </TabPane>
                 </TabContent>
             </Container>

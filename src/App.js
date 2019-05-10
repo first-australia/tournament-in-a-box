@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
+import React, {Component} from 'react';
 
 
 import InitForm from './ui/InitForm'
-import { EventParams } from "./api/EventParams";
+import {EventParams} from "./api/EventParams";
 import DetailView from "./ui/DetailView";
 import TopBar from './ui/TopBar';
-import { DateTime } from './api/DateTime';
+import {DateTime} from './api/DateTime';
 
-import { Scheduler } from './scheduling/Scheduler';
+import {Scheduler} from './scheduling/Scheduler';
 
-import { freeze, thaw, saveToFile_json} from './scheduling/utilities';
+import {freeze, thaw, saveToFile_json} from './scheduling/utilities';
 
-import { Container, Jumbotron, Button, Row, Col } from 'reactstrap';
+import {Container, Jumbotron, Button, Row, Col} from 'reactstrap';
 import DayScheduleView from "./ui/DayScheduleView";
 import FullScheduleView from "./ui/FullScheduleView";
 
@@ -30,11 +30,11 @@ class App extends Component {
         this.state = {
             display: 'Initialise',
             version: Package.version,
-            eventParams: new EventParams( Package.version,
-                "2018 FLL Competition", 24, new DateTime(8.5*60), new DateTime(17*60)),
+            eventParams: new EventParams(Package.version,
+                "2018 FLL Competition", 24, new DateTime(8.5 * 60), new DateTime(17 * 60)),
             processing: false
         };
-        this.initSchedule= this.initSchedule.bind(this);
+        this.initSchedule = this.initSchedule.bind(this);
         this.handleScheduleChange = this.handleScheduleChange.bind(this);
         this.customise = this.customise.bind(this);
         this.generate = this.generate.bind(this);
@@ -45,7 +45,7 @@ class App extends Component {
     }
 
     initSchedule(initState) {
-        let E = new EventParams( this.state.version,
+        let E = new EventParams(this.state.version,
             initState.title, initState.nTeams, initState.startTime, initState.endTime);
 
         this.setState({
@@ -83,36 +83,36 @@ class App extends Component {
                 S.evaluate();
             } while (this.state.eventParams.errors > 0 && count-- > 0);
             if (this.state.eventParams.errors > 0) alert("Schedule generated with errors! Please adjust parameters");
-            this.setState ({display: 'Review'});
+            this.setState({display: 'Review'});
             this.state.eventParams.buildVolunteerSheet();
             this.setState({processing: false});
             window.scrollTo(0, 0);
         }), 50);
     }
 
-    onSave(fname,zip) {
-      let filename=fname;
-      let json_str = JSON.stringify(this.state,freeze);
-      if (!filename) filename = this.state.eventParams.title.replace(/ /g, '_');
-      if (zip) {
-        try {
-          zip.file(filename+".schedule", new Blob([json_str], {type : 'application/json'}));
-        } catch (err) {
-            alert("Error saving: " + filename + ".csv ; " + err.message);
+    onSave(fname, zip) {
+        let filename = fname;
+        let json_str = JSON.stringify(this.state, freeze);
+        if (!filename) filename = this.state.eventParams.title.replace(/ /g, '_');
+        if (zip) {
+            try {
+                zip.file(filename + ".schedule", new Blob([json_str], {type: 'application/json'}));
+            } catch (err) {
+                alert("Error saving: " + filename + ".csv ; " + err.message);
+            }
+        } else {
+            saveToFile_json(filename + ".schedule", json_str);
         }
-      } else {
-          saveToFile_json(filename+".schedule",json_str);
-      }
-      // let json_str = JSON.stringify(this.state.eventParams,freeze);
-      // Write to file
+        // let json_str = JSON.stringify(this.state.eventParams,freeze);
+        // Write to file
     }
 
     onLoad(json_str) {
-      let E = JSON.parse(json_str,thaw);
-      console.log(E);
-      // let disp = 'Customise';
-      // if (E.schedule !== null) disp = 'Review';
-      this.setState(E);
+        let E = JSON.parse(json_str, thaw);
+        console.log(E);
+        // let disp = 'Customise';
+        // if (E.schedule !== null) disp = 'Review';
+        this.setState(E);
     }
 
     updatePDFSettings(S) {
@@ -148,7 +148,7 @@ class App extends Component {
                     </h1>
                     <InitForm event={this.state.eventParams} onChange={this.handleScheduleChange}/>
                     <Button color="warning" onClick={this.customise}>Customise</Button>&nbsp;
-                    <Button color="success" onClick={()=> {
+                    <Button color="success" onClick={() => {
                         this.state.eventParams.populateFLL();
                         this.generate();
                     }}>{this.state.processing ? "Generating..." : "Generate"}</Button>
@@ -161,7 +161,8 @@ class App extends Component {
                     <Col lg="3">
                         &nbsp;
                         <br/>
-                        <Button color="success" onClick={this.generate}>{this.state.processing ? "Generating..." : "Run Schedule Generation"}</Button>
+                        <Button color="success"
+                                onClick={this.generate}>{this.state.processing ? "Generating..." : "Run Schedule Generation"}</Button>
                         <br/>
                         &nbsp;
                         <DayScheduleView event={this.state.eventParams}/>
@@ -179,14 +180,16 @@ class App extends Component {
                     <Col lg="3">
                         &nbsp;
                         <br/>
-                        <Button color="warning" onClick={() => this.setState({display: 'Customise'})}>Change parameters</Button>&nbsp;
+                        <Button color="warning" onClick={() => this.setState({display: 'Customise'})}>Change
+                            parameters</Button>&nbsp;
                         <br/>
                         &nbsp;
                         <DayScheduleView event={this.state.eventParams}/>
                     </Col>
                     <Col lg="9">
                         <Jumbotron>
-                            <FullScheduleView event={this.state.eventParams} save={this.onSave} onChange={this.updatePDFSettings} onSwap={this.update}/>
+                            <FullScheduleView event={this.state.eventParams} save={this.onSave}
+                                              onChange={this.updatePDFSettings} onSwap={this.update}/>
                         </Jumbotron>
                     </Col>
                 </Row>
@@ -198,7 +201,7 @@ class App extends Component {
                 {mainWindow}
             </Container>
         );
-  }
+    }
 }
 
 export default App;

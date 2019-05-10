@@ -2,8 +2,8 @@ import React from 'react';
 
 import ReactDataSheet from 'react-datasheet';
 
-import { Table, Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
-import { TeamParams } from '../api/TeamParams';
+import {Table, Button, Modal, ModalHeader, ModalBody, ModalFooter} from 'reactstrap';
+import {TeamParams} from '../api/TeamParams';
 
 import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
 import FaCheckCircleO from "react-icons/lib/fa/check-circle-o";
@@ -21,7 +21,7 @@ export default class TeamList extends React.Component {
             modal: false
         };
 
-        this.toggle=this.toggle.bind(this);
+        this.toggle = this.toggle.bind(this);
 
         this.updateCells = this.updateCells.bind(this);
         this.deleteTeam = this.deleteTeam.bind(this);
@@ -55,8 +55,13 @@ export default class TeamList extends React.Component {
             grid[i].push({value: this.props.teams[i].affiliation});
             grid[i].push({value: this.props.teams[i].pitNum});
             if (this.props.advanced) {
-                grid[i].push({value: this.props.teams[i].excludeJudging ? <FaCheckCircleO size={20}/> : <FaTimesCircleO size={20}/>});
-                grid[i].push({value: this.props.teams[i].extraTime ? <FaCheckCircleO size={20}/> : <FaTimesCircleO size={20}/>});
+                grid[i].push({
+                    value: this.props.teams[i].excludeJudging ? <FaCheckCircleO size={20}/> :
+                        <FaTimesCircleO size={20}/>
+                });
+                grid[i].push({
+                    value: this.props.teams[i].extraTime ? <FaCheckCircleO size={20}/> : <FaTimesCircleO size={20}/>
+                });
                 grid[i].push({value: this.props.teams[i].startTime ? this.props.teams[i].startTime.time : "--"});
                 grid[i].push({value: this.props.teams[i].endTime ? this.props.teams[i].endTime.time : "--"});
             }
@@ -81,7 +86,7 @@ export default class TeamList extends React.Component {
     addTeams() {
         let T = this.props.teams;
         for (let i = 0; i < this.state.toAdd; i++) {
-            T.push(new TeamParams(T.length+1));
+            T.push(new TeamParams(T.length + 1));
         }
         this.props.onChange(T);
         this.setState({grid: this.getDataGrid()});
@@ -89,7 +94,7 @@ export default class TeamList extends React.Component {
 
     deleteTeam(idx) {
         let T = this.props.teams;
-        T.splice(idx,1);
+        T.splice(idx, 1);
         this.props.onChange(T);
         this.setState({grid: this.getDataGrid()});
     }
@@ -100,7 +105,7 @@ export default class TeamList extends React.Component {
         this.props.onChange(T);
     }
 
-    setTeamExtra (b) {
+    setTeamExtra(b) {
         let T = this.props.teams;
         T[this.state.selectedTeam].extraTime = b;
         this.props.onChange(T);
@@ -144,19 +149,19 @@ export default class TeamList extends React.Component {
                 </Modal>
 
                 {this.props.cosmetic || (<div><Button onClick={this.addTeams}><MdAddCircleOutline/> Add</Button>&nbsp;
-                        <input type="number" value={this.state.toAdd} min="1" onChange={this.changeToAdd}/>&nbsp;
-                        team{this.state.toAdd>1 && "s"}&nbsp;
-                        <br/>
-                        Number of teams: {this.props.teams.length}
-                        <br/>
-                    </div>)}
+                    <input type="number" value={this.state.toAdd} min="1" onChange={this.changeToAdd}/>&nbsp;
+                    team{this.state.toAdd > 1 && "s"}&nbsp;
+                    <br/>
+                    Number of teams: {this.props.teams.length}
+                    <br/>
+                </div>)}
                 &nbsp;
-            <ReactDataSheet
-                data={this.getDataGrid()}
-                valueRenderer={(cell) => cell.value}
-                sheetRenderer={(props) => (
-                    <Table className="datagrid-custom">
-                        <thead>
+                <ReactDataSheet
+                    data={this.getDataGrid()}
+                    valueRenderer={(cell) => cell.value}
+                    sheetRenderer={(props) => (
+                        <Table className="datagrid-custom">
+                            <thead>
                             <tr>
                                 <th>Team number</th>
                                 <th>Team name</th>
@@ -169,25 +174,29 @@ export default class TeamList extends React.Component {
                                 {this.props.advanced && <th>Advanced</th>}
                                 {this.props.cosmetic || <th width="20"></th>}
                             </tr>
-                        </thead>
-                        <tbody>
+                            </thead>
+                            <tbody>
                             {props.children}
-                        </tbody>
-                    </Table>
+                            </tbody>
+                        </Table>
                     )}
-                rowRenderer={(props) => (
-                    <tr>
-                        {props.children}
-                        {this.props.advanced && <td className='cell'>
-                            <Button className="btn-sm" onClick={() => {this.setState({selectedTeam:props.row}); this.toggle()}}>Edit...</Button>
-                        </td>}
-                        {this.props.cosmetic || <td className='cell'>
-                            <Button color='danger' className='btn-sm' onClick={() => this.deleteTeam(props.row)}><FaTimesCircleO size={20}/></Button>
-                        </td>}
-                    </tr>
-                )}
-                onCellsChanged={(changes) => this.updateCells(changes)}
-            />
+                    rowRenderer={(props) => (
+                        <tr>
+                            {props.children}
+                            {this.props.advanced && <td className='cell'>
+                                <Button className="btn-sm" onClick={() => {
+                                    this.setState({selectedTeam: props.row});
+                                    this.toggle()
+                                }}>Edit...</Button>
+                            </td>}
+                            {this.props.cosmetic || <td className='cell'>
+                                <Button color='danger' className='btn-sm'
+                                        onClick={() => this.deleteTeam(props.row)}><FaTimesCircleO size={20}/></Button>
+                            </td>}
+                        </tr>
+                    )}
+                    onCellsChanged={(changes) => this.updateCells(changes)}
+                />
             </div>
         )
     }

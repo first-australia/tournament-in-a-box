@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Input, Col, FormGroup, Label } from 'reactstrap';
+import {Input, Col, FormGroup, Label} from 'reactstrap';
 import uniqueId from 'react-html-id'
 
 export default class TextInput extends React.Component {
@@ -19,8 +19,9 @@ export default class TextInput extends React.Component {
     render() {
         return (
             <FormGroup row>
-                <Label hidden={this.props.nolabel} sm={this.props.large? 2 : 6} for={this.nextUniqueId()}>{this.props.label}</Label>
-                <Col sm={this.props.nolabel ? 12 : this.props.large? 10 : 6}>
+                <Label hidden={this.props.nolabel} sm={this.props.large ? 2 : 6}
+                       for={this.nextUniqueId()}>{this.props.label}</Label>
+                <Col sm={this.props.nolabel ? 12 : this.props.large ? 10 : 6}>
                     <Input type="text" id={this.lastUniqueId()} value={this.props.value} onChange={this.handleChange}/>
                 </Col>
             </FormGroup>

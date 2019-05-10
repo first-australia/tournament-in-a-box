@@ -1,6 +1,18 @@
 import React from 'react';
 
-import { Navbar, NavbarBrand, NavbarToggler, Collapse, Nav, NavItem, NavLink, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
+import {
+    Navbar,
+    NavbarBrand,
+    NavbarToggler,
+    Collapse,
+    Nav,
+    NavItem,
+    NavLink,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
+} from 'reactstrap';
 
 import ReactTooltip from 'react-tooltip'
 
@@ -31,23 +43,25 @@ export default class TopBar extends React.Component {
     }
 
     onFileChange(e, f) {
-      let file = f || e.target.files[0];
-      let reader = new FileReader();
-      console.log(file);
+        let file = f || e.target.files[0];
+        let reader = new FileReader();
+        console.log(file);
 
-      reader.onload = () => {
-         this.props.onLoad(reader.result);
-      };
-      reader.readAsText(file);
-      // reader.readAsDataURL(file);
+        reader.onload = () => {
+            this.props.onLoad(reader.result);
+        };
+        reader.readAsText(file);
+        // reader.readAsDataURL(file);
     }
 
     render() {
         return (
             <Navbar color="light" light expand="md">
                 <NavbarBrand><img alt="" width="80px" src={PreComputedImages.firstlogo}/></NavbarBrand>
-                <NavbarBrand>Tournament in a Box<small>Version {this.props.version}</small></NavbarBrand>
-                <NavbarToggler onClick={this.toggle} />
+                <NavbarBrand>Tournament in a Box
+                    <small>Version {this.props.version}</small>
+                </NavbarBrand>
+                <NavbarToggler onClick={this.toggle}/>
                 <Collapse isOpen={this.state.isOpen} navbar>
                     <Nav className="ml-auto" navbar>
                         <NavItem>
@@ -59,21 +73,27 @@ export default class TopBar extends React.Component {
                                 <MdInfoOutline size={20}/>
                             </DropdownToggle>
                             <DropdownMenu right>
-                                <a target="_blank" rel="noopener noreferrer" href={"https://github.com/frewes/tournament-in-a-box"}>
+                                <a target="_blank" rel="noopener noreferrer"
+                                   href={"https://github.com/frewes/tournament-in-a-box"}>
                                     <DropdownItem>Manual</DropdownItem>
                                 </a>
-                                <a target="_blank" rel="noopener noreferrer" href={"https://goo.gl/forms/rJOM0xa24MVZqVhh2"}>
+                                <a target="_blank" rel="noopener noreferrer"
+                                   href={"https://goo.gl/forms/rJOM0xa24MVZqVhh2"}>
                                     <DropdownItem>Report an issue...</DropdownItem>
                                 </a>
-                                <DropdownItem divider />
+                                <DropdownItem divider/>
                                 <a target="_blank" rel="noopener noreferrer" href="mailto:fred@firstaustralia.org">
                                     <DropdownItem>Contact developer</DropdownItem>
                                 </a>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <NavItem data-tip="Save current progress" onClick={() => {this.props.onSave();}}><NavLink><MdFileDownload size={20}/></NavLink></NavItem>
+                        <NavItem data-tip="Save current progress" onClick={() => {
+                            this.props.onSave();
+                        }}><NavLink><MdFileDownload size={20}/></NavLink></NavItem>
                         <ReactTooltip place="bottom" type="light" effect="solid"/>
-                        <NavItem data-tip="Load previous schedule" ><NavLink><label><MdFileUpload size={20}/><input type="file" accept=".schedule" onChange={this.onFileChange} hidden ref="input" /></label></NavLink></NavItem>
+                        <NavItem data-tip="Load previous schedule"><NavLink><label><MdFileUpload size={20}/><input
+                            type="file" accept=".schedule" onChange={this.onFileChange} hidden
+                            ref="input"/></label></NavLink></NavItem>
                     </Nav>
                 </Collapse>
             </Navbar>
