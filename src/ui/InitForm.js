@@ -27,6 +27,7 @@ export default class InitForm extends React.Component {
         this.updateDays = this.updateDays.bind(this);
         this.updatePilot = this.updatePilot.bind(this);
         this.updateTeamNames = this.updateTeamNames.bind(this);
+        this.updateNPracs = this.updateNPracs.bind(this);
 
         this.handleChange = this.handleChange.bind(this);
     }
@@ -48,6 +49,11 @@ export default class InitForm extends React.Component {
     updateNTeams(newN) {
         let data = this.props.event;
         data.nTeams = newN;
+        this.handleChange(data);
+    }
+    updateNPracs(newN) {
+        let data = this.props.event;
+        data.nPracs = newN;
         this.handleChange(data);
     }
     updateStartTime(newTime) {
@@ -113,6 +119,7 @@ export default class InitForm extends React.Component {
                     <TextInput large label="Title: " value={this.props.event.title} onChange={this.updateTitle}/>
                     <NumberInput large min="4" label="Number of teams: " value={this.props.event.nTeams} onChange={this.updateNTeams}/>
                     <NumberInput large min="2" step="2" label="Number of competition tables: " value={this.props.event.nTables} onChange={this.updateNTables}/>
+                    <NumberInput large min="0" step="1" label="Number of practice rounds: " value={this.props.event.nPracs} onChange={this.updateNPracs}/>
                     <BooleanInput label="Pilot judging program?" large value={this.props.event.pilot} onChange={this.updatePilot}/>
                     <NumberInput label="Number of days" large min={1} value={this.props.event.days.length} onChange={this.updateNDays}/>
                     <ReactDataSheet

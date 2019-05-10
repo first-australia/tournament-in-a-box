@@ -64,22 +64,34 @@ export class Scheduler {
                 }
             }
         });
-        [TYPES.MATCH_ROUND, TYPES.MATCH_ROUND_PRACTICE].forEach(T=> {
-            let end = -Infinity;
-            let offset = 0;
-            let locOffset = 0;
-            this.event.sessions.filter(s=>s.type===T).forEach((session) => {
-                if (session.actualStartTime.mins < end) session.actualStartTime.mins = end;
-                end = this.tableSession(session, offset, locOffset);
-                session.actualEndTime.mins = end;
-                if (session.schedule[session.schedule.length-1].loc === 0) locOffset = 1;
-                else locOffset = 0;
-                offset += session.schedule.length;
-                if (end > session.endTime.mins) {
-                    if (willWork) willWork = willWork + ", " + session.name;
-                    else willWork = session.name;
-                }
-            });
+        let T = TYPES.MATCH_ROUND_PRACTICE;
+        let end = -Infinity;
+        let offset = 0;
+        let locOffset = 0;
+        this.event.sessions.filter(s=>s.type===T).forEach((session) => {
+            if (session.actualStartTime.mins < end) session.actualStartTime.mins = end;
+            end = this.tableSession(session, offset, locOffset);
+            session.actualEndTime.mins = end;
+            if (session.schedule[session.schedule.length-1].loc === 0) locOffset = 1;
+            else locOffset = 0;
+            offset += session.schedule.length;
+            if (end > session.endTime.mins) {
+                if (willWork) willWork = willWork + ", " + session.name;
+                else willWork = session.name;
+            }
+        });
+        T = TYPES.MATCH_ROUND;
+        this.event.sessions.filter(s=>s.type===T).forEach((session) => {
+            if (session.actualStartTime.mins < end) session.actualStartTime.mins = end;
+            end = this.tableSession(session, offset, locOffset);
+            session.actualEndTime.mins = end;
+            if (session.schedule[session.schedule.length-1].loc === 0) locOffset = 1;
+            else locOffset = 0;
+            offset += session.schedule.length;
+            if (end > session.endTime.mins) {
+                if (willWork) willWork = willWork + ", " + session.name;
+                else willWork = session.name;
+            }
         });
     }
 

@@ -47,6 +47,7 @@ export class EventParams {
         this.consolidatedAwards = false;
         this.judgesAwards = 0;
         this.nTables = 4;
+        this.nPracs = 0;
         this.sponsors={
             national: [],
             local: []
@@ -112,7 +113,7 @@ export class EventParams {
 
         // First guesses at all schedule parameters.  User can then tweak to their hearts' content without auto updates
         let actualStart = this.startTime.clone(30);
-        let actualEnd = this.endTime.clone(-30);
+        let actualEnd = this.endTime.clone(this.consolidatedAwards ? -30 : -60);
         let nLocs = Math.ceil(this.nTeams / 11);
         let nJudgings = Math.ceil(this.nTeams/nLocs);
 
@@ -144,37 +145,46 @@ export class EventParams {
             this.getSession(this.uid_counter-1).universal = true;
         }
 
-        // let rdLen = matchLen + matchBuf;
-        // let rdBuf = 0;
-        let rdLen = 10;
-        let rdBuf = 5;
-        let rdOverlap = (this.nTables === 2) ? 0 : 15 - Math.ceil(30/this.nTables);
 
         let timeAvailable = this.endTime.mins - this.startTime.mins;
-        this.sessions.filter(s=>s.type===TYPES.BREAK).forEach(s=>{timeAvailable = timeAvailable - (s.endTime.mins-s.startTime.mins)});
-        timeAvailable = timeAvailable - ((this.nTeams / 2) * (rdLen + rdBuf - rdOverlap));
-        let timePerMatch = Math.floor(timeAvailable / (this.nTeams * 2 / 2));
+        this.sessions.filter(s => s.type === TYPES.BREAK).forEach(s => {
+            timeAvailable = timeAvailable - (s.endTime.mins - s.startTime.mins)
+        });
 
-        let matchLen = Math.min(timePerMatch,4);
-        let matchBuf = Math.max(timePerMatch-matchLen-1,0);
+        if (this.pilot) {
+            // let rdLen = matchLen + matchBuf;
+            // let rdBuf = 0;
+            let rdLen = 10;
+            let rdBuf = 5;
+            let rdOverlap = (this.nTables === 2) ? 0 : 15 - Math.ceil(30 / this.nTables);
 
-        let nSims = 2;
-        for (let i = 1; i <= 3; i++) {
-            let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND, "Round " + i, this.nTables,
-                actualStart.clone(), actualEnd.clone());
-            S.nSims = nSims;
-            S.len = ( i === 1 ) ? rdLen : matchLen;
-            S.buf = ( i === 1 ) ? rdBuf : matchBuf;
-            S.overlap = ( i === 1 ) ? rdOverlap : 0;
-            this.sessions.push(S);
-        }
-        if (!this.pilot) {
-            this.sessions.push(new SessionParams(this.uid_counter++,TYPES.JUDGING, "Robot Design Judging", nLocs,
-                actualStart.clone(), actualEnd.clone()));
-            this.sessions.push(new SessionParams(this.uid_counter++,TYPES.JUDGING, "Core Values Judging", nLocs,
-                actualStart.clone(), actualEnd.clone()));
-        } else {
-            let roundOneLength = (rdLen+rdBuf-rdOverlap)*(this.nTeams/2);
+            timeAvailable = timeAvailable - ((this.nTeams / 2) * (rdLen + rdBuf - rdOverlap));
+            let timePerMatch = Math.floor(timeAvailable / (this.nTeams * (2 + this.nPracs) / 2));
+
+            let matchLen = Math.min(timePerMatch, 4);
+            let matchBuf = Math.max(timePerMatch - matchLen - 1, 0);
+            let matchOverlap = 0; //If matches need an overlap, set it here.
+
+            let nSims = 2;
+            for (let i = 1; i <= this.nPracs; i++) {
+                let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND_PRACTICE, "Practice Round " + i, this.nTables,
+                    actualStart.clone(), actualEnd.clone());
+                S.nSims = nSims;
+                S.len = matchLen;
+                S.buf = matchBuf;
+                S.overlap = 0;
+                this.sessions.push(S);
+            }
+            for (let i = 1; i <= 3; i++) {
+                let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND, "Round " + i, this.nTables,
+                    actualStart.clone(), actualEnd.clone());
+                S.nSims = nSims;
+                S.len = (i === 1) ? rdLen : matchLen;
+                S.buf = (i === 1) ? rdBuf : matchBuf;
+                S.overlap = (i === 1) ? rdOverlap : matchOverlap;
+                this.sessions.push(S);
+            }
+            let roundOneLength = (rdLen + rdBuf - rdOverlap) * (this.nTeams / 2);
             let roundOneEnd = actualStart.mins + roundOneLength;
             console.log(this.sessions[1]);
             console.log(roundOneEnd);
@@ -184,6 +194,36 @@ export class EventParams {
                 this.sessions[1].startTime = this.sessions[1].startTime.clone(dif);
                 this.sessions[1].endTime = this.sessions[1].endTime.clone(dif);
             }
+        } else {
+            let timePerMatch = Math.floor(timeAvailable / (this.nTeams * (3 + this.nPracs) / 2));
+
+            let matchLen = Math.min(timePerMatch, 4);
+            let matchBuf = Math.max(timePerMatch - matchLen - 1, 0);
+            let matchOverlap = 0; //If matches need an overlap, set it here.
+
+            let nSims = 2;
+            for (let i = 1; i <= this.nPracs; i++) {
+                let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND_PRACTICE, "Practice Round " + i, this.nTables,
+                    actualStart.clone(), actualEnd.clone());
+                S.nSims = nSims;
+                S.len = matchLen;
+                S.buf = matchBuf;
+                S.overlap = matchOverlap;
+                this.sessions.push(S);
+            }
+            for (let i = 1; i <= 3; i++) {
+                let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND, "Round " + i, this.nTables,
+                    actualStart.clone(), actualEnd.clone());
+                S.nSims = nSims;
+                S.len = matchLen;
+                S.buf = matchBuf;
+                S.overlap = matchOverlap;
+                this.sessions.push(S);
+            }
+            this.sessions.push(new SessionParams(this.uid_counter++, TYPES.JUDGING, "Robot Design Judging", nLocs,
+                actualStart.clone(), actualEnd.clone()));
+            this.sessions.push(new SessionParams(this.uid_counter++, TYPES.JUDGING, "Core Values Judging", nLocs,
+                actualStart.clone(), actualEnd.clone()));
         }
         this.sessions.push(new SessionParams(this.uid_counter++,TYPES.JUDGING, "Research Project Judging", nLocs,
             actualStart.clone(), actualEnd.clone()));
