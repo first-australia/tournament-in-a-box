@@ -7,7 +7,7 @@
   },
   "license": "MIT",
   "description": "Everything you need to run a FIRST LEGO League tournament, in one convenient location!",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "private": true,
   "devDependencies": {
     "@rescripts/cli": "^0.0.10",

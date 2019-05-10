@@ -1,12 +1,12 @@
-import { TeamParams } from "./TeamParams";
-import { TYPES } from './SessionTypes';
-import { DateTime } from "./DateTime";
+import {TeamParams} from "./TeamParams";
+import {TYPES} from './SessionTypes';
+import {DateTime} from "./DateTime";
 import SessionParams from "./SessionParams";
 
 //import {toDataUrl} from "../scheduling/utilities";
 
 import Instance from '../scheduling/Instance';
-import { overlaps} from "../scheduling/utilities";
+import {overlaps, shuffle} from "../scheduling/utilities";
 
 import {PageFormat} from "./PageFormat";
 
@@ -19,7 +19,7 @@ import PreComputedImages from "../resources/images.json";
 import Volunteers from "../templates/volunteers.json";
 
 export class EventParams {
-    constructor(version, title="Tournament", nTeams=24, startTime=new DateTime(9*60), endTime=new DateTime(9*17)) {
+    constructor(version, title = "Tournament", nTeams = 24, startTime = new DateTime(9 * 60), endTime = new DateTime(9 * 17)) {
         this._version = version;
         this.title = title;
         let id = Math.floor((Math.random() * 100) + 1);
@@ -32,7 +32,9 @@ export class EventParams {
 
         this.uid_counter = 1;
 
-        this.teams = A.sort((a,b) => {return parseInt(a.number,10) - parseInt(b.number,10);});
+        this.teams = A.sort((a, b) => {
+            return parseInt(a.number, 10) - parseInt(b.number, 10);
+        });
 
         this.startTime = startTime;
         this.endTime = endTime;
@@ -41,14 +43,14 @@ export class EventParams {
         this.extraTime = 5;
         this.sessions = [];
         this.days = ["Day 1"];
-        this.startTime.days=this.days;
-        this.endTime.days=this.days;
+        this.startTime.days = this.days;
+        this.endTime.days = this.days;
         this.pilot = true;
         this.consolidatedAwards = false;
         this.judgesAwards = 0;
         this.nTables = 4;
         this.nPracs = 0;
-        this.sponsors={
+        this.sponsors = {
             national: [],
             local: []
         }
@@ -104,45 +106,47 @@ export class EventParams {
         this.pageFormat = new PageFormat();
         console.log("B");
 
-        this.teams = this.teams.sort((a,b) => {return parseInt(a.number,10) - parseInt(b.number,10);});
-        this.consolidatedAwards = (this.nTeams*0.4 < 8);
+        this.teams = this.teams.sort((a, b) => {
+            return parseInt(a.number, 10) - parseInt(b.number, 10);
+        });
+        this.consolidatedAwards = (this.nTeams * 0.4 < 8);
         console.log(this.consolidatedAwards);
-        console.log(this.nTeams*0.4);
+        console.log(this.nTeams * 0.4);
         let nCoreAwards = (this.consolidatedAwards ? 4 : 10);
-        this.judgesAwards = Math.min(Math.max(Math.ceil(this.nTeams*0.4)-nCoreAwards,0),6);
+        this.judgesAwards = Math.min(Math.max(Math.ceil(this.nTeams * 0.4) - nCoreAwards, 0), 6);
 
         // First guesses at all schedule parameters.  User can then tweak to their hearts' content without auto updates
         let actualStart = this.startTime.clone(30);
         let actualEnd = this.endTime.clone(this.consolidatedAwards ? -30 : -60);
         let nLocs = Math.ceil(this.nTeams / 11);
-        let nJudgings = Math.ceil(this.nTeams/nLocs);
+        let nJudgings = Math.ceil(this.nTeams / nLocs);
 
-        let startLunch = new DateTime(Math.max(actualStart.mins+nJudgings*15,12*60),this.days);
+        let startLunch = new DateTime(Math.max(actualStart.mins + nJudgings * 15, 12 * 60), this.days);
         let endLunch = startLunch.clone(30);
 
-        this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Opening Ceremony", 1,
+        this.sessions.push(new SessionParams(this.uid_counter++, TYPES.BREAK, "Opening Ceremony", 1,
             this.startTime.clone(), actualStart.clone(), true));
-        this.getSession(this.uid_counter-1).universal = true;
-        this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Lunch" + ((this.nDays>1)?" 1":""), 1,
+        this.getSession(this.uid_counter - 1).universal = true;
+        this.sessions.push(new SessionParams(this.uid_counter++, TYPES.BREAK, "Lunch" + ((this.nDays > 1) ? " 1" : ""), 1,
             startLunch.clone(), endLunch.clone()));
-        this.getSession(this.uid_counter-1).universal = true;
-        this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Closing Ceremony", 1,
+        this.getSession(this.uid_counter - 1).universal = true;
+        this.sessions.push(new SessionParams(this.uid_counter++, TYPES.BREAK, "Closing Ceremony", 1,
             actualEnd.clone(), this.endTime.clone(), true));
-        this.getSession(this.uid_counter-1).universal = true;
+        this.getSession(this.uid_counter - 1).universal = true;
 
-        let nightStart = new DateTime(this.endTime.mins%(24*60),this.days);
+        let nightStart = new DateTime(this.endTime.mins % (24 * 60), this.days);
         let nightEnd = this.startTime.clone();
 
         for (let i = 1; i < this.days.length; i++) {
-            nightEnd = nightEnd.clone(24*60);
-            this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Night" + ((this.nDays>2)?" "+i:""), 1,
+            nightEnd = nightEnd.clone(24 * 60);
+            this.sessions.push(new SessionParams(this.uid_counter++, TYPES.BREAK, "Night" + ((this.nDays > 2) ? " " + i : ""), 1,
                 nightStart.clone(), nightEnd.clone(), true));
-            this.getSession(this.uid_counter-1).universal = true;
-            nightStart = nightStart.clone(24*60);
+            this.getSession(this.uid_counter - 1).universal = true;
+            nightStart = nightStart.clone(24 * 60);
 
-            this.sessions.push(new SessionParams(this.uid_counter++,TYPES.BREAK, "Lunch " + (i+1), 1,
-                startLunch.clone(24*60), endLunch.clone(24*60)));
-            this.getSession(this.uid_counter-1).universal = true;
+            this.sessions.push(new SessionParams(this.uid_counter++, TYPES.BREAK, "Lunch " + (i + 1), 1,
+                startLunch.clone(24 * 60), endLunch.clone(24 * 60)));
+            this.getSession(this.uid_counter - 1).universal = true;
         }
 
 
@@ -225,91 +229,109 @@ export class EventParams {
             this.sessions.push(new SessionParams(this.uid_counter++, TYPES.JUDGING, "Core Values Judging", nLocs,
                 actualStart.clone(), actualEnd.clone()));
         }
-        this.sessions.push(new SessionParams(this.uid_counter++,TYPES.JUDGING, "Research Project Judging", nLocs,
+        this.sessions.push(new SessionParams(this.uid_counter++, TYPES.JUDGING, "Research Project Judging", nLocs,
             actualStart.clone(), actualEnd.clone()));
 
-        this.sessions.sort((a,b) => {return (a.startTime === b.startTime)?a.id-b.id : a.startTime.mins - b.startTime.mins;});
+        this.sessions.sort((a, b) => {
+            return (a.startTime === b.startTime) ? a.id - b.id : a.startTime.mins - b.startTime.mins;
+        });
 
         this.volunteers = [];
         this.buildVolunteerSheet();
     }
 
     buildVolunteerSheet(nJudges) {
-      if (!nJudges) {
-        nJudges = this.sessions.find(s => {return s.type === TYPES.JUDGING}).nLocs;
-      }
-      // NOTE: Have to make sure that if volunters have already been designed, we just update the numbers.
-      if (this.volunteers.length > 0) {
-        // Just recalculate the number of volunteers
-        this.volunteers.forEach(v => {
-          let numberOfVols = v.count;
-          if (v.per === "1")
-            numberOfVols *= 1;
-          else if (v.per === "RDJ") // Volunteers per robot design judging session
-            numberOfVols *= nJudges;
-          else if (v.per === "CVJ") // Volunteers per core values judging session
-            numberOfVols *= nJudges;
-          else if (v.per === "RPJ") // Volunteers per project judging session
-            numberOfVols *= nJudges;
-          else if (v.per === "T") // Volunteers per robot table
-            numberOfVols *= this.nTables;nJudges = this.sessions.find(s => {return s.type === TYPES.JUDGING}).nLocs
-          while (v.staff.length < numberOfVols)
-            v.staff.push("");
-          while (v.staff.length > numberOfVols) {
-            let S = v.staff.pop();
-            if (S !== "") {
-              v.staff.push(S);
-              break;
-            }
-          }
-        });
-      } else {
-        Volunteers.roles.forEach(v => {
-          let vol = {name: v.name, count: v.count, per: v.per};
-          vol.staff = [];
-          let numberOfVols = v.count;
-          if (v.per === "1")
-            numberOfVols *= 1;
-          else if (v.per === "RDJ") // Volunteers per robot design judging session
-            numberOfVols *= nJudges;
-          else if (v.per === "CVJ") // Volunteers per core values judging session
-            numberOfVols *= nJudges;
-          else if (v.per === "RPJ") // Volunteers per project judging session
-            numberOfVols *= nJudges;
-          else if (v.per === "T") // Volunteers per robot table
-            numberOfVols *= this.nTables;
-          for (let i = 0; i < numberOfVols; i++)
-            vol.staff.push("");
-          this.volunteers.push(vol);
-        });
-      }
+        if (!nJudges) {
+            nJudges = this.sessions.find(s => {
+                return s.type === TYPES.JUDGING
+            }).nLocs;
+        }
+        // NOTE: Have to make sure that if volunters have already been designed, we just update the numbers.
+        if (this.volunteers.length > 0) {
+            // Just recalculate the number of volunteers
+            this.volunteers.forEach(v => {
+                let numberOfVols = v.count;
+                if (v.per === "1")
+                    numberOfVols *= 1;
+                else if (v.per === "RDJ") // Volunteers per robot design judging session
+                    numberOfVols *= nJudges;
+                else if (v.per === "CVJ") // Volunteers per core values judging session
+                    numberOfVols *= nJudges;
+                else if (v.per === "RPJ") // Volunteers per project judging session
+                    numberOfVols *= nJudges;
+                else if (v.per === "T") // Volunteers per robot table
+                    numberOfVols *= this.nTables;
+                nJudges = this.sessions.find(s => {
+                    return s.type === TYPES.JUDGING
+                }).nLocs
+                while (v.staff.length < numberOfVols)
+                    v.staff.push("");
+                while (v.staff.length > numberOfVols) {
+                    let S = v.staff.pop();
+                    if (S !== "") {
+                        v.staff.push(S);
+                        break;
+                    }
+                }
+            });
+        } else {
+            Volunteers.roles.forEach(v => {
+                let vol = {name: v.name, count: v.count, per: v.per};
+                vol.staff = [];
+                let numberOfVols = v.count;
+                if (v.per === "1")
+                    numberOfVols *= 1;
+                else if (v.per === "RDJ") // Volunteers per robot design judging session
+                    numberOfVols *= nJudges;
+                else if (v.per === "CVJ") // Volunteers per core values judging session
+                    numberOfVols *= nJudges;
+                else if (v.per === "RPJ") // Volunteers per project judging session
+                    numberOfVols *= nJudges;
+                else if (v.per === "T") // Volunteers per robot table
+                    numberOfVols *= this.nTables;
+                for (let i = 0; i < numberOfVols; i++)
+                    vol.staff.push("");
+                this.volunteers.push(vol);
+            });
+        }
     }
 
-    get nJudges() { return this.sessions.find(s => {return s.type === TYPES.JUDGING}).nLocs; }
+    get nJudges() {
+        return this.sessions.find(s => {
+            return s.type === TYPES.JUDGING
+        }).nLocs;
+    }
 
-    get nTeams() { return this._teams.length; }
+    get nTeams() {
+        return this._teams.length;
+    }
+
     //Given a new number of teams, update things...
     set nTeams(value) {
         while (this.teams.length < value) {
-          let maxId = 0;
-          this.teams.forEach(t=>{maxId=(maxId>t.id?maxId:t.id)});
-          maxId += Math.floor((Math.random() * 100) + 1);
-          this.teams.push(new TeamParams(maxId, this.teams.length+1));
+            let maxId = 0;
+            this.teams.forEach(t => {
+                maxId = (maxId > t.id ? maxId : t.id)
+            });
+            maxId += Math.floor((Math.random() * 100) + 1);
+            this.teams.push(new TeamParams(maxId, this.teams.length + 1));
         }
         while (this.teams.length > value)
-          this.teams.pop();
-        this.teams = this.teams.sort((a,b) => {return parseInt(a.number,10) - parseInt(b.number,10);});
+            this.teams.pop();
+        this.teams = this.teams.sort((a, b) => {
+            return parseInt(a.number, 10) - parseInt(b.number, 10);
+        });
     }
 
     getTeam(id) {
-        for (let i = 0 ; i < this.teams.length; i++) {
+        for (let i = 0; i < this.teams.length; i++) {
             if (this.teams[i].id === id) return this.teams[i];
         }
         return null;
     }
 
     getSession(id) {
-        for (let i = 0 ; i < this.sessions.length; i++) {
+        for (let i = 0; i < this.sessions.length; i++) {
             if (this.sessions[i].id === id) return this.sessions[i];
         }
         return null;
@@ -317,27 +339,27 @@ export class EventParams {
 
     getSessions(type) {
         let A = [];
-        for (let i = 0 ; i < this.sessions.length; i++) {
+        for (let i = 0; i < this.sessions.length; i++) {
             if (this.sessions[i].type === type) A.push(this.sessions[i]);
         }
         return A;
     }
 
-    getSessionDataGrid(id, pdf=false) {
+    getSessionDataGrid(id, pdf = false) {
         let session = this.getSession(id);
         let grid = [];
-        let cols = [{value: "#"},{value: "Time"}];
+        let cols = [{value: "#"}, {value: "Time"}];
         session.locations.forEach(x => cols.push({value: x}));
         grid.push(cols);
 
         let applyingBreaks = [];
         this.sessions.filter(S => S.type === TYPES.BREAK && S.applies(session.id)).forEach(S => {
-            if (overlaps(S,session)) applyingBreaks.push(S);
+            if (overlaps(S, session)) applyingBreaks.push(S);
         });
         let schedule = session.schedule.slice();
-        applyingBreaks.forEach(br => schedule.push(new Instance(br.id,"",br.actualStartTime,null)));
+        applyingBreaks.forEach(br => schedule.push(new Instance(br.id, "", br.actualStartTime, null)));
 
-        schedule.sort((a,b) => a.time.mins-b.time.mins).forEach((instance) => {
+        schedule.sort((a, b) => a.time.mins - b.time.mins).forEach((instance) => {
             let A = [];
             A.push({value: instance.num});
             A.push({value: instance.time.time});
@@ -363,28 +385,51 @@ export class EventParams {
         return grid;
     }
 
-    getIndivDataGrid(compact=false) {
+    getPilotDataGrid() {
+        let T = [];
+        this.teams.forEach(t => T.push(t));
+        shuffle(T);
+        let grid = [];
+        let w = this.nJudges;
+        while (T.length > 0) {
+            let row = [];
+            for (let i = 0; i < w; i++) {
+                let x = T.pop();
+                row.push({value: (x) ? (x.number + "\n" + x.name) : " X "});
+            }
+            grid.push(row);
+        }
+        return grid;
+    }
+
+    getIndivDataGrid(compact = false) {
         // Always sort before doing things if you need a particular order.
-        this.teams.sort((a,b) => a.number - b.number);
-        this.sessions.sort((a,b) => {return a.id-b.id});
+        this.teams.sort((a, b) => a.number - b.number);
+        this.sessions.sort((a, b) => {
+            return a.id - b.id
+        });
         this.teams.forEach(team => {
-            team.schedule.sort((a,b) => {return this.getSession(a.session_id).id-this.getSession(b.session_id).id;});
+            team.schedule.sort((a, b) => {
+                return this.getSession(a.session_id).id - this.getSession(b.session_id).id;
+            });
         });
 
         let grid = [];
         let usesSurrogates = false;
-        this.sessions.forEach(s => {if (s.usesSurrogates) usesSurrogates = true;});
+        this.sessions.forEach(s => {
+            if (s.usesSurrogates) usesSurrogates = true;
+        });
         grid[0] = [{value: "Team", colSpan: 2}];
         for (let i = 0; i < this.sessions.length; i++) {
             if (this.sessions[i].type === TYPES.BREAK) continue;
-            grid[0].push({colSpan:compact?2:3,value:this.sessions[i].name});
+            grid[0].push({colSpan: compact ? 2 : 3, value: this.sessions[i].name});
         }
         grid[0].push({value: "Min. Travel time"});
-        if (usesSurrogates) grid[0].push({colSpan:compact?2:3,value:"Surrogate"});
+        if (usesSurrogates) grid[0].push({colSpan: compact ? 2 : 3, value: "Surrogate"});
         grid[1] = [{value: "#"}, {value: "Name"}];
         for (let i = 0; i < this.sessions.length; i++) {
             if (this.sessions[i].type === TYPES.BREAK) continue;
-            for (let j = 0 ; j < this.sessions[i].instances; j++) {
+            for (let j = 0; j < this.sessions[i].instances; j++) {
                 if (!compact) grid[1].push({value: "#"});
                 grid[1].push({value: "Time"});
                 grid[1].push({value: "Loc"});
@@ -406,18 +451,20 @@ export class EventParams {
                 if (this.getSession(team.schedule[j].session_id).type === TYPES.BREAK) continue;
                 if (team.schedule[j].teams && (team.schedule[j].teams.length - team.schedule[j].teams.indexOf((team.id))) <= team.schedule[j].surrogates) continue; // Surrogate
                 if (!team.schedule[j].teams) {
-                    row.push({value: ""}); row.push({value: ""}); row.push({value: ""});
+                    row.push({value: ""});
+                    row.push({value: ""});
+                    row.push({value: ""});
                 } else {
                     if (!compact) row.push({value: team.schedule[j].num});
                     row.push({value: team.schedule[j].time.time});
                     if (team.schedule[j].loc === -1)
                         row.push({value: "--"});
                     else
-                        row.push({value: this.getSession(team.schedule[j].session_id).locations[team.schedule[j].teams.indexOf(team.id)+team.schedule[j].loc]});
+                        row.push({value: this.getSession(team.schedule[j].session_id).locations[team.schedule[j].teams.indexOf(team.id) + team.schedule[j].loc]});
                 }
             }
             // row.push({value: "?"});
-            row.push({value: ""+this.minTravelTime(team)});
+            row.push({value: "" + this.minTravelTime(team)});
             let hadASurrogate = false;
             for (let j = 0; j < team.schedule.length; j++) {
                 if (!team.schedule[j].teams) continue;
@@ -428,7 +475,7 @@ export class EventParams {
                     if (team.schedule[j].loc === -1)
                         row.push({value: "--"});
                     else
-                        row.push({value: this.getSession(team.schedule[j].session_id).locations[team.schedule[j].teams.indexOf(team.id)+team.schedule[j].loc]});
+                        row.push({value: this.getSession(team.schedule[j].session_id).locations[team.schedule[j].teams.indexOf(team.id) + team.schedule[j].loc]});
                 }
             }
             if (!hadASurrogate && usesSurrogates) {
@@ -447,27 +494,27 @@ export class EventParams {
      */
     timeInc(time, inc, sessionID) {
         let filt = (sessionID ?
-          x=>x.type === TYPES.BREAK && x.applies(sessionID) :
-          x=>x.type === TYPES.BREAK)
+            x => x.type === TYPES.BREAK && x.applies(sessionID) :
+            x => x.type === TYPES.BREAK)
         let newMins = time.mins + inc;
         this.sessions.filter(filt).forEach(x => {
-            if (time.mins+inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
+            if (time.mins + inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
         });
         return newMins;
     }
 
-  /**
-   Increments given time, ceremonies and nights.
-   @return Returns the incremented time.
-   */
-  timeIncPrac(time, inc) {
-    let filt = (x=>x.type === TYPES.BREAK && x.noPractice)
-      let newMins = time.mins + inc;
-      this.sessions.filter(filt).forEach(x => {
-          if (time.mins+inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
-      });
-      return newMins;
-  }
+    /**
+     Increments given time, ceremonies and nights.
+     @return Returns the incremented time.
+     */
+    timeIncPrac(time, inc) {
+        let filt = (x => x.type === TYPES.BREAK && x.noPractice)
+        let newMins = time.mins + inc;
+        this.sessions.filter(filt).forEach(x => {
+            if (time.mins + inc >= x.actualStartTime.mins && time.mins < x.actualEndTime.mins) newMins = x.actualEndTime.mins;
+        });
+        return newMins;
+    }
 
 
     /** Assuming the given session has the most up-to-date location names, synchronise other session to this **/
@@ -480,58 +527,131 @@ export class EventParams {
         });
     }
 
-    get version() {return this._version;}
+    get version() {
+        return this._version;
+    }
 
-    get title() {return this._title}
-    set title(value) {this._title = value;}
+    get title() {
+        return this._title
+    }
 
-    get startTime() {return this._startTime}
-    set startTime(value) {this._startTime = value;}
+    set title(value) {
+        this._title = value;
+    }
 
-    get endTime() {return this._endTime;}
-    set endTime(value) {this._endTime = value;}
+    get startTime() {
+        return this._startTime
+    }
 
-    get sessions() {return this._sessions;}
-    set sessions(value) {this._sessions = value;}
+    set startTime(value) {
+        this._startTime = value;
+    }
 
-    get teams() {return this._teams;}
-    set teams(value) {this._teams = value};
+    get endTime() {
+        return this._endTime;
+    }
 
-    get judgesAwards() {return this._judgesAwards;}
-    set judgesAwards(value) {this._judgesAwards = value};
+    set endTime(value) {
+        this._endTime = value;
+    }
 
-    get consolidatedAwards() {return this._consolidatedAwards;}
-    set consolidatedAwards(value) {this._consolidatedAwards = value};
+    get sessions() {
+        return this._sessions;
+    }
 
-    get minTravel() {return this._minTravel;}
-    set minTravel(value) {this._minTravel = value};
+    set sessions(value) {
+        this._sessions = value;
+    }
 
-    get extraTime() {return this._extraTime;}
-    set extraTime(value) {this._extraTime = value};
+    get teams() {
+        return this._teams;
+    }
 
-    get nTables() {return this._nTables;}
-    set nTables(value) {this._nTables = value};
+    set teams(value) {
+        this._teams = value
+    };
 
-    get display() {return this._display}
-    set display(d) {this._display = d;}
+    get judgesAwards() {
+        return this._judgesAwards;
+    }
 
-    get pilot() { return this._pilot; }
-    set pilot(p) { this._pilot = p; }
+    set judgesAwards(value) {
+        this._judgesAwards = value
+    };
 
-    get volunteers() { return this._volunteers; }
-    set volunteers(p) { this._volunteers = p; }
+    get consolidatedAwards() {
+        return this._consolidatedAwards;
+    }
 
-    get nDays() { return this._days.length; }
+    set consolidatedAwards(value) {
+        this._consolidatedAwards = value
+    };
+
+    get minTravel() {
+        return this._minTravel;
+    }
+
+    set minTravel(value) {
+        this._minTravel = value
+    };
+
+    get extraTime() {
+        return this._extraTime;
+    }
+
+    set extraTime(value) {
+        this._extraTime = value
+    };
+
+    get nTables() {
+        return this._nTables;
+    }
+
+    set nTables(value) {
+        this._nTables = value
+    };
+
+    get display() {
+        return this._display
+    }
+
+    set display(d) {
+        this._display = d;
+    }
+
+    get pilot() {
+        return this._pilot;
+    }
+
+    set pilot(p) {
+        this._pilot = p;
+    }
+
+    get volunteers() {
+        return this._volunteers;
+    }
+
+    set volunteers(p) {
+        this._volunteers = p;
+    }
+
+    get nDays() {
+        return this._days.length;
+    }
+
     set nDays(value) {
         let A = this.days;
         while (A.length < value)
-            A.push("Day " + (this.days.length+1));
+            A.push("Day " + (this.days.length + 1));
         while (A.length > value)
             A.pop();
         this.days = A;
     }
 
-    get days() {return this._days;}
+    get days() {
+        return this._days;
+    }
+
     // When changing the days, we have to make sure every DateTime gets the updated reference.
     set days(value) {
         this._days = value;
@@ -549,55 +669,63 @@ export class EventParams {
         });
     };
 
-    addLocalSponsor(value) {this.sponsors.local.push(value);}
-    addNationalSponsor(value) {this.sponsors.national.push(value);}
-    deleteLocalSponsor(idx) { this.sponsors.local.splice(idx,1);}
+    addLocalSponsor(value) {
+        this.sponsors.local.push(value);
+    }
+
+    addNationalSponsor(value) {
+        this.sponsors.national.push(value);
+    }
+
+    deleteLocalSponsor(idx) {
+        this.sponsors.local.splice(idx, 1);
+    }
 
     static freeze(o) {
-      return {
-        _class : 'EventParams',
-        _version : o._version,
-        _title : o._title,
-        _teams : o._teams,
-        uid_counter : o.uid_counter,
-        _startTime : o._startTime,
-        _endTime : o._endTime,
-        _sessions : o._sessions,
-        _days : o._days,
-        _pilot : o._pilot,
-        _nTables : o._nTables,
-        errors : o.errors,
-        _extraTime: o._extraTime,
-        _minTravel: o._minTravel,
-        _judgesAwards: o._judgesAwards,
-        _consolidatedAwards: o._consolidatedAwards,
-        _volunteers: o._volunteers,
-        pageFormat: o.pageFormat,
-        sponsors: o.sponsors.local
-      };
+        return {
+            _class: 'EventParams',
+            _version: o._version,
+            _title: o._title,
+            _teams: o._teams,
+            uid_counter: o.uid_counter,
+            _startTime: o._startTime,
+            _endTime: o._endTime,
+            _sessions: o._sessions,
+            _days: o._days,
+            _pilot: o._pilot,
+            _nTables: o._nTables,
+            errors: o.errors,
+            _extraTime: o._extraTime,
+            _minTravel: o._minTravel,
+            _judgesAwards: o._judgesAwards,
+            _consolidatedAwards: o._consolidatedAwards,
+            _volunteers: o._volunteers,
+            pageFormat: o.pageFormat,
+            sponsors: o.sponsors.local
+        };
     }
 
     static thaw(o) {
-      let E = new EventParams(o._version, o._title);
-      E._teams = o._teams;
-      E.uid_counter = o.uid_counter;
-      E._startTime = o._startTime;
-      E._endTime = o._endTime;
-      E._minTravel = o._minTravel;
-      E._extraTime = o._extraTime;
-      E._sessions = o._sessions;
-      E._days = o._days;
-      E._pilot = o._pilot;
-      E._nTables = o._nTables || 4;
-      E.errors = o.errors;
-      E._judgesAwards = o._judgesAwards;
-      E._consolidatedAwards = o._consolidatedAwards;
-      E._volunteers = o._volunteers;
-      E.sponsors.local = o.sponsors;
-      E.pageFormat = o.pageFormat;
-      if (!E.errors) E.errors = Infinity;
-      console.log(E);
-      return E;
+        let E = new EventParams(o._version, o._title);
+        E._teams = o._teams;
+        E.uid_counter = o.uid_counter;
+        E._startTime = o._startTime;
+        E._endTime = o._endTime;
+        E._minTravel = o._minTravel;
+        E._extraTime = o._extraTime;
+        E._sessions = o._sessions;
+        E._days = o._days;
+        E._pilot = o._pilot;
+        E._nTables = o._nTables || 4;
+        E.errors = o.errors;
+        E._judgesAwards = o._judgesAwards;
+        E._consolidatedAwards = o._consolidatedAwards;
+        E._volunteers = o._volunteers;
+        E.sponsors.local = o.sponsors;
+        E.pageFormat = o.pageFormat;
+        if (!E.errors) E.errors = Infinity;
+        console.log(E);
+        return E;
     }
 
 
@@ -614,7 +742,7 @@ export class EventParams {
         if (team.excludeJudging && this.getSession(instance.session_id).type === TYPES.JUDGING)
             return false;
         for (let i = 0; i < team.schedule.length; i++) {
-            if (this.getSession(team.schedule[i].session_id).type === TYPES.BREAK){
+            if (this.getSession(team.schedule[i].session_id).type === TYPES.BREAK) {
                 if (!this.getSession(team.schedule[i].session_id).applies(instance.session_id))
                     continue;
                 if (this.getSession(instance.session_id).type === TYPES.BREAK) continue;
@@ -653,9 +781,13 @@ export class EventParams {
         let canA = false;
         let canB = false;
         console.log(a);
-        a.schedule.forEach(i => {if (i.session_id === sId) iA = i});
+        a.schedule.forEach(i => {
+            if (i.session_id === sId) iA = i
+        });
         console.log(b);
-        b.schedule.forEach(i => {if (i.session_id === sId) iB = i});
+        b.schedule.forEach(i => {
+            if (i.session_id === sId) iB = i
+        });
 
         if (this.canDo(a, iB, sId)) canA = true;
         if (this.canDo(b, iA, sId)) canB = true;
@@ -665,9 +797,9 @@ export class EventParams {
             let locB = iB.teams.indexOf(teamB);
             iA.teams[locA] = teamB;
             iB.teams[locB] = teamA;
-            a.schedule.splice(a.schedule.indexOf(iA),1);
+            a.schedule.splice(a.schedule.indexOf(iA), 1);
             a.schedule.push(iB);
-            b.schedule.splice(b.schedule.indexOf(iB),1);
+            b.schedule.splice(b.schedule.indexOf(iB), 1);
             b.schedule.push(iA);
             console.log(iA.teams);
             console.log(iB.teams);
@@ -687,13 +819,13 @@ export class EventParams {
             team.schedule.filter(i => this.getSession(i.session_id).type !== TYPES.BREAK).forEach(j => {
                 if (i !== j) {
                     let sA = i.time.mins;
-                    let eA = i.time.mins + this.getSession(i.session_id).len + (i.extraTime?this.extraTime:0);
+                    let eA = i.time.mins + this.getSession(i.session_id).len + (i.extraTime ? this.extraTime : 0);
                     let sB = j.time.mins;
-                    let eB = j.time.mins + this.getSession(j.session_id).len + (i.extraTime?this.extraTime:0);
+                    let eB = j.time.mins + this.getSession(j.session_id).len + (i.extraTime ? this.extraTime : 0);
                     let dA = sB - eA;
                     let dB = sA - eB;
-                    let d = (dA < 0)?dB:dA;
-                    minTravel = (minTravel>d)?d:minTravel;
+                    let d = (dA < 0) ? dB : dA;
+                    minTravel = (minTravel > d) ? d : minTravel;
                 }
             });
         });
