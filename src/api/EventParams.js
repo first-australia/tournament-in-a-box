@@ -205,24 +205,29 @@ export class EventParams {
             let matchBuf = Math.max(timePerMatch - matchLen - 1, 0);
             let matchOverlap = 0; //If matches need an overlap, set it here.
 
+            let bufDiff = 3 + this.nPracs - 1; // Make the first round slower than the rest
+
             let nSims = 2;
+            let first = true;
             for (let i = 1; i <= this.nPracs; i++) {
                 let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND_PRACTICE, "Practice Round " + i, this.nTables,
                     actualStart.clone(), actualEnd.clone());
                 S.nSims = nSims;
                 S.len = matchLen;
-                S.buf = matchBuf;
+                S.buf = (first) ? matchBuf + bufDiff : matchBuf - 1;
                 S.overlap = matchOverlap;
                 this.sessions.push(S);
+                first = false;
             }
             for (let i = 1; i <= 3; i++) {
                 let S = new SessionParams(this.uid_counter++, TYPES.MATCH_ROUND, "Round " + i, this.nTables,
                     actualStart.clone(), actualEnd.clone());
                 S.nSims = nSims;
                 S.len = matchLen;
-                S.buf = matchBuf;
+                S.buf = (first) ? matchBuf + bufDiff : matchBuf - 1;
                 S.overlap = matchOverlap;
                 this.sessions.push(S);
+                first = false;
             }
             this.sessions.push(new SessionParams(this.uid_counter++, TYPES.JUDGING, "Robot Design Judging", nLocs,
                 actualStart.clone(), actualEnd.clone()));
