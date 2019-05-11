@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import {Zipper} from "../outputs/Zipper.js";
-
 import {
     Modal,
     ModalHeader,

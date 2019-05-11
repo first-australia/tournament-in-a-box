@@ -57,7 +57,7 @@ export function MakeAwardCertPdf(event) {
     event.pageFormat.footerText = F;
     for (let i = 0; i < event.judgesAwards; i++) {
         doc.addContent({text: "Judges Award", style: 'signTitle', margin: [0, 40, 0, 10]});
-        doc.addContent({text: "_______________________________________", style: 'signTitle', margin: [0, 40, 0, 10]});
+        doc.addContent({text: "____________________", style: 'signTitle', margin: [0, 40, 0, 10]});
         doc.addContent({text: event.title, style: 'signSubtitle', margin: [0, 10]});
         doc.addPageBreak();
     }

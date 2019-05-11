@@ -9,6 +9,7 @@ import {MakeTeamListPDF, MakeAllTeamsPDF, MakeIndivTeamsPDF} from "./TeamOutputs
 import {MakePitSignsPdf, MakeLocationSignsPdf, MakeAwardCertPdf, MakeParticipationCertPdf} from "./SignOutputs";
 import {MakeScoringSystemCSV} from "./DataOutputs";
 import {MakeVolunteerListPdf, MakeSigninPdf} from "./VolunteerOutputs";
+import {MakeClosingPresentation} from "../outputs/PresentationOutput";
 
 import JSZip from 'jszip';
 import {saveAs} from 'file-saver';
@@ -40,6 +41,7 @@ export class Zipper {
             () => this.zipCSV(MakeScoringSystemCSV(event), "scoring-system"),
             () => this.zipSponsors(this.event.sponsors.national, "scoring-system"),
             () => this.zipSponsors(this.event.sponsors.local, "scoring-system"),
+            () => this.zipPPT(MakeClosingPresentation(event))
         ];
         this.zip = new JSZip();
     }
@@ -79,6 +81,16 @@ export class Zipper {
     zipSponsors(sponsors, folder) {
         let loc = (folder) ? this.zip.folder(folder) : this.zip;
         this.zipAllLogos(sponsors, loc);
+    }
+
+    zipPPT(ppt, folder) {
+        if (!ppt) return;
+        let loc = (folder) ? this.zip.folder(folder) : this.zip;
+        try {
+            loc.file(ppt.filename + ".pptx", ppt.getBlobPromise());
+        } catch (err) {
+            alert("Error saving: " + ppt.filename + "; " + err.message);
+        }
     }
 
     zipAllLogos(logos, zip) {
