@@ -2,8 +2,8 @@ import {TYPES} from '../api/SessionTypes';
 import {
     MakeSessionPDF,
     MakeDaySchedulePdf,
-    MakePracticeTableSignupPdf,
-    MakeCoreValuesAllocationsPDF
+    MakePracticeTableSignupPdf
+    // MakeCoreValuesAllocationsPDF
 } from "./SessionOutputs";
 import {MakeTeamListPDF, MakeAllTeamsPDF, MakeIndivTeamsPDF} from "./TeamOutputs";
 import {MakePitSignsPdf, MakeLocationSignsPdf, MakeAwardCertPdf, MakeParticipationCertPdf} from "./SignOutputs";
@@ -22,11 +22,11 @@ export class Zipper {
         this.zipname = this.event.title.replace(' ', '_');
         this.funcs = [
             () => this.zipPDF(MakeSessionPDF(event, TYPES.JUDGING), "", 2 * this.event.nJudges + 5),
-            () => this.zipPDF(MakeCoreValuesAllocationsPDF(event), "", this.event.nJudges + 2),
+            // () => this.zipPDF(MakeCoreValuesAllocationsPDF(event), "", this.event.nJudges + 2),
             () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_ROUND), "", 20),
             () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_ROUND_PRACTICE), "", 20),
-            () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_FILLER), "", 20),
-            () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_FILLER_PRACTICE), "", 20),
+            // () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_FILLER), "", 20),
+            // () => this.zipPDF(MakeSessionPDF(event, TYPES.MATCH_FILLER_PRACTICE), "", 20),
             () => this.zipPDF(MakeTeamListPDF(event), "", 20),
             () => this.zipPDF(MakeDaySchedulePdf(event), "", this.event.nTeams + 20 + 2 * this.event.nJudges),
             () => this.zipPDF(MakeAllTeamsPDF(event), "", 4),
@@ -48,6 +48,12 @@ export class Zipper {
 
     ProcessNext() {
         this.funcs[this._idx++]();
+    }
+
+    ProcessGiven(idx) {
+      console.log("Processing "+idx);
+        this.funcs[idx]();
+        this._idx = idx;
     }
 
     DownloadZip() {
@@ -79,8 +85,10 @@ export class Zipper {
     }
 
     zipSponsors(sponsors, folder) {
+        if (sponsors.length == 0) return false;
         let loc = (folder) ? this.zip.folder(folder) : this.zip;
         this.zipAllLogos(sponsors, loc);
+        return true;
     }
 
     zipPPT(ppt, folder) {

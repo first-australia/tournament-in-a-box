@@ -1,5 +1,8 @@
 import {PdfDoc} from "../templates/PdfDoc";
 import {DateTime} from "../api/DateTime";
+import {TYPES} from "../api/SessionTypes";
+
+
 
 export function MakeSessionPDF(event, type) {
     let maxLocs = 0;
@@ -27,9 +30,16 @@ function sessionPage(session, data) {
     // you can declare how many rows should be treated as headers
     let t = {headerRows: 1, dontBreakRows: true};
     t.widths = new Array(session.nLocs + 2);
-    let w = 475 / (session.nLocs + 2);
-    for (let i = 0; i < session.nLocs + 2; i++) t.widths[i] = (i < 2) ? 'auto' : '*';
-    t.widths[0] = w;
+    // Pure guesswork to make these fields smaller
+    t.widths[0] = 20;
+    t.widths[1] = 40;
+
+    let w = (440-t.widths[0]-t.widths[1]) / (session.nLocs);
+    // NOTE for widths: I would absolutely love to set the column widths to "automatic" - that way, they'd be a lot neater.
+    //  However, for the moment PDFMake doesn't support word breaks in automatically sized columns.
+    for (let i = 2; i < session.nLocs + 2; i++) t.widths[i] = w; // (i < 2) ? 'auto' : '*';
+
+    // t.widths[0] = w;
     t.body = [];
     //Header row
     let header = [];
@@ -79,13 +89,22 @@ export function MakeDaySchedulePdf(event) {
     });
     for (let i = 0; i < sorted.length; i++) {
         let row = [];
-        row.push(sorted[i].actualStartTime.time);
-        row.push(sorted[i].actualEndTime.time);
-        row.push(sorted[i].name);
+        if (sorted[i].type === TYPES.BREAK) {
+          row.push({text: sorted[i].actualStartTime.time, fillColor: "#eeeeee"});
+          row.push({text: sorted[i].actualEndTime.time, fillColor: "#eeeeee"});
+          row.push({text: sorted[i].name + " *", fillColor: "#eeeeee"});
+        } else {
+          row.push(sorted[i].actualStartTime.time);
+          row.push(sorted[i].actualEndTime.time);
+          row.push(sorted[i].name);
+        }
         t.body.push(row);
     }
     doc.addContent({text: "Day Schedule", style: 'header2', margin: [0, 10]});
     doc.addContent({table: t, layout: 'lightHorizontalLines'});
+
+    doc.addContent({text: "\n"});
+    doc.addContent({text: "* Break: During scheduled break times matches and judging are not happening"});
 
     doc.filename = ("day-schedule").replace(/ /g, "-");
     return doc;

@@ -58,7 +58,7 @@ export default class TopBar extends React.Component {
         return (
             <Navbar color="light" light expand="md">
                 <NavbarBrand><img alt="" width="80px" src={PreComputedImages.firstlogo}/></NavbarBrand>
-                <NavbarBrand>Tournament in a Box
+                <NavbarBrand>FLL in a Box
                     <small>Version {this.props.version}</small>
                 </NavbarBrand>
                 <NavbarToggler onClick={this.toggle}/>

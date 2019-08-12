@@ -128,8 +128,8 @@ export default class InitForm extends React.Component {
                                  value={this.props.event.nTables} onChange={this.updateNTables}/>
                     <NumberInput large min="0" step="1" label="Number of practice rounds: "
                                  value={this.props.event.nPracs} onChange={this.updateNPracs}/>
-                    <BooleanInput label="Pilot judging program?" large value={this.props.event.pilot}
-                                  onChange={this.updatePilot}/>
+                    {/*<BooleanInput label="Pilot judging program?" large value={this.props.event.pilot}
+                                  onChange={this.updatePilot}/>*/}
                     <NumberInput label="Number of days" large min={1} value={this.props.event.days.length}
                                  onChange={this.updateNDays}/>
                     <ReactDataSheet

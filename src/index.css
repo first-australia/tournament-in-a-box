@@ -20,3 +20,7 @@ td.selected {
   -ms-user-select: none; /* IE 10+ */
   user-select: none; /* Standard syntax */
 }
+
+tr.break {
+  background-color: #ddd;
+}

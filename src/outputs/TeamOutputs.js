@@ -44,11 +44,13 @@ export function MakeAllTeamsPDF(event) {
     let N = data[3].length;
     let t = {headerRows: 2, dontBreakRows: true, keepWithHeaderRows: 1};
     t.widths = [];
-    let w = 500 / N;
+    let w = 525 / N;
     for (let i = 0; i < N; i++) {
-        t.widths[i] = w;
+        t.widths[i] = w-2;
     }
-    t.widths[1] = '*';
+    t.widths[1] = w+(N-1)*2;
+
+    // t.widths[1] = w;//'*';
     t.body = [];
     for (let k = 0; k < data.length; k++) {
         t.body[k] = [];

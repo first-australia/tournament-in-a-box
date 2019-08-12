@@ -2,6 +2,8 @@ import React from 'react';
 
 import {Table} from 'reactstrap';
 
+import { TYPES } from '../api/SessionTypes';
+
 export default class DayScheduleView extends React.Component {
     constructor(props) {
         super(props);
@@ -20,7 +22,8 @@ export default class DayScheduleView extends React.Component {
                 _id: i + 1,
                 sTime: sorted[i].actualStartTime.time,
                 eTime: sorted[i].actualEndTime.time,
-                contents: sorted[i].name
+                contents: sorted[i].name,
+                break: sorted[i].type === TYPES.BREAK
             });
         }
         return items;
@@ -40,7 +43,7 @@ export default class DayScheduleView extends React.Component {
                 <tbody>
                 {items.map(x => {
                     return (
-                        <tr key={x._id}>
+                        <tr key={x._id} className={x.break ? "break" : ""}>
                             <td>{x.sTime}</td>
                             <td>{x.eTime}</td>
                             <td>{x.contents}</td>

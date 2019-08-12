@@ -45,7 +45,7 @@ export class EventParams {
         this.days = ["Day 1"];
         this.startTime.days = this.days;
         this.endTime.days = this.days;
-        this.pilot = true;
+        this.pilot = false;
         this.consolidatedAwards = false;
         this.judgesAwards = 0;
         this.nTables = 4;

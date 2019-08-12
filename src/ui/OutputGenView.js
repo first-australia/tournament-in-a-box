@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {Zipper} from "../outputs/Zipper.js";
+import {SingleOutput} from "../outputs/SingleOutput.js";
 import {
     Modal,
     ModalHeader,
@@ -8,10 +9,10 @@ import {
     Container,
     Row,
     Col,
-    Button,
-    Card,
-    CardText,
-    CardTitle
+    Button, ButtonGroup,
+    Card, //CardText, CardTitle,
+    // UncontrolledDropdown, DropdownToggle, DropdownItem, DropdownMenu,
+    Form, FormGroup, Label, Input
 } from 'reactstrap';
 import NumberInput from "../inputs/NumberInput";
 import TextInput from "../inputs/TextInput";
@@ -23,9 +24,16 @@ export default class OutputGenView extends Component {
         this.state = {
             pdf_modal: false,
             running: false,
+            selectedIdx: 0,
+            checked: SingleOutput.funcNames.map((x,i) => {return true}), //return i<7
             progress: 0
         };
         this.toggle = this.toggle.bind(this);
+        this.toggleChecked = this.toggleChecked.bind(this);
+        this.downloadOne = this.downloadOne.bind(this);
+        this.downloadSelected = this.downloadSelected.bind(this);
+        this.checkAll = this.checkAll.bind(this);
+        this.checkNone = this.checkNone.bind(this);
         this.updateBaseSize = this.updateBaseSize.bind(this);
         this.updateTitleSize = this.updateTitleSize.bind(this);
         this.updateFooter = this.updateFooter.bind(this);
@@ -42,19 +50,75 @@ export default class OutputGenView extends Component {
         });
     }
 
+
+    downloadOne() {
+      if (this.props.data.errors > 0) alert("Errors in schedule!  This may not be a good output");
+      if (this.state.running) return;
+      let z = new SingleOutput(this.props.data, this.props.save);
+      this.setState({running: true});
+      setTimeout(() => {
+        z.get(this.state.selectedIdx);
+        this.setState({running: false});
+      }, 50);
+    }
+
+    downloadSelected() {
+      if (this.props.data.errors > 0) alert("Errors in schedule!  This may not be a good output");
+      if (this.state.running) return;
+      let N = this.state.checked.filter((x)=>x).length;
+      if (N === 0) return;
+      if (N === 1) {
+        let z = new SingleOutput(this.props.data, this.props.save);
+        this.setState({running: true});
+        let toDo = 0;
+        for (let i = 0; i < this.state.checked.length; i++)
+          if (this.state.checked[i]) {
+            toDo = i;
+            break;
+          }
+        setTimeout(() => {
+          z.get(toDo);
+          this.setState({running: false});
+        }, 50);
+      } else {
+        let z = new Zipper(this.props.data, this.props.save);
+        this.setState({running: true});
+        console.log(this.state.checked);
+        setTimeout(() => {
+            this.state.checked.forEach((x,i) => {if (x) z.ProcessGiven(i)});
+            z.DownloadZip();
+            this.setState({running: false});
+        }, 50);
+      }
+    }
+
     downloadAll() {
-        if (this.props.data.errors > 0) alert("Errors in schedule!  Unable to generate");
-        else {
-            if (this.state.running) return;
-            let z = new Zipper(this.props.data, this.props.save);
-            this.setState({running: true});
-            setTimeout(() => {
-                while (z.FilesLeft > 0)
-                    z.ProcessNext();
-                z.DownloadZip();
-                this.setState({running: false});
-            }, 50);
-        }
+        if (this.props.data.errors > 0) alert("Errors in schedule!  This may not be a good output");
+        if (this.state.running) return;
+        let z = new Zipper(this.props.data, this.props.save);
+        this.setState({running: true});
+        setTimeout(() => {
+            while (z.FilesLeft > 0)
+                z.ProcessNext();
+            z.DownloadZip();
+            this.setState({running: false});
+        }, 50);
+    }
+
+    checkAll() {
+      let C = this.state.checked.map((x) => {return true;});
+      this.setState({checked: C});
+    }
+
+    checkNone() {
+      let C = this.state.checked.map((x) => {return false;});
+      this.setState({checked: C});
+    }
+
+    toggleChecked(idx) {
+      let C = this.state.checked;
+      C[idx] = !C[idx];
+      this.setState({checked: C});
     }
 
     updateTitleSize(value) {
@@ -176,15 +240,57 @@ export default class OutputGenView extends Component {
                 <hr/>
                 <Row>
                     <Col lg="12">
-                        <Card body>
-                            <CardTitle>Download all</CardTitle>
-                            <CardText>Download PDFs, a CSV and a saved schedule file</CardText>
-                            <Button color="primary" block onClick={this.toggle}>Edit PDF format...</Button>
-                            <br/>
-                            <Button color={this.state.running ? "secondary" : "success"}
-                                    onClick={this.downloadAll}>{this.state.running ? "Please wait..." : "Go"}</Button>
-                            <br/>
-                        </Card>
+                      <Button color="primary" block onClick={this.toggle}>Edit PDF format...</Button>
+                      {/*<br/>
+                      <Card body>
+                        <CardTitle>All outputs</CardTitle>
+                        <Button color={this.state.running ? "secondary" : "success"}
+                                onClick={this.downloadAll}>{this.state.running ? "Please wait..." : "Download all!"}</Button>
+                      </Card>
+                      <br/>
+                      <Card body>
+                        <CardTitle>Single output</CardTitle>
+                        <ButtonGroup>
+                        <UncontrolledDropdown>
+                          <DropdownToggle caret>
+                            {SingleOutput.funcNames[this.state.selectedIdx]}
+                          </DropdownToggle>
+                          <DropdownMenu>
+                            {SingleOutput.funcNames.map((x,i) => {
+                              return <DropdownItem key={i} onClick={() => {this.setState({selectedIdx: i})}}>{x}</DropdownItem>;
+                            })}
+                          </DropdownMenu>
+                        </UncontrolledDropdown>
+                        <Button color={this.state.running ? "secondary" : "success"}
+                                onClick={this.downloadOne}>{this.state.running ? "Please wait..." : "Download one"}</Button>
+                                </ButtonGroup>
+                      </Card>
+                      <br/>*/}
+                      <Card body>
+                        <Form>
+                          <FormGroup row>
+                          {SingleOutput.funcNames.map((x,i) => {
+                            return (
+                              <Col sm={{ size: 3 }} key={i}>
+                              <FormGroup check>
+                                <Label check>
+                                  <Input type="checkbox" id="checkbox2" checked={this.state.checked[i]} onChange={() => this.toggleChecked(i)}/>{' '}
+                                  {SingleOutput.funcNames[i]}
+                                </Label>
+                              </FormGroup>
+                              </Col>
+                            );
+                          })}
+                          </FormGroup>
+                        </Form>
+                        <ButtonGroup>
+                          <Button onClick={this.checkAll} color="info">All</Button>
+                          <Button onClick={this.checkNone} color="warning">None</Button>
+                        </ButtonGroup>
+                        <br/>
+                        <Button color={this.state.running ? "secondary" : "success"}
+                                onClick={this.downloadSelected}>{this.state.running ? "Please wait..." : "Download these"}</Button>
+                      </Card>
                     </Col>
                 </Row>
                 <br/>

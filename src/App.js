@@ -31,7 +31,7 @@ class App extends Component {
             display: 'Initialise',
             version: Package.version,
             eventParams: new EventParams(Package.version,
-                "2018 FLL Competition", 24, new DateTime(8.5 * 60), new DateTime(17 * 60)),
+                "2019 FLL Competition", 24, new DateTime(8.5 * 60), new DateTime(17 * 60)),
             processing: false
         };
         this.initSchedule = this.initSchedule.bind(this);
