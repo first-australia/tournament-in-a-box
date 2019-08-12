@@ -85,7 +85,7 @@ export class Zipper {
     }
 
     zipSponsors(sponsors, folder) {
-        if (sponsors.length == 0) return false;
+        if (sponsors.length === 0) return false;
         let loc = (folder) ? this.zip.folder(folder) : this.zip;
         this.zipAllLogos(sponsors, loc);
         return true;

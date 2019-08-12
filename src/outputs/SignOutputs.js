@@ -1,5 +1,6 @@
 import {PdfDoc} from "../templates/PdfDoc";
 import {TYPES} from "../api/SessionTypes";
+import {EventParams} from '../api/EventParams';
 
 export function MakePitSignsPdf(event) {
     let doc = new PdfDoc(event.pageFormat, event.title, true);
@@ -46,11 +47,6 @@ export function MakeLocationSignsPdf(event) {
 
 export function MakeAwardCertPdf(event) {
 
-    let awardsCon = ["Robot Design", "Robot Performance", "Core Values",
-        "Project", "Champion's"];
-    let awardsFull = ["Mechanical Design", "Programming", "Strategy & Innovation",
-        "Robot Performance", "Teamwork", "Inspiration", "Gracious Professionalism",
-        "Research", "Innovative Solution", "Presentation", "Champion's"];
     let F = event.pageFormat.footerText;
     event.pageFormat.footerText = "";
     let doc = new PdfDoc(event.pageFormat, "", true);
@@ -61,9 +57,11 @@ export function MakeAwardCertPdf(event) {
         doc.addContent({text: event.title, style: 'signSubtitle', margin: [0, 10]});
         doc.addPageBreak();
     }
-    (event.consolidatedAwards ? awardsCon : awardsFull).forEach(a => {
+    console.log("Index: "+ event.awardStyleIdx);
+    console.log(EventParams.AWARD_NAMES[event.awardStyleIdx]);
+    (EventParams.AWARD_NAMES[event.awardStyleIdx]).forEach(a => {
         // margin: [left, top, right, bottom]
-        doc.addContent({text: a + " Award", style: 'certTitle', margin: [0, 60, 0, 10]});
+        doc.addContent({text: a, style: 'certTitle', margin: [0, 60, 0, 10]});
         doc.DrawLine();
         doc.addContent({text: event.title, style: 'certSubtitle', margin: [0, 10]});
         doc.addPageBreak();

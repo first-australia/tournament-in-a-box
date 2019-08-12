@@ -1,13 +1,7 @@
 import {PptPres} from '../templates/PptPres';
-
+import {EventParams} from '../api/EventParams';
 export function MakeClosingPresentation(event) {
     let doc = new PptPres(event.title, event.pageFormat, event.sponsors.nationals);
-
-    let awardsCon = ["Robot Design", "Robot Performance", "Core Values",
-        "Project", "Champion's"];
-    let awardsFull = ["Mechanical Design", "Programming", "Strategy & Innovation",
-        "Robot Performance", "Teamwork", "Inspiration", "Gracious Professionalism",
-        "Research", "Innovative Solution", "Presentation", "Champion's"];
 
     doc.addTitle("Closing & Awards Ceremony");
 
@@ -16,10 +10,10 @@ export function MakeClosingPresentation(event) {
         doc.addWinner("_______ Judges Award");
     }
 
-    (event.consolidatedAwards ? awardsCon : awardsFull).forEach(a => {
+    (EventParams.AWARD_NAMES[event.awardStyleIdx]).forEach(a => {
         // margin: [left, top, right, bottom]
-        doc.addTitle(a + " Award");
-        doc.addWinner(a + " Award");
+        doc.addTitle(a);
+        doc.addWinner(a);
     });
 
     doc.addTitle("Closing & Awards Ceremony");

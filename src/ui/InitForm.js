@@ -1,7 +1,7 @@
 import React from 'react';
 import TextInput from '../inputs/TextInput';
 import NumberInput from '../inputs/NumberInput';
-import BooleanInput from '../inputs/BooleanInput';
+//import BooleanInput from '../inputs/BooleanInput';
 import DateTimeInput from '../inputs/DateTimeInput';
 
 import {Container, Form, Table} from 'reactstrap';

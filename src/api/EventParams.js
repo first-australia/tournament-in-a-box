@@ -19,6 +19,39 @@ import PreComputedImages from "../resources/images.json";
 import Volunteers from "../templates/volunteers.json";
 
 export class EventParams {
+    static AWARD_STYLES = [ "Champion only", "Consolidated", "Full", "1 runner up", "2 runners up" ];
+
+    static AWARD_NAMES = [
+      ["Champion's Award"],
+      ["Robot Design Award", "Robot Performance Award", "Core Values Award",
+          "Project Award", "Champion's Award"],
+      ["Mechanical Design Award", "Programming Award", "Strategy & Innovation Award",
+          "Robot Performance Award", "Teamwork Award", "Inspiration Award", "Gracious Professionalism Award",
+          "Research Award", "Innovative Solution Award", "Presentation Award", "Champion's Award"],
+      ["Mechanical Design Award Runner-up", "Mechanical Design Award Winner",
+          "Programming Award Runner-up", "Programming Award Winner",
+          "Strategy & Innovation Award Runner-up", "Strategy & Innovation Award Winner",
+          "Robot Performance Award Runner-up", "Robot Performance Award Winner",
+          "Teamwork Award Runner-up", "Teamwork Award Winner",
+          "Inspiration Award Runner-up", "Inspiration Award Winner",
+          "Gracious Professionalism Award Runner-up", "Gracious Professionalism Award Winner",
+          "Research Award Runner-up", "Research Award Winner",
+          "Innovative Solution Award Runner-up", "Innovative Solution Award Winner",
+          "Presentation Award Runner-up", "Presentation Award Winner",
+          "Champion's Award Runner-up", "Champion's Award Winner"],
+      ["Mechanical Design Award 3rd Place","Mechanical Design Award 2nd Place", "Mechanical Design Award 1st Place",
+          "Programming Award 3rd Place", "Programming Award 2nd Place", "Programming Award 1st Place",
+          "Strategy & Innovation Award 3rd Place", "Strategy & Innovation Award 2nd Place", "Strategy & Innovation Award 1st Place",
+          "Robot Performance Award 3rd Place", "Robot Performance Award 2nd Place", "Robot Performance Award 1st Place",
+          "Teamwork Award 3rd Place", "Teamwork Award 2nd Place", "Teamwork Award 1st Place",
+          "Inspiration Award 3rd Place", "Inspiration Award 2nd Place", "Inspiration Award 1st Place",
+          "Gracious Professionalism Award 3rd Place", "Gracious Professionalism Award 2nd Place", "Gracious Professionalism Award 1st Place",
+          "Research Award 3rd Place", "Research Award 2nd Place", "Research Award 1st Place",
+          "Innovative Solution Award 3rd Place", "Innovative Solution Award 2nd Place", "Innovative Solution Award 1st Place",
+          "Presentation Award 3rd Place", "Presentation Award 2nd Place", "Presentation Award 1st Place",
+          "Champion's Award 3rd Place", "Champion's Award 2nd Place", "Champion's Award 1st Place"],
+    ]
+
     constructor(version, title = "Tournament", nTeams = 24, startTime = new DateTime(9 * 60), endTime = new DateTime(9 * 17)) {
         this._version = version;
         this.title = title;
@@ -47,6 +80,7 @@ export class EventParams {
         this.endTime.days = this.days;
         this.pilot = false;
         this.consolidatedAwards = false;
+        this.awardStyle = EventParams.AWARD_STYLES[2];
         this.judgesAwards = 0;
         this.nTables = 4;
         this.nPracs = 0;
@@ -592,6 +626,27 @@ export class EventParams {
         this._consolidatedAwards = value
     };
 
+    get awardStyle() {
+        return this._awardStyle;
+    }
+
+    set awardStyle(value) {
+        this._awardStyle = value
+    };
+
+    get awardStyleIdx() {
+        return EventParams.AWARD_STYLES.findIndex((x) => {return x === this._awardStyle});
+    }
+
+    set awardStyleIdx(value) {
+        this._awardStyle = EventParams.AWARD_STYLES[value];
+    }
+
+    get awardPerc() {
+      let nTrophies = EventParams.AWARD_NAMES[this.awardStyleIdx].length + this.judgesAwards;
+      return Math.round(100*nTrophies/this.nTeams);
+    }
+
     get minTravel() {
         return this._minTravel;
     }
@@ -704,6 +759,7 @@ export class EventParams {
             _minTravel: o._minTravel,
             _judgesAwards: o._judgesAwards,
             _consolidatedAwards: o._consolidatedAwards,
+            _awardStyle: o._awardStyle,
             _volunteers: o._volunteers,
             pageFormat: o.pageFormat,
             sponsors: o.sponsors.local
@@ -725,6 +781,7 @@ export class EventParams {
         E.errors = o.errors;
         E._judgesAwards = o._judgesAwards;
         E._consolidatedAwards = o._consolidatedAwards;
+        E._awardStyle = o._awardStyle;
         E._volunteers = o._volunteers;
         E.sponsors.local = o.sponsors;
         E.pageFormat = o.pageFormat;
