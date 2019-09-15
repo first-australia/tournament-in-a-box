@@ -643,6 +643,10 @@ export class EventParams {
     }
 
     get awardPerc() {
+      let idx = this.awardStyleIdx;
+      console.log("Award style index: " + this.awardStyleIdx);
+      console.log("Award style: " + this._awardStyle);
+
       let nTrophies = EventParams.AWARD_NAMES[this.awardStyleIdx].length + this.judgesAwards;
       return Math.round(100*nTrophies/this.nTeams);
     }
@@ -768,6 +772,8 @@ export class EventParams {
 
     static thaw(o) {
         let E = new EventParams(o._version, o._title);
+        console.log("Saved object:");
+        console.log(o);
         E._teams = o._teams;
         E.uid_counter = o.uid_counter;
         E._startTime = o._startTime;
@@ -781,7 +787,7 @@ export class EventParams {
         E.errors = o.errors;
         E._judgesAwards = o._judgesAwards;
         E._consolidatedAwards = o._consolidatedAwards;
-        E._awardStyle = o._awardStyle;
+        E._awardStyle = o._awardStyle || EventParams.AWARD_STYLES[2];
         E._volunteers = o._volunteers;
         E.sponsors.local = o.sponsors;
         E.pageFormat = o.pageFormat;
