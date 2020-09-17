@@ -1,4 +1,4 @@
-import { TYPES } from './SessionTypes';
+import { TYPES } from "./SessionTypes";
 
 export default class SessionParams {
   constructor(
@@ -13,11 +13,11 @@ export default class SessionParams {
     this._id = uid;
     this._type = type;
 
-    this.name = name ? name : this.type.defaultTitle + ' ' + this._id;
+    this.name = name ? name : this.type.defaultTitle + " " + this._id;
     this._noprac = noPractice;
 
     let A = [];
-    for (let i = 1; i <= nLocs; i++) A.push(this.type.defaultLocs + ' ' + i);
+    for (let i = 1; i <= nLocs; i++) A.push(this.type.defaultLocs + " " + i);
     this.locations = A;
 
     this.universal = false;
@@ -28,8 +28,8 @@ export default class SessionParams {
     if (this.endTime) this.actualEndTime = endTime.clone();
 
     this.nSims = this.locations.length;
-    this.len = 10;
-    this.buf = 5;
+    this.len = 30;
+    this.buf = 10;
     this.overlap = 0;
 
     this.schedule = []; // To be filled in later
@@ -65,7 +65,7 @@ export default class SessionParams {
 
   set nLocs(value) {
     while (this.nLocs < value)
-      this._locations.push(this.type.defaultLocs + ' ' + (this.nLocs + 1));
+      this._locations.push(this.type.defaultLocs + " " + (this.nLocs + 1));
     while (this.nLocs > value) this._locations.pop();
     if (this.type === TYPES.JUDGING) this.nSims = this.nLocs;
   }
@@ -228,7 +228,7 @@ export default class SessionParams {
 
   static freeze(o) {
     return {
-      _class: 'SessionParams',
+      _class: "SessionParams",
       _id: o._id,
       _type: o._type,
       _name: o._name,
@@ -249,7 +249,7 @@ export default class SessionParams {
       _extraTimeEvery: o._extraTimeEvery,
       _appliesTo: o._appliesTo,
       _noprac: o._noprac,
-      _usesSurrogates: o._usesSurrogates
+      _usesSurrogates: o._usesSurrogates,
     };
   }
 
@@ -270,7 +270,7 @@ export default class SessionParams {
     S._len = o._len;
     S._buf = o._buf;
     S._overlap = o._overlap;
-    if (typeof o._overlap === 'undefined') S._overlap = 0;
+    if (typeof o._overlap === "undefined") S._overlap = 0;
     S._schedule = o._schedule;
     S._errors = o._errors;
     S._instances = o._instances;

@@ -1,24 +1,25 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 
-import InitForm from './ui/InitForm';
-import { EventParams } from './api/EventParams';
-import DetailView from './ui/DetailView';
-import TopBar from './ui/TopBar';
-import { DateTime } from './api/DateTime';
+import InitForm from "./ui/InitForm";
+import { EventParams } from "./api/EventParams";
+import DetailView from "./ui/DetailView";
+import TopBar from "./ui/TopBar";
+import { DateTime } from "./api/DateTime";
 
-import { Scheduler } from './scheduling/Scheduler';
+import { Scheduler } from "./scheduling/Scheduler";
 
-import { freeze, thaw, saveToFile_json } from './scheduling/utilities';
+import { freeze, thaw, saveToFile_json } from "./scheduling/utilities";
 
-import { Container, Jumbotron, Button, Row, Col } from 'reactstrap';
-import DayScheduleView from './ui/DayScheduleView';
-import FullScheduleView from './ui/FullScheduleView';
+import { Container, Jumbotron, Button, Row, Col } from "reactstrap";
+import DayScheduleView from "./ui/DayScheduleView";
+import FullScheduleView from "./ui/FullScheduleView";
 
-import './App.css';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'react-datasheet/lib/react-datasheet.css';
-import './react-datagrid-custom.css';
-import Package from './package.alias.json';
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.css";
+import "react-datasheet/lib/react-datasheet.css";
+import "./react-datagrid-custom.css";
+
+const VERSION = "20.0.1";
 
 // Should set this up as github.io page under the firstaustralia repo
 // That way github manages load balancing and doesn't crash
@@ -27,16 +28,16 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: 'Initialise',
-      version: Package.version,
+      display: "Initialise",
+      version: VERSION,
       eventParams: new EventParams(
-        Package.version,
-        '2019 FLL Competition',
+        VERSION,
+        "2020 FLL Competition",
         24,
         new DateTime(8.5 * 60),
         new DateTime(17 * 60)
       ),
-      processing: false
+      processing: false,
     };
     this.initSchedule = this.initSchedule.bind(this);
     this.handleScheduleChange = this.handleScheduleChange.bind(this);
@@ -58,13 +59,13 @@ class App extends Component {
     );
 
     this.setState({
-      eventParams: E
+      eventParams: E,
     });
   }
 
   handleScheduleChange(E) {
     this.setState({
-      eventParams: E
+      eventParams: E,
     });
     // I don't love this way of doing it...
     let S = new Scheduler(E);
@@ -75,12 +76,12 @@ class App extends Component {
     this.state.eventParams.populateFLL();
     let S = new Scheduler(this.state.eventParams);
     S.buildAllTables();
-    this.setState({ display: 'Customise' });
+    this.setState({ display: "Customise" });
     window.scrollTo(0, 0);
   }
 
   generate() {
-    console.log('GENERATING');
+    console.log("GENERATING");
     this.setState({ processing: true });
     setTimeout(() => {
       let S = new Scheduler(this.state.eventParams);
@@ -91,8 +92,8 @@ class App extends Component {
         S.evaluate();
       } while (this.state.eventParams.errors > 0 && count-- > 0);
       if (this.state.eventParams.errors > 0)
-        alert('Schedule generated with errors! Please adjust parameters');
-      this.setState({ display: 'Review' });
+        alert("Schedule generated with errors! Please adjust parameters");
+      this.setState({ display: "Review" });
       this.state.eventParams.buildVolunteerSheet();
       this.setState({ processing: false });
       window.scrollTo(0, 0);
@@ -102,18 +103,18 @@ class App extends Component {
   onSave(fname, zip) {
     let filename = fname;
     let json_str = JSON.stringify(this.state, freeze);
-    if (!filename) filename = this.state.eventParams.title.replace(/ /g, '_');
+    if (!filename) filename = this.state.eventParams.title.replace(/ /g, "_");
     if (zip) {
       try {
         zip.file(
-          filename + '.schedule',
-          new Blob([json_str], { type: 'application/json' })
+          filename + ".schedule",
+          new Blob([json_str], { type: "application/json" })
         );
       } catch (err) {
-        alert('Error saving: ' + filename + '.csv ; ' + err.message);
+        alert("Error saving: " + filename + ".csv ; " + err.message);
       }
     } else {
-      saveToFile_json(filename + '.schedule', json_str);
+      saveToFile_json(filename + ".schedule", json_str);
     }
     // let json_str = JSON.stringify(this.state.eventParams,freeze);
     // Write to file
@@ -152,45 +153,45 @@ class App extends Component {
 
   render() {
     let mainWindow = <h1>An error occurred</h1>;
-    if (this.state.display === 'Initialise') {
+    if (this.state.display === "Initialise") {
       mainWindow = (
         <Jumbotron>
-          <h1 className='App-intro'>Basic setup</h1>
+          <h1 className="App-intro">Basic setup</h1>
           <InitForm
             event={this.state.eventParams}
             onChange={this.handleScheduleChange}
           />
-          <Button color='warning' onClick={this.customise}>
+          <Button color="warning" onClick={this.customise}>
             Customise
           </Button>
           &nbsp;
           <Button
-            color='success'
+            color="success"
             onClick={() => {
               this.state.eventParams.populateFLL();
               this.generate();
             }}
           >
-            {this.state.processing ? 'Generating...' : 'Generate'}
+            {this.state.processing ? "Generating..." : "Generate"}
           </Button>
         </Jumbotron>
       );
-    } else if (this.state.display === 'Customise') {
+    } else if (this.state.display === "Customise") {
       mainWindow = (
         <Row>
-          <Col lg='3'>
+          <Col lg="3">
             &nbsp;
             <br />
-            <Button color='success' onClick={this.generate}>
+            <Button color="success" onClick={this.generate}>
               {this.state.processing
-                ? 'Generating...'
-                : 'Run Schedule Generation'}
+                ? "Generating..."
+                : "Run Schedule Generation"}
             </Button>
             <br />
             &nbsp;
             <DayScheduleView event={this.state.eventParams} />
           </Col>
-          <Col lg='9'>
+          <Col lg="9">
             <Jumbotron>
               <DetailView
                 onChange={this.handleScheduleChange}
@@ -200,15 +201,15 @@ class App extends Component {
           </Col>
         </Row>
       );
-    } else if (this.state.display === 'Review') {
+    } else if (this.state.display === "Review") {
       mainWindow = (
         <Row>
-          <Col lg='3'>
+          <Col lg="3">
             &nbsp;
             <br />
             <Button
-              color='warning'
-              onClick={() => this.setState({ display: 'Customise' })}
+              color="warning"
+              onClick={() => this.setState({ display: "Customise" })}
             >
               Change parameters
             </Button>
@@ -217,7 +218,7 @@ class App extends Component {
             &nbsp;
             <DayScheduleView event={this.state.eventParams} />
           </Col>
-          <Col lg='9'>
+          <Col lg="9">
             <Jumbotron>
               <FullScheduleView
                 event={this.state.eventParams}
@@ -231,7 +232,7 @@ class App extends Component {
       );
     }
     return (
-      <Container fluid className='App'>
+      <Container fluid className="App">
         <TopBar
           version={this.state.version}
           onSave={this.onSave}
