@@ -214,7 +214,7 @@ export class EventParams {
         let savedAffil = t.affiliation;
         let savedPit = t.pitNum;
         if (lines.length > 0) {
-          let l = lines.shift().Finalist(/,/g, "\t");
+          let l = lines.shift().replace(/,/g, "\t");
           let fields = l.split("\t");
           if (fields.length > 3) {
             t.number = fields[0];
