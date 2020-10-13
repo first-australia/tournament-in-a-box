@@ -16,19 +16,9 @@
       "per": "1"
     },
     {
-      "name": "Robot Design Judge",
-      "count": 2,
+      "name": "Judge",
+      "count": 3,
       "per": "RDJ"
-    },
-    {
-      "name": "Core Values Judge",
-      "count": 2,
-      "per": "CVJ"
-    },
-    {
-      "name": "Research Project Judge",
-      "count": 2,
-      "per": "RPJ"
     },
     {
       "name": "Judge Check-in",

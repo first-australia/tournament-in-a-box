@@ -503,6 +503,9 @@ export class EventParams {
         else if (v.per === "RPJ")
           // Volunteers per project judging session
           numberOfVols *= nJudges;
+        else if (v.per === "J")
+          // Volunteers per project judging session
+          numberOfVols *= nJudges;
         else if (v.per === "T")
           // Volunteers per robot table
           numberOfVols *= this.nTables;
