@@ -29,7 +29,7 @@ export default class SessionParams {
 
     this.nSims = this.locations.length;
     this.len = 30;
-    this.buf = 10;
+    this.buf = 15;
     this.overlap = 0;
 
     this.schedule = []; // To be filled in later

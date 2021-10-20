@@ -19,7 +19,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-datasheet/lib/react-datasheet.css";
 import "./react-datagrid-custom.css";
 
-const VERSION = "20.0.3";
+const VERSION = "21.0.0";
 
 // Should set this up as github.io page under the firstaustralia repo
 // That way github manages load balancing and doesn't crash
@@ -32,7 +32,7 @@ class App extends Component {
       version: VERSION,
       eventParams: new EventParams(
         VERSION,
-        "2020 FLL Competition",
+        "2021 FLL Competition",
         24,
         new DateTime(8.5 * 60),
         new DateTime(17 * 60)
