@@ -19,7 +19,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "react-datasheet/lib/react-datasheet.css";
 import "./react-datagrid-custom.css";
 
-const VERSION = "21.0.0";
+const VERSION = "22.0.0";
 
 // Should set this up as github.io page under the firstaustralia repo
 // That way github manages load balancing and doesn't crash
