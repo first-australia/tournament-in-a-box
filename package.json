@@ -14,7 +14,7 @@
     "@rescripts/rescript-env": "^0.0.10",
     "concurrently": "^4.1.0",
     "electron": "^5.0.0",
-    "electron-builder": "^20.39.0",
+    "electron-builder": "^23.6.0",
     "wait-on": "^3.2.0"
   },
   "dependencies": {
