@@ -32,7 +32,7 @@ class App extends Component {
       version: VERSION,
       eventParams: new EventParams(
         VERSION,
-        "2021 FLL Competition",
+        "2022 FLL Competition",
         24,
         new DateTime(8.5 * 60),
         new DateTime(17 * 60)
