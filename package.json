@@ -24,7 +24,7 @@
     "file-saver": "^2.0.1",
     "gh-pages": "^2.0.1",
     "jquery": "^3.5.1",
-    "jszip": "^3.2.1",
+    "jszip": "^3.7.0",
     "pdfmake": "^0.1.36",
     "pptxgenjs": "^2.5.0",
     "react": "^16.3.1",
