@@ -1,22 +1,22 @@
 import React, { Component } from "react";
 
-import InitForm from "./ui/InitForm";
+import { DateTime } from "./api/DateTime";
 import { EventParams } from "./api/EventParams";
 import DetailView from "./ui/DetailView";
+import InitForm from "./ui/InitForm";
 import TopBar from "./ui/TopBar";
-import { DateTime } from "./api/DateTime";
 
 import { Scheduler } from "./scheduling/Scheduler";
 
-import { freeze, thaw, saveToFile_json } from "./scheduling/utilities";
+import { freeze, saveToFile_json, thaw } from "./scheduling/utilities";
 
-import { Container, Jumbotron, Button, Row, Col } from "reactstrap";
+import { Button, Col, Container, Jumbotron, Row } from "reactstrap";
 import DayScheduleView from "./ui/DayScheduleView";
 import FullScheduleView from "./ui/FullScheduleView";
 
-import "./App.css";
 import "bootstrap/dist/css/bootstrap.css";
 import "react-datasheet/lib/react-datasheet.css";
+import "./App.css";
 import "./react-datagrid-custom.css";
 
 const VERSION = "22.0.0";
