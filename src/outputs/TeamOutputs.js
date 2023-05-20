@@ -86,7 +86,7 @@ export function MakeAllTeamsPDF(event) {
     alignment: 'center'
   });
 
-  doc.filename = 'individual-schedule'.replace(/ /g, '-');
+  doc.filename = 'all-teams-schedule'.replace(/ /g, '-');
   return doc;
 }
 
@@ -104,7 +104,7 @@ export function MakeIndivTeamsPDF(event) {
   });
   // Delete the last page break
   doc.chomp();
-  doc.filename = 'team-schedule'.replace(/ /g, '-');
+  doc.filename = 'individual-team-schedule'.replace(/ /g, '-');
   return doc;
 }
 
