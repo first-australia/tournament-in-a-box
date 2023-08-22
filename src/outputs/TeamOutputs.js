@@ -20,10 +20,10 @@ export function MakeTeamListPDF(event) {
 
   event.teams.forEach(x => {
     let row = [];
-    row.push({ text: x.number, alignment: 'center' });
-    row.push({ text: x.name });
-    row.push({ text: x.affiliation });
-    row.push({ text: x.pitNum });
+    row.push({ text: x.number ?? " ", alignment: 'center' });
+    row.push({ text: x.name ?? " " });
+    row.push({ text: x.affiliation ?? " " });
+    row.push({ text: x.pitNum ?? " " });
     t.body.push(row);
   });
 
@@ -66,7 +66,7 @@ export function MakeAllTeamsPDF(event) {
       if (data[k][i].colSpan) {
         t.body[k].push({
           colSpan: data[k][i].colSpan,
-          text: data[k][i].value.toString(),
+          text: data[k][i].value?.toString() ?? " ",
           color: col,
           style: curStyle
         });
@@ -74,7 +74,7 @@ export function MakeAllTeamsPDF(event) {
           t.body[k].push({});
       } else
         t.body[k].push({
-          text: data[k][i].value.toString() + '',
+          text: (data[k][i].value?.toString() ?? " ") + '',
           color: col,
           style: curStyle
         });

@@ -86,6 +86,7 @@ export class Zipper {
     if (!pdf) return;
     let loc = folder ? this.zip.folder(folder) : this.zip;
     try {
+      console.log("Zipping " + pdf.filename);
       loc.file(pdf.filename + '_' + count + '.pdf', pdf.getBlobPromise());
     } catch (err) {
       alert('Error saving: ' + pdf.filename + '; ' + err.message);

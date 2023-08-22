@@ -134,9 +134,15 @@ export class PdfDoc {
 
   getBlobPromise() {
     return new Promise((resolve, reject) => {
+      try {
       pdfMake.createPdf(this.doc).getBlob(blob => {
         resolve(blob);
       });
+    } catch (e)
+    {
+      console.error(e);
+      reject(e);
+    }
     });
   }
 
