@@ -16,7 +16,7 @@ import {
   MakeAwardCertPdf,
   MakeParticipationCertPdf
 } from './SignOutputs';
-import { MakeScoringSystemCSV } from './DataOutputs';
+import { MakeScoringSystemCSV, MakeAppImportCsv } from './DataOutputs';
 import { MakeVolunteerListPdf, MakeSigninPdf } from './VolunteerOutputs';
 import { MakeClosingPresentation } from '../outputs/PresentationOutput';
 
@@ -59,6 +59,7 @@ export class Zipper {
       () => this.zipPDF(MakeAwardCertPdf(event), 'certificates', 2),
       () => this.zipPDF(MakeParticipationCertPdf(event), 'certificates', 10),
       () => this.zipCSV(MakeScoringSystemCSV(event), 'scoring-system'),
+      () => this.zipCSV(MakeAppImportCsv(event), 'app-import'),
       () => this.zipSponsors(this.event.sponsors.national, 'scoring-system'),
       () => this.zipSponsors(this.event.sponsors.local, 'scoring-system'),
       () => this.zipPPT(MakeClosingPresentation(event))

@@ -16,7 +16,7 @@ import {
   MakeAwardCertPdf,
   MakeParticipationCertPdf
 } from './SignOutputs';
-import { MakeScoringSystemCSV } from './DataOutputs';
+import { MakeScoringSystemCSV, MakeAppImportCsv } from './DataOutputs';
 import { MakeVolunteerListPdf, MakeSigninPdf } from './VolunteerOutputs';
 import { MakeClosingPresentation } from '../outputs/PresentationOutput';
 
@@ -54,6 +54,7 @@ export class SingleOutput {
       () => this.getPDF(MakeAwardCertPdf(event), 2),
       () => this.getPDF(MakeParticipationCertPdf(event), 10),
       () => this.getCSV(MakeScoringSystemCSV(event)),
+      () => this.getCSV(MakeAppImportCsv(event)),
       () => this.getSponsors(this.event.sponsors.national, 'scoring-system'),
       () => this.getSponsors(this.event.sponsors.local, 'scoring-system'),
       () => this.getPPT(MakeClosingPresentation(event))
@@ -80,6 +81,7 @@ export class SingleOutput {
     'Award certificates',
     'Participation certificates',
     'Scoring system import file',
+    'App import file',
     'National sponsors',
     'Local sponsors',
     'Closing ceremony powerpoint'

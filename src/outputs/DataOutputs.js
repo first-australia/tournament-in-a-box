@@ -123,6 +123,19 @@ export function MakeScoringSystemCSV(event) {
   return { data: csv, filename: 'scoring_import' };
 }
 
+export function MakeAppImportCsv(event) {
+  let data = event.getIndivDataGrid(true);
+
+  let csv = "";
+  // Turn the data grid into a CSV
+  for (let k = 0; k < data.length; k++) {
+    csv += data[k].map(x => x.colSpan === 1 ? x.value : 
+      Array(x.colSpan).fill(x.value, 0, 1).fill("",1)).flat().map(x => x.toString()).join(",") + "\n";
+  }
+
+  return { data: csv, filename: 'app_import' };
+}
+
 // Excel represents time decimally as follows:
 // Time = x.yyyyyyyy
 // Where x = Number of days since 1/1/1900
