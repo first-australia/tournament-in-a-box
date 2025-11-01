@@ -25,7 +25,9 @@ export default class OutputGenView extends Component {
             pdf_modal: false,
             running: false,
             selectedIdx: 0,
-            checked: SingleOutput.funcNames.map((x,i) => {return true}), //return i<7
+            checked: SingleOutput.funcNames.map((x,i) => {
+              if (x == 'National sponsors' || x == 'Local sponsors') return false;
+              else return true}),
             progress: 0
         };
         this.toggle = this.toggle.bind(this);
