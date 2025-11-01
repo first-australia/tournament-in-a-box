@@ -55,19 +55,17 @@ export default class SingleScheduleView extends React.Component {
         return (
             <div>
                 <strong>{this.props.session.name}</strong>
-                <div className="table-responsive">
-                    <Table className={this.props.editable ? "datagrid-custom unselectable" : "datagrid-custom"}>
-                        <tbody>
-                        {this.props.data.map((x, i) =>
-                            <tr key={i}>{x.map((y, j) =>
-                                <td onClick={() => this.select(i, j)} colSpan={y.colSpan}
-                                    className={(this.state.swapee === y) ? y.className + " selected" : y.className}
-                                    key={j}>{y.value}</td>)
-                            }</tr>)
-                        }
-                        </tbody>
-                    </Table>
-                </div>
+                <Table responsive className={this.props.editable ? "datagrid-custom unselectable" : "datagrid-custom"}>
+                    <tbody>
+                    {this.props.data.map((x, i) =>
+                        <tr key={i}>{x.map((y, j) =>
+                            <td onClick={() => this.select(i, j)} colSpan={y.colSpan}
+                                className={(this.state.swapee === y) ? y.className + " selected" : y.className}
+                                key={j}>{y.value}</td>)
+                        }</tr>)
+                    }
+                    </tbody>
+                </Table>
             </div>
         );
 
