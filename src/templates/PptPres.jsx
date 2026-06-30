@@ -1,4 +1,5 @@
-import PptxGenJS from 'pptxgenjs';
+// pptxgen.min.js is loaded as a plain <script> tag in index.html and sets the PptxGenJS global
+const PptxGenJS = window.PptxGenJS;
 import PreComputedImages from '../resources/images.json';
 
 export class PptPres {

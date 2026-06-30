@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 
 import {Container, FormGroup, Alert, Col, Row} from 'reactstrap';
 import VolunteerInput from "../inputs/VolunteerInput";
-import {saveToFile_csv} from "../scheduling/utilities.js";
+import {saveToFile_csv} from "../scheduling/utilities.jsx";
 
 export default class VolunteerView extends Component {
     constructor(props) {

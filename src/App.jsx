@@ -10,7 +10,7 @@ import { Scheduler } from "./scheduling/Scheduler";
 
 import { freeze, saveToFile_json, thaw } from "./scheduling/utilities";
 
-import { Button, Col, Container, Jumbotron, Row } from "reactstrap";
+import { Button, Col, Container, Row } from "reactstrap";
 import DayScheduleView from "./ui/DayScheduleView";
 import FullScheduleView from "./ui/FullScheduleView";
 
@@ -19,7 +19,7 @@ import "react-datasheet/lib/react-datasheet.css";
 import "./App.css";
 import "./react-datagrid-custom.css";
 
-const VERSION = "25.0.0";
+const VERSION = "25.1.0";
 
 // Should set this up as github.io page under the firstaustralia repo
 // That way github manages load balancing and doesn't crash
@@ -30,6 +30,7 @@ class App extends Component {
     this.state = {
       display: "Initialise",
       version: VERSION,
+      bannerDismissed: false,
       eventParams: new EventParams(
         VERSION,
         "2025 FLL Competition",
@@ -155,7 +156,7 @@ class App extends Component {
     let mainWindow = <h1>An error occurred</h1>;
     if (this.state.display === "Initialise") {
       mainWindow = (
-        <Jumbotron>
+        <div className="jumbotron">
           <h1 className="App-intro">Basic setup</h1>
           <InitForm
             event={this.state.eventParams}
@@ -174,7 +175,7 @@ class App extends Component {
           >
             {this.state.processing ? "Generating..." : "Generate"}
           </Button>
-        </Jumbotron>
+        </div>
       );
     } else if (this.state.display === "Customise") {
       mainWindow = (
@@ -192,12 +193,12 @@ class App extends Component {
             <DayScheduleView event={this.state.eventParams} />
           </Col>
           <Col lg="9">
-            <Jumbotron>
+            <div className="jumbotron">
               <DetailView
                 onChange={this.handleScheduleChange}
                 event={this.state.eventParams}
               />
-            </Jumbotron>
+            </div>
           </Col>
         </Row>
       );
@@ -219,20 +220,39 @@ class App extends Component {
             <DayScheduleView event={this.state.eventParams} />
           </Col>
           <Col lg="9">
-            <Jumbotron>
+            <div className="jumbotron">
               <FullScheduleView
                 event={this.state.eventParams}
                 save={this.onSave}
                 onChange={this.updatePDFSettings}
                 onSwap={this.update}
               />
-            </Jumbotron>
+            </div>
           </Col>
         </Row>
       );
     }
+    const banner = !this.state.bannerDismissed && (
+      <div className="upgrade-banner">
+        <span>
+          A new (and hopefully improved!) version of this scheduler is now available! {" "}
+          <a href="https://cadence.westling.io/" target="_blank" rel="noreferrer">
+            Try it here
+          </a>
+        </span>
+        <button
+          className="upgrade-banner-dismiss"
+          onClick={() => this.setState({ bannerDismissed: true })}
+          aria-label="Dismiss"
+        >
+          &times;
+        </button>
+      </div>
+    );
+
     return (
       <Container fluid className="App">
+        {banner}
         <TopBar
           version={this.state.version}
           onSave={this.onSave}
