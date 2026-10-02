@@ -1,4 +1,4 @@
-import { Component } from "react";
+import React, { Component } from "react";
 
 import { DateTime } from "./api/DateTime";
 import { EventParams } from "./api/EventParams";

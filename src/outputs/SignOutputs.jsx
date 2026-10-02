@@ -25,13 +25,16 @@ export function MakePitSignsPdf(event) {
 
 export function MakeLocationSignsPdf(event) {
   let baseLocations = [
-    "Pit admin",
-    "Queueing",
-    "Judge check-in",
-    "Robot game",
     "Coaches meeting",
-    "Volunteer Room",
+    "Judge check-in",
+    "No teams allowed past here",
+    "Pit admin",
     "Practice table",
+    "Queueing",
+    "Quiet room",
+    "Robot game",
+    "Team registration",
+    "Volunteer room",
   ];
   let doc = new PdfDoc(event.pageFormat, event.title, true);
   event.sessions

@@ -28,7 +28,7 @@ export class PdfDoc {
         bold: true,
         alignment: 'center'
       },
-      signTitle: { fontSize: 64, bold: true, alignment: 'center' },
+      signTitle: { fontSize: 90, bold: true, alignment: 'center' },
       signSubtitle: {
         fontSize: 44,
         bold: true,
