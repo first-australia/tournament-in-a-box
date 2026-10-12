@@ -11,7 +11,6 @@ import {Container, Row, Col, Nav, NavItem, NavLink, TabContent, TabPane} from 'r
 import SessionForm from "./SessionForm";
 import BasicsForm from "./BasicsForm";
 import TeamList from '../inputs/TeamList';
-import ToggleButton from 'react-toggle-button';
 
 export default class FullScheduleView extends React.Component {
     constructor(props) {
@@ -151,7 +150,7 @@ export default class FullScheduleView extends React.Component {
                         <div onClick={this.toggleEditable}>
                             <small className="not-text">Editable</small>
                             &nbsp;
-                            <ToggleButton value={this.state.editable} onToggle={this.toggleEditable}/></div>
+                            <input type="checkbox" checked={this.state.editable} onChange={this.toggleEditable} style={{cursor:'pointer'}}/></div>
                     </NavItem> : ""}
 
                 </Nav>

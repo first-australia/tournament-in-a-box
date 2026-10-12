@@ -12,9 +12,8 @@ import {
 } from 'reactstrap';
 import { TeamParams } from '../api/TeamParams';
 
-import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
-import FaCheckCircleO from 'react-icons/lib/fa/check-circle-o';
-import FaTimesCircleO from 'react-icons/lib/fa/times-circle-o';
+import { MdAddCircleOutline } from 'react-icons/md';
+import { FaCheckCircle as FaCheckCircleO, FaTimesCircle as FaTimesCircleO } from 'react-icons/fa';
 import BooleanInput from './BooleanInput';
 import DateTimeInput from './DateTimeInput';
 

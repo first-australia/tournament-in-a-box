@@ -2,7 +2,7 @@ import React from 'react';
 // import ReactDOM from 'react-dom';
 import {TYPES} from '../api/SessionTypes';
 
-import MdRemoveCircleOutline from 'react-icons/lib/md/remove-circle-outline';
+import { MdRemoveCircleOutline } from 'react-icons/md';
 
 import {Form, Table, Button} from 'reactstrap';
 import TextInput from '../inputs/TextInput';

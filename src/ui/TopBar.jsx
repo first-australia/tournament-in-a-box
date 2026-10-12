@@ -14,11 +14,7 @@ import {
     DropdownItem
 } from 'reactstrap';
 
-import ReactTooltip from 'react-tooltip'
-
-import MdInfoOutline from 'react-icons/lib/md/info-outline'
-import MdFileDownload from 'react-icons/lib/md/file-download'
-import MdFileUpload from 'react-icons/lib/md/file-upload'
+import { MdInfoOutline, MdFileDownload, MdFileUpload } from 'react-icons/md'
 
 // import firstlogo from "../resources/firstlogo.png"
 import PreComputedImages from "../resources/images.json";
@@ -69,10 +65,10 @@ export default class TopBar extends React.Component {
                             </NavLink>
                         </NavItem>
                         <UncontrolledDropdown nav inNavbar>
-                            <DropdownToggle data-tip="Info" nav caret>
+                            <DropdownToggle title="Info" nav caret>
                                 <MdInfoOutline size={20}/>
                             </DropdownToggle>
-                            <DropdownMenu right>
+                            <DropdownMenu end>
                                 <a target="_blank" rel="noopener noreferrer"
                                    href={"https://github.com/frewes/tournament-in-a-box"}>
                                     <DropdownItem>Manual</DropdownItem>
@@ -87,11 +83,10 @@ export default class TopBar extends React.Component {
                                 </a>
                             </DropdownMenu>
                         </UncontrolledDropdown>
-                        <NavItem data-tip="Save current progress" onClick={() => {
+                        <NavItem title="Save current progress" onClick={() => {
                             this.props.onSave();
                         }}><NavLink><MdFileDownload size={20}/></NavLink></NavItem>
-                        <ReactTooltip place="bottom" type="light" effect="solid"/>
-                        <NavItem data-tip="Load previous schedule"><NavLink><label><MdFileUpload size={20}/><input
+                        <NavItem title="Load previous schedule"><NavLink><label><MdFileUpload size={20}/><input
                             type="file" accept=".schedule" onChange={this.onFileChange} hidden
                             ref="input"/></label></NavLink></NavItem>
                     </Nav>

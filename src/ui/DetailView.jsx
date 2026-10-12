@@ -5,7 +5,7 @@ import {
     Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap';
 
-import MdAddCircleOutline from 'react-icons/lib/md/add-circle-outline';
+import { MdAddCircleOutline } from 'react-icons/md';
 
 import {TYPES} from '../api/SessionTypes';
 import BasicsForm from "./BasicsForm";
@@ -14,7 +14,6 @@ import TeamList from "../inputs/TeamList";
 import BooleanInput from "../inputs/BooleanInput";
 import SessionParams from "../api/SessionParams";
 
-import ToggleButton from 'react-toggle-button';
 
 export default class DetailView extends React.Component {
     constructor(props) {
@@ -227,7 +226,7 @@ export default class DetailView extends React.Component {
                     &nbsp;
                     <div onClick={this.toggleAdvanced}>
                         <small className="not-text">Advanced</small>
-                        <ToggleButton value={this.state.advanced} onToggle={this.toggleAdvanced}/>
+                        <input type="checkbox" checked={this.state.advanced} onChange={this.toggleAdvanced} style={{cursor:'pointer'}}/>
                     </div>
                     {this.state.advanced && this.state.activeTab !== 'basics' && this.state.activeTab !== 'teams' && (
                         <NavItem>

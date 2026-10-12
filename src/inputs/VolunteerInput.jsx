@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Input, Col, FormGroup, Label, Button } from 'reactstrap';
 import uniqueId from 'react-html-id';
-import FaTimesCircleO from 'react-icons/lib/fa/times-circle-o';
+import { FaTimesCircle as FaTimesCircleO } from 'react-icons/fa';
 
 export default class VolunteerInput extends React.Component {
   constructor(props) {

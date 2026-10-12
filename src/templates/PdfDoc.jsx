@@ -1,7 +1,5 @@
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+// pdfmake and vfs_fonts are loaded as plain <script> tags in index.html
+const pdfMake = window.pdfMake;
 
 export class PdfDoc {
   constructor(format, title, landscape) {

@@ -40,3 +40,41 @@
 .session-form {
   /*border: 1px solid rgb(33, 33, 33);*/
 }
+
+.upgrade-banner {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background-color: #1a6b3c;
+  color: #fff;
+  padding: 10px 16px;
+  font-size: 14px;
+}
+
+.upgrade-banner a {
+  color: #a8f0c6;
+  font-weight: 600;
+}
+
+.upgrade-banner a:hover {
+  color: #fff;
+}
+
+.upgrade-banner-dismiss {
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 4px;
+  opacity: 0.7;
+}
+
+.upgrade-banner-dismiss:hover {
+  opacity: 1;
+}
