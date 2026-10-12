@@ -19,7 +19,7 @@ import "react-datasheet/lib/react-datasheet.css";
 import "./App.css";
 import "./react-datagrid-custom.css";
 
-const VERSION = "25.1.0";
+const VERSION = "26.0.0";
 
 // Should set this up as github.io page under the firstaustralia repo
 // That way github manages load balancing and doesn't crash
@@ -33,7 +33,7 @@ class App extends Component {
       bannerDismissed: false,
       eventParams: new EventParams(
         VERSION,
-        "2025 FLL Competition",
+        "2026 FLL Competition",
         24,
         new DateTime(8.5 * 60),
         new DateTime(17 * 60)

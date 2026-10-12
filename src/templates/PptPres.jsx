@@ -14,11 +14,11 @@ export class PptPres {
         {
           image: {
             data: PreComputedImages.gamelogo,
-            // path: '../resources/gamelogo.jpg', //Doesn't work
-            x: 13.3 * 0.4,
+            // 13.3 is the PptxGenJs wide width
+            x: (13.3 - 6.5 ) / 2,
             y: 0,
-            w: 13.3 * 0.2,
-            h: 13.3 * 0.2,
+            w: 6.5, // 2026 logo is rectangular
+            h: 6.5 * (1250 / 4584),
             sizing: 'contain'
           }
         },
@@ -69,14 +69,14 @@ export class PptPres {
       title: 'PRESENTATION_WINNER',
       bkgd: 'FFFFFF',
       objects: [
-        {
+         {
           image: {
             data: PreComputedImages.gamelogo,
-            // path: '../resources/gamelogo.jpg', //Doesn't work
-            x: 13.3 * 0.4,
+            // 13.3 is the PptxGenJs wide width
+            x: (13.3 - 6.5 ) / 2,
             y: 0,
-            w: 13.3 * 0.2,
-            h: 13.3 * 0.2,
+            w: 6.5, // 2026 logo is rectangular
+            h: 6.5 * (1250 / 4584),
             sizing: 'contain'
           }
         },
